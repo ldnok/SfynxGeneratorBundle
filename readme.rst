@@ -37,6 +37,7 @@ replace your composer.json by this content :
         "doctrine/mongodb-odm-bundle":"@dev",
         "doctrine/couchdb": "@dev",
         "doctrine/couchdb-odm": "@dev",
+        "stof/doctrine-extensions-bundle":"@dev",
         "sfynx/generatorbundle": "dev-develop",
         "stof/doctrine-extensions-bundle":"@dev"
     },
