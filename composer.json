@@ -1,5 +1,5 @@
 {
-  "name": "sfynx-project/tool-ddd-bundle",
+  "name": "sfynx-project/tool-generator-bundle",
   "type": "symfony-bundle",
   "description": "Generate DDD bundle and generator",
   "keywords": ["ddd", "sfynx", "api", "bundle", "web service", "swagger"],
