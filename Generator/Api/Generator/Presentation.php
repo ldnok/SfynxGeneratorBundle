@@ -8,6 +8,7 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\GetAllAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\GetByIdsQueryAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\GetIdsQueryAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\NewAdapterHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\PatchAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\SearchByAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\SearchByQueryAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\UpdateAdapterHandler;
@@ -19,6 +20,7 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\GetAllRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\GetByIdsRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\GetRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\NewRequestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\PatchRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\SearchByRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\UpdateRequestHandler;
 
@@ -82,6 +84,7 @@ class Presentation
             $parameters['constructorArgs'] = trim($constructorParams, ',');
 
             $this->generator->addHandler(new UpdateAdapterHandler($parameters));
+            $this->generator->addHandler(new PatchAdapterHandler($parameters));
             $this->generator->addHandler(new NewAdapterHandler($parameters));
             $this->generator->addHandler(new DeleteAdapterHandler($parameters));
             $this->generator->addHandler(new DeleteManyAdapterHandler($parameters));
@@ -206,6 +209,7 @@ class Presentation
             $this->generator->addHandler(new SearchByRequestHandler($parameters));
             $this->generator->addHandler(new GetByIdsRequestHandler($parameters));
             $this->generator->addHandler(new GetRequestHandler($parameters));
+            $this->generator->addHandler(new PatchRequestHandler($parameters));
 
             $this->generator->execute();
             $this->generator->clear();

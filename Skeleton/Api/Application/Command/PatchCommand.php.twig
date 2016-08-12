@@ -1,0 +1,74 @@
+<?php
+
+namespace {{ projectName }}\Application\{{ entityName|capitalize }}\Command;
+
+use Sfynx\DddBundle\Layer\Application\Generalisation\Command\AbstractCommand;
+
+/**
+ * Class UpdateCommand.
+ *
+ * @category   DemoApiContext
+ * @package    Application
+ * @subpackage Command
+ */
+class PatchCommand extends AbstractCommand
+{
+{% for field in entityFields %}
+    protected ${{ field.name}};
+{% endfor %}
+
+    /**
+     * UpdateActorCommand constructor.
+     * @param $entityId
+     */
+    public function __construct({{ constructorArgs }})
+    {
+{% for field in entityFields %}
+        $this->{{ field.name }}= ${{ field.name}};
+{% endfor %}
+    }
+
+
+{% for field in  entityFields %}
+{% if field.type == "id" or field.type=="IdVO" %}
+    public function get{{ field.name|capitalize }}() {
+        return $this->{{ field.name }};
+    }
+    /**
+    * Set the {{ field.name }} attribute
+    * @param  {{ field.name }} $value
+    */
+    public function set{{ field.name|capitalize }}($value) {
+        $this->{{ field.name }} = $value;
+    }
+{% else %}
+        {% if field.type == "valueObject" %}
+            {% if valueObjects[field.voName]["name"] == field.voName %}
+                {% set namespace = valueObjects[field.voName]["type"]|split('\\') %}
+                {% set key = namespace|length - 1 %}
+                {% set namespace = namespace[key] %}
+            {% else %}
+                {% set namespace = "" %}
+            {% endif %}
+        {% else %}
+            {% set namespace = "" %}
+        {% endif %}
+    /**
+    * get the {{ field.name }} attribute value
+    * @return {{ field.type }} $value
+    */
+    public function get{{ field.name|capitalize }}() {
+        return $this->{{ field.name }};
+    }
+
+    /**
+    * Set the {{ field.name }} attribute
+    * @param {{ namespace }} {{ field.type }} $value
+    */
+    public function set{{ field.name|capitalize }}({{ namespace }} $value) {
+        $this->{{ field.name }} = $value;
+    }
+{% endif %}
+{% endfor %}
+
+}

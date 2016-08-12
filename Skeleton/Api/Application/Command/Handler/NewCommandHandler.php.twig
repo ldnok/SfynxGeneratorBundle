@@ -5,7 +5,7 @@ namespace {{ projectName }}\Application\{{ entityName }}\Command\Handler;
 use Sfynx\DddBundle\Layer\Application\Generalisation\Interfaces\CommandHandlerInterface;
 use Sfynx\DddBundle\Layer\Application\Generalisation\Interfaces\CommandInterface;
 use Sfynx\DddBundle\Layer\Domain\Workflow\Generalisation\WorkflowHandlerInterface;
-
+use Sfynx\DddBundle\Layer\Infrastructure\Exception\WorkflowException;
 /**
  * Class NewCommandHandler.
  *
@@ -39,7 +39,7 @@ class NewCommandHandler implements CommandHandlerInterface
 
         $entity = !empty($this->workflowHandler->data->entity) ? end($this->workflowHandler->data->entity) : null;
         if (null === $entity) {
-            throw new \Exception('Entity has not been created');
+            throw new WorkflowException('Entity has not been created');
         }
 
         return $entity;

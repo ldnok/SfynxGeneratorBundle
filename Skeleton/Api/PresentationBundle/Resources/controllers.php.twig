@@ -12,6 +12,7 @@ services:
             - @project.{{ projectName|lower }}.{{ entity|lower }}.command.delete_many.handler
             - @project.{{ projectName|lower }}.{{ entity|lower }}.command.update.handler.decorator
             - @project.{{ projectName|lower }}.{{ entity|lower }}.command.new.handler.decorator
+            - @project.{{ projectName|lower }}.{{ entity|lower }}.command.patch.handler.decorator
 
     project.{{ projectName | lower }}.controller.query.{{ entity|lower }}:
         scope: prototype

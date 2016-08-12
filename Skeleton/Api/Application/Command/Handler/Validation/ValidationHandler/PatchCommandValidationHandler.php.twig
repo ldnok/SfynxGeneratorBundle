@@ -1,0 +1,37 @@
+<?php
+
+namespace {{ projectName }}\Application\{{ entityName }}\Command\Validation\ValidationHandler;
+
+use Sfynx\DddBundle\Layer\Application\Generalisation\Validation\ValidationHandler\AbstractCommandValidationHandler;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Sfynx\DddBundle\Layer\Application\Generalisation\Interfaces\CommandInterface;
+
+/**
+ * Class UpdateCommandValidationHandler.
+ *
+ * @category   {{ projectName }}
+ * @package    Application
+ * @subpackage Command
+ */
+class PatchCommandValidationHandler extends AbstractCommandValidationHandler
+{
+    public function process(CommandInterface $command)
+    {
+        $this->command=$command;
+        $this->initConstraints($command);
+
+        $this->errors = $this->validator->validateValue($command->toArray(true), $this->getConstraints());
+        if (count($this->errors) === 0) {
+            return true;
+        }
+
+        throw new \Exception(serialize($this->getErrors())) ;
+    }
+
+
+    protected function initConstraints() {
+        foreach ($this->command->toArray(true) as $field=>$value) {
+             $this->add($field, new NotBlank());
+        }
+    }
+}

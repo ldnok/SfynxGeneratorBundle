@@ -114,10 +114,7 @@ class {{ entityName }} {
 {% for field in  fields %}
     {% if field.type == "id" %}
 {%  if field.voName is defined%}
-        if (null === ${{ field.name }}) {
-
-            $this->{{ field.type }} = new {{ field.voName }}();
-        }
+        $this->{{ field.type }} = new {{ field.voName }}($entityId);
 {% endif %}
 {% endif %}
 

@@ -20,10 +20,12 @@ use Symfony\Component\HttpFoundation\Response;
     use {{ projectName }}\Presentation\Adapter\{{ entityName }}\Command\DeleteCommandAdapter;
     use {{ projectName }}\Presentation\Adapter\{{ entityName }}\Command\DeleteManyCommandAdapter;
     use {{ projectName }}\Presentation\Adapter\{{ entityName }}\Command\UpdateCommandAdapter;
+    use {{ projectName }}\Presentation\Adapter\{{ entityName }}\Command\PatchCommandAdapter;
     use {{ projectName }}\Presentation\Adapter\{{ entityName }}\Command\NewCommandAdapter;
     use {{ projectName }}\Presentation\Request\{{ entityName }}\Command\DeleteRequest;
     use {{ projectName }}\Presentation\Request\{{ entityName }}\Command\DeleteManyRequest;
     use {{ projectName }}\Presentation\Request\{{ entityName }}\Command\UpdateRequest;
+    use {{ projectName }}\Presentation\Request\{{ entityName }}\Command\PatchRequest;
     use {{ projectName }}\Presentation\Request\{{ entityName }}\Command\NewRequest;
 
 {% endif %}
@@ -49,6 +51,8 @@ class Controller
     protected $newCommandHandlerDecorator;
     /** @var  \{{ projectName }}\Application\{{ entityName }}\Command\Handler\Decorator\UpdateCommandHandlerDecorator */
     protected $updateCommandHandlerDecorator;
+    /** @var  \{{ projectName }}\Application\{{ entityName }}\Command\Handler\Decorator\PathCommandHandlerDecorator */
+    protected $pathCommandHandlerDecorator;
 
  /**
      * ActorController constructor.
@@ -68,7 +72,8 @@ class Controller
         CommandHandlerInterface $deleteCommandHandler,
         CommandHandlerInterface $deleteManyCommandHandler,
         CommandHandlerInterface $updateCommandHandlerDecorator,
-        CommandHandlerInterface $newCommandHandlerDecorator
+        CommandHandlerInterface $newCommandHandlerDecorator,
+        CommandHandlerInterface $patchCommandHandlerDecorator
     ) {
         $this->request = $request;
         $this->resolver = $resolver;
@@ -77,6 +82,7 @@ class Controller
         $this->deleteManyCommandHandler = $deleteManyCommandHandler;
         $this->updateCommandHandlerDecorator = $updateCommandHandlerDecorator;
         $this->newCommandHandlerDecorator = $newCommandHandlerDecorator;
+        $this->patchCommandHandlerDecorator = $patchCommandHandlerDecorator;
     }
     {% elseif group == "Query" %}
     /** @var RequestInterface */
@@ -133,6 +139,8 @@ class Controller
 {% include("actions/delete.php.twig") %}
 {% elseif action.method == "put" %}
 {% include("actions/update.php.twig") %}
+{% elseif action.method == "patch" %}
+{% include("actions/patch.php.twig") %}
 {% endif %}
 
 {% elseif group == "Query" %}

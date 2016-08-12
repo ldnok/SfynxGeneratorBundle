@@ -1,19 +1,25 @@
 <?php
 namespace Sfynx\DddGeneratorBundle\Generator\Api\Generator;
 
+
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\SearchByAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\DeleteCommandHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Handler\Decorator\NewCommandHandlerDecoratorHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Handler\Decorator\PatchCommandHandlerDecoratorHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Handler\Decorator\UpdateCommandHandlerDecoratorHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Handler\DeleteCommandHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Handler\DeleteManyCommandHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Handler\NewCommandHandlerHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Handler\PatchCommandHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Handler\UpdateCommandHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\NewCommandHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\PatchCommandHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\UpdateCommandHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Validation\SpecHandler\NewCommandSpecHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Validation\SpecHandler\PatchCommandSpecHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Validation\SpecHandler\UpdateCommandSpecHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Validation\ValidationHandler\NewCommandValidationHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Validation\ValidationHandler\PatchCommandValidationHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Validation\ValidationHandler\UpdateCommandValidationHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Query\CustomQueryHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Query\GetAllQueryHandler;
@@ -124,6 +130,19 @@ class Application
                     // Handler
                     $this->generator->addHandler(new DeleteManyCommandHandlerHandler($parameters));
                     $this->generator->addHandler(new DeleteCommandHandlerHandler($parameters));
+
+
+
+                    // Command
+                    $this->generator->addHandler(new PatchCommandHandler($parameters));
+                    // Decorator
+                    $this->generator->addHandler(new PatchCommandHandlerDecoratorHandler($parameters));
+                    // Handler
+                    $this->generator->addHandler(new PatchCommandHandlerHandler($parameters));
+                    // SpecHandler
+                    $this->generator->addHandler(new PatchCommandSpecHandler($parameters));
+                    // ValidationHandler
+                    $this->generator->addHandler(new PatchCommandValidationHandler($parameters));
 
                     $this->generator->execute();
                     $this->generator->clear();

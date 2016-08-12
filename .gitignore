@@ -8,6 +8,7 @@
 Thumbs.db
 *.log
 
+
 ## Default docker-compose
 /nbproject/private/
 
@@ -30,8 +31,11 @@ Thumbs.db
 
 ### vendor ###
 /vendor
+/bundlegenerator/vendor
+/generator-dil/vendor
 
 ### vagrant ###
 /config/vagrant/provisioners/parameters
 .vagrant/
 
+/bundlegenerator/app/cache

@@ -1,10 +1,10 @@
 <?php
 
-namespace {{ projectName }}\Infrastructure\Persistence\Repository\Actor\CouchDB;
+namespace {{ projectName }}\Infrastructure\Persistence\Repository\{{ entityName }}\CouchDB;
 
 use {{ projectName }}\Domain\Repository\ActorRepositoryInterface;
 use Sfynx\DddBundle\Layer\Infrastructure\Persistence\Generalisation\CouchDB\AbstractOneRepository;
-use {{ projectName }}\Infrastructure\Persistence\Repository\Actor\TraitEntityName;
+use {{ projectName }}\Infrastructure\Persistence\Repository\{{ entityName }}\TraitEntityName;
 
 /**
  * Class OneRepository
@@ -13,7 +13,7 @@ use {{ projectName }}\Infrastructure\Persistence\Repository\Actor\TraitEntityNam
  * @package    Infrastructure
  * @subpackage Repository
  */
-class OneRepository extends AbstractOneRepository implements ActorRepositoryInterface
+class OneRepository extends AbstractOneRepository implements {{ entityName }}RepositoryInterface
 {
     use TraitEntityName;
 }

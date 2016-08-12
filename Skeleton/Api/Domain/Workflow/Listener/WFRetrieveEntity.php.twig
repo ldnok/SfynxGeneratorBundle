@@ -1,0 +1,48 @@
+<?php
+
+namespace {{ projectName }}\Domain\Workflow\{{ entityName }}\Listener;
+
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Observer\ObservableInterface;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Observer\ObserverInterface;
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Manager\ManagerInterface;
+use Sfynx\DddBundle\Layer\Infrastructure\Exception\DomainException;
+use Sfynx\DddBundle\Layer\Infrastructure\Logger\Generalisation\TraitLogger;
+use {{ projectName }}\Application\{{ entityName }}\Command\UpdateCommand;
+
+/**
+ * Class WFGenerateVOListener
+ *
+ * @package DemoCountry\Domain\Workflow\Country\Listener
+ */
+class WFRetrieveEntity implements ObserverInterface
+{
+    use TraitLogger;
+
+    protected $manager;
+
+    public function __construct(ManagerInterface $manager)
+    {
+        $this->manager = $manager;
+    }
+
+    /**
+     * @param WFObjectEvent $event
+     *
+     * TODO change array with SqlQueue and test performance (end function have to be replace be the post method)
+     */
+    public function update(ObservableInterface $wfHandler)
+    {
+
+        $entityId = (string) end($wfHandler->data->entityId);
+        if($entityId == null) {
+            throw new DomainException("invalid Id");
+        }
+
+        $entity=$this->manager->find($entityId);
+
+{% for field in fields %}
+        $wfHandler->data->{{ field.name }}[0]=(!empty(end($wfHandler->data->{{ field.name }}))) ? end($wfHandler->data->{{ field.name }}) : $entity->get{{ field.name|capitalize }}();
+{% endfor %}
+
+    }
+}

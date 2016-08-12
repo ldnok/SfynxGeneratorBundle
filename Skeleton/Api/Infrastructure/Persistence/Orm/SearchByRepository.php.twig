@@ -43,7 +43,7 @@ class SearchByRepository extends AbstractRepository implements {{ entityName }}R
         $qb = $em->createQueryBuilder();
 
         $qb->select('a') ->from($this->_entityName, 'a');
-        $dql=$this->parseCriterias($oCriteria,$qb);
+        $dql=$this->createInterpreterObject($oCriteria,$qb);
 
 
         $dql = $this->createInterpreterObject($oCriteria);

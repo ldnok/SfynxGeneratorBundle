@@ -4,45 +4,108 @@ How use generator
 
 
 
-create a symfony project
-------------------------
-    symfony new projectName 2.8
-
-Update your composer.json with this data
+Create a project and a  composer.json file
 ---------------------------------------------------------------
 
+    composer create-project symfony/framework-standard-edition Demo "2.8.*"
+    cd Demo
+    vi composer.json
+
+replace your composer.json by this content :
+
+
+    {
+    "name": "symfony/framework-standard-edition",
+    "license": "MIT",
+    "type": "project",
+    "description": "The \"Symfony Standard Edition\" distribution",
+    "autoload": {
+        "psr-4": { "": "src/" },
+        "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
+    },
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.8.*",
+        "doctrine/orm":"dev-master",
+        "doctrine/doctrine-bundle": "~1.4",
         "symfony/swiftmailer-bundle": "~2.3",
         "symfony/monolog-bundle": "~2.4",
-        "symfony/console": "*",
         "sensio/distribution-bundle": "~5.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-        "sfynx/generatorbundle": "dev-develop"
+        "sfynx-project/tool-ddd-bundle": "dev-master",
+        "doctrine/mongodb-odm-bundle":"@dev",
+        "doctrine/couchdb": "@dev",
+        "doctrine/couchdb-odm": "@dev",
+        "sfynx/generatorbundle": "dev-develop",
+        "stof/doctrine-extensions-bundle":"@dev"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",
         "symfony/phpunit-bridge": "~2.7"
     },
-
+    "scripts": {
+        "post-install-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ],
+        "post-update-cmd": [
+            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+        ]
+    },
+    "config": {
+        "bin-dir": "bin",
+        "platform": {
+            "php": "5.3.9"
+        }
+    },
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-web-dir": "web",
+        "symfony-assets-install": "relative",
+        "incenteev-parameters": {
+            "file": "app/config/parameters.yml"
+        },
+        "branch-alias": {
+            "dev-master": "2.8-dev"
+        }
+    },
 
     "repositories": [
         {
-        "type":"vcs",
-        "url":"/home/dev/generator"
+            "type":"vcs",
+            "url":"/home/dev/generator"
         }
-    ],
-
-    "minimum-stability":"dev"
+    ]
 }
+
+
+Modify this line :
+  "url":"/home/dev/generator"
+By the path of generator repository on your file system.
+
+
+
+Go in /home/dev/generator and go on develop branch
+
+    git fetch
+    git chekout develop
+
 
 
 
 then run
-
-    composer install
+    rm composer.lock
+    composer install --ignore-platform-reqs
 
 
 
@@ -83,7 +146,7 @@ php app/console sfynx:generate:ddd:api --create-all
 
 
 
-Add the generated Bundle in AppKernel.php
+Add this Bundle in AppKernel.php
 ----------------------------------------------
 
     new \JMS\SerializerBundle\JMSSerializerBundle(),
@@ -106,7 +169,7 @@ Indicate the Context Database Type
 add this lines in app/config/config.yml
 
     DemoGenerator_infrastructure:
-        database_type :orm
+        database_type: orm
 
 Indicate the database.driver variable in app/config/parameters.yml
 --------------------------------------------------------------------
@@ -244,3 +307,42 @@ You need to declare requests and responses with original swagger syntax and exte
             name: salary
             type: valueObject
             voName: SalaryVO
+
+
+Criteria syntax
+-------------------------------------------
+Simple :
+
+{
+	"criterias":
+		{
+			"field": "a.indicatif",
+			"operator": "=",
+			"value": "1150"
+		}
+
+}
+
+
+Complex :
+
+{
+	"criterias": {
+		"and": [{
+			"or": [{
+				"field": "a.ville",
+				"operator": "=",
+				"value": "'tour'"
+			}, {
+				"field": "a.ville",
+				"operator": "=",
+				"value": "'lyon'"
+			}]
+		}, {
+			"field": "a.title",
+			"operator": "=",
+			"value": "'tour 2'"
+		}]
+	}
+}
+

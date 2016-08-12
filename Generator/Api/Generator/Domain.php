@@ -9,10 +9,12 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Specification\User\Spe
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Specification\User\SpecIsRoleAnonymousHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Specification\User\SpecIsRoleUserHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Handler\NewWFHandlerHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Handler\PatchWFHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Handler\UpdateWFHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Listener\WFGenerateVOListenerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Listener\WFGetCurrencyHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Listener\WFPublishEventHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Listener\WFRetrieveEntityHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Listener\WFSaveEntityHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Entity\EntityHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Odm\RepositoryFactoryHandler as ODMRepositoryFactoryHandler;
@@ -234,11 +236,14 @@ class Domain
 
             $this->generator->addHandler(new NewWFHandlerHandler($parameters));
             $this->generator->addHandler(new UpdateWFHandlerHandler($parameters));
+            $this->generator->addHandler(new PatchWFHandlerHandler($parameters));
 
             $this->generator->addHandler(new WFGenerateVOListenerHandler($parameters));
             $this->generator->addHandler(new WFGetCurrencyHandler($parameters));
             $this->generator->addHandler(new WFPublishEventHandler($parameters));
             $this->generator->addHandler(new WFSaveEntityHandler($parameters));
+            $this->generator->addHandler(new WFRetrieveEntityHandler($parameters));
+
 
 
             $this->generator->execute();

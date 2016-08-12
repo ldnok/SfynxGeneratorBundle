@@ -18,6 +18,7 @@ parameters:
     project.{{ projectName|lower }}.{{ entityName|lower }}.workflow.currency.listener.class: {{ projectName }}\Domain\Workflow\{{ entityName }}\Listener\WFGetCurrency
     project.{{ projectName|lower }}.{{ entityName|lower }}.workflow.update.phone.valueobject.class: {{ projectName }}\Domain\Workflow\{{ entityName }}\Listener\WFUpdatePhoneVOListener
     project.{{ projectName|lower }}.{{ entityName|lower }}.workflow.save.entity.class: {{ projectName }}\Domain\Workflow\{{ entityName }}\Listener\WFSaveEntity
+    project.{{ projectName|lower }}.{{ entityName|lower }}.workflow.retrieve.entity.class: {{ projectName }}\Domain\Workflow\{{ entityName }}\Listener\WFRetrieveEntity
     project.{{ projectName|lower }}.{{ entityName|lower }}.workflow.publish.event.class: {{ projectName }}\Domain\Workflow\{{ entityName }}\Listener\WFPublishEvent
     project.{{ projectName|lower }}.{{ entityName|lower }}.command.new.handler.decorator.class: {{ projectName }}\Application\{{ entityName }}\Command\Handler\Decorator\NewCommandHandlerDecorator
     project.{{ projectName|lower }}.{{ entityName|lower }}.command.update.handler.decorator.class: {{ projectName }}\Application\{{ entityName }}\Command\Handler\Decorator\UpdateCommandHandlerDecorator
@@ -25,6 +26,11 @@ parameters:
     project.{{ projectName|lower }}.{{ entityName|lower }}.validation.update.handler.class: {{ projectName }}\Application\{{ entityName }}\Command\Validation\ValidationHandler\UpdateCommandValidationHandler
     project.{{ projectName|lower }}.{{ entityName|lower }}.spec.new.handler.class: {{ projectName }}\Application\{{ entityName }}\Command\Validation\SpecHandler\NewCommandSpecHandler
     project.{{ projectName|lower }}.{{ entityName|lower }}.spec.update.handler.class: {{ projectName }}\Application\{{ entityName }}\Command\Validation\SpecHandler\UpdateCommandSpecHandler
+    project.{{ projectName|lower }}.{{ entityName|lower }}.patch.workflow.handler.class: {{ projectName }}\Domain\Workflow\{{ entityName }}\Handler\PatchWFHandler
+    project.{{ projectName|lower }}.{{ entityName|lower }}.command.patch.handler.class: {{ projectName }}\Application\{{ entityName }}\Command\Handler\PatchCommandHandler
+    project.{{ projectName|lower }}.{{ entityName|lower }}.command.patch.handler.decorator.class: {{ projectName }}\Application\{{ entityName }}\Command\Handler\Decorator\PatchCommandHandlerDecorator
+    project.{{ projectName|lower }}.{{ entityName|lower }}.validation.patch.handler.class: {{ projectName }}\Application\{{ entityName }}\Command\Validation\ValidationHandler\PatchCommandValidationHandler
+    project.{{ projectName|lower }}.{{ entityName|lower }}.spec.patch.handler.class: {{ projectName }}\Application\{{ entityName }}\Command\Validation\SpecHandler\UpdateCommandSpecHandler
 
 services:
     #################
@@ -94,6 +100,27 @@ services:
             - "@project.{{ projectName|lower }}.{{ entityName|lower }}.command.update.handler"
             - "@project.{{ projectName|lower }}.{{ entityName|lower }}.validation.update.handler"
             - "@project.{{ projectName|lower }}.{{ entityName|lower }}.spec.update.handler"
+
+
+    #
+    # patch_{{ entityName }} command handler
+    #
+    project.{{ projectName|lower }}.{{ entityName |lower}}.command.patch.handler:
+        class: %project.{{ projectName|lower }}.{{ entityName |lower}}.command.patch.handler.class%
+        arguments:
+            - "@project.{{ projectName|lower }}.{{ entityName |lower}}.patch.workflow.handler"
+
+    #
+    #patch_Country command handler decorator
+    #
+    project.{{ projectName|lower }}.{{ entityName |lower}}.command.patch.handler.decorator:
+        class: %project.{{ projectName|lower }}.{{ entityName |lower}}.command.patch.handler.decorator.class%
+        arguments:
+            - "@project.{{ projectName|lower }}.{{ entityName |lower}}.command.patch.handler"
+            - "@project.{{ projectName|lower }}.{{ entityName |lower}}.validation.patch.handler"
+            - "@project.{{ projectName|lower }}.{{ entityName |lower}}.spec.patch.handler"
+
+
     #
     # delete_{{ entityName }} command handler
     #
@@ -128,6 +155,15 @@ services:
         arguments:
             - "@project.validator.strategy"
 
+
+    #
+    # update_Country command Validation handler
+    #
+    project.{{ projectName|lower }}.{{ entityName|lower }}.validation.patch.handler:
+        class: %project.{{ projectName|lower }}.{{ entityName|lower }}.validation.patch.handler.class%
+        arguments:
+            - "@project.validator.strategy"
+
     #################
     # SPECS HANDLER #
     #################
@@ -146,6 +182,16 @@ services:
     #
     project.{{ projectName|lower }}.{{ entityName|lower }}.spec.update.handler:
         class: %project.{{ projectName|lower }}.{{ entityName|lower }}.spec.update.handler.class%
+        calls:
+            - [setObject, ["@security.authorization_checker"]]
+            - [setLogger, ["@project.dddcontext.logger.application"]]
+
+
+    #
+    # patch command spec handler
+    #
+    project.{{ projectName|lower }}.{{ entityName|lower }}.spec.patch.handler:
+        class: %project.{{ projectName|lower }}.{{ entityName|lower }}.spec.patch.handler.class%
         calls:
             - [setObject, ["@security.authorization_checker"]]
             - [setLogger, ["@project.dddcontext.logger.application"]]
@@ -196,6 +242,18 @@ services:
             - [addObserver, ["@project.{{ projectName|lower }}.{{ entityName|lower }}.workflow.save.entity"]]
 
 
+
+    #
+    # patch_{{ entityName }} workflow handler
+    #
+    project.{{ projectName|lower }}.{{ entityName |lower}}.patch.workflow.handler:
+        class: %project.{{ projectName|lower }}.{{ entityName |lower}}.patch.workflow.handler.class%
+        calls:
+            - [addObserver, ["@project.{{ projectName|lower }}.{{ entityName |lower}}.workflow.generate.valueobject"]]
+            - [addObserver, ["@project.{{ projectName|lower }}.{{ entityName |lower}}.workflow.retrieve.entity"]]
+            - [addObserver, ["@project.{{ projectName|lower }}.{{ entityName |lower}}.workflow.save.entity"]]
+
+
     project.{{ projectName }}.{{ entityName }}.workflow.generate.valueobject:
         class: %project.{{ projectName }}.{{ entityName }}.workflow.generate.valueobject.class%
 
@@ -208,6 +266,16 @@ services:
     #
     project.{{ projectName|lower }}.{{ entityName |lower}}.workflow.save.entity:
         class: %project.{{ projectName|lower }}.{{ entityName|lower }}.workflow.save.entity.class%
+        arguments:
+            - "@project.{{ projectName|lower }}.{{ entityName |lower}}.process.manager"
+        calls:
+            - [setLogger, ["@project.dddcontext.logger.domain"]]
+
+    #
+    # {{ entityName }} Workflow save entity with doctrine
+    #
+    project.{{ projectName|lower }}.{{ entityName |lower}}.workflow.retrieve.entity:
+        class: %project.{{ projectName|lower }}.{{ entityName|lower }}.workflow.retrieve.entity.class%
         arguments:
             - "@project.{{ projectName|lower }}.{{ entityName |lower}}.process.manager"
         calls:

@@ -10,7 +10,7 @@ info:
 
 
 paths:
-  /v1{_version}/actors.{_format}:
+  /v{_version}/actors.{_format}:
     get:
       operationId: getAll
       x-controller: Actor

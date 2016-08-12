@@ -5,6 +5,7 @@ namespace {{ projectName }}\Domain\Workflow\{{ entityName }}\Listener;
 use Sfynx\DddBundle\Layer\Domain\Generalisation\Observer\ObservableInterface;
 use Sfynx\DddBundle\Layer\Domain\Generalisation\Observer\ObserverInterface;
 use {{ projectName }}\Application\{{ entityName }}\Command\UpdateCommand;
+use {{ projectName }}\Application\{{ entityName }}\Command\PatchCommand;
 use Sfynx\DddBundle\Layer\Domain\ValueObject\IdVO;
 {% for  data in valueObjects %}
 use {{ projectName }}\Domain\ValueObject\{{ data.name}};
@@ -39,7 +40,7 @@ class WFGenerateVOListener implements ObserverInterface
 {% for field in fields %}
     public function set{{ field.name|capitalize }}(ObservableInterface $wfHandler) {
     {% if field.type=="id" %}
-        if ($wfHandler->getCommand() instanceof UpdateCommand) {
+        if ($wfHandler->getCommand() instanceof UpdateCommand  || $wfHandler->getCommand() instanceof PatchCommand) {
 {% if field.voName is defined %}
     $wfHandler->data->{{ field.name }}[] = new {{ field.voName }}($wfHandler->getCommand()->get{{ field.name|capitalize }}());
 {% else %}

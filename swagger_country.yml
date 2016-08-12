@@ -161,6 +161,50 @@ paths:
           description: Access forbidden
         500:
           description: An error occurs
+
+    patch:
+      operationId: patch
+      x-controller: Country
+      x-entity: Country
+      description: |
+        Update `country` object with id *countryId*
+      parameters:
+        - name: entityId
+          in: path
+          required: true
+          type: string
+          description: Country Id
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Array Of Countries
+            type: array
+            items:
+              title: Country
+              type: object
+              properties:
+                id:
+                  type: integer
+                id_parent:
+                   type: integer
+                code:
+                  type: string
+                type:
+                  type: string
+                libelle:
+                  type: string
+                reference:
+                  type: string
+
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
     delete:
       operationId: delete
       x-controller: Country
@@ -283,7 +327,7 @@ paths:
           description: An error occurs
 
   /v{_version}/country/searchBy:
-      get:
+      post:
         operationId: searchBy
         x-controller: Country
         x-entity: Country

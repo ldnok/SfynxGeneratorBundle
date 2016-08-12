@@ -1,0 +1,28 @@
+<?php
+
+namespace {{ projectName }}\Presentation\Adapter\{{ entityName }}\Command;
+
+use {{ projectName }}\Application\{{ entityName }}\Command\PatchCommand;
+use Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\CommandAdapterInterface;
+use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\CommandRequestInterface;
+
+/**
+ * Class PatchCommandAdapter.
+ *
+ * @category   {{ projectName }}
+ * @package    Presentation
+ * @subpackage Adapter
+ */
+class PatchCommandAdapter implements CommandAdapterInterface
+{
+    /**
+     * @param CommandRequestInterface $request
+     * @return UpdateCommand
+     */
+    public function createCommandFromRequest(CommandRequestInterface $request)
+    {
+        $parameters = $request->getRequestParameters();
+
+        return new PatchCommand({% for field in entityFields %} $parameters["{{ field.name }}"]{% if loop.index < entityFields|length %}, {% endif %}{% endfor %});
+    }
+}
