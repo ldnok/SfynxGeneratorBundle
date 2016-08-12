@@ -1,19 +1,25 @@
 {
-  "name": "sfynx/generatorBundle",
+  "name": "sfynx-project/tool-ddd-bundle",
   "type": "symfony-bundle",
   "description": "Generate DDD bundle and generator",
   "keywords": ["ddd", "sfynx", "api", "bundle", "web service", "swagger"],
   "license": "GPL-3.0+",
   "authors": [
     {
-      "name": "Etienne de Longeaux"
+      "name": "Etienne de Longeaux",
+      "email": "etienne.delongeaux@gmail.com"
     },
     {
-      "name": "Laurent de Nil"
+      "name": "laurent de nil",
+      "email": "laurent.denil@gmail.com"
     },
     {
       "name": "Nicolas Blaudez",
       "email": "nblaudez@gmail.com"
+    },
+    {
+      "name": "Sfynx Community",
+      "homepage": "https://github.com/pigroupe/SfynxDddBundle/contributors"
     }
   ],
   "require": {
