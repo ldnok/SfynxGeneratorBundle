@@ -1,0 +1,41 @@
+-## GLOBAL		
+ -*~		
+ -.DS_Store		
+ -.svn		
+ -.cvs		
+ -*.bak		
+ -*.swp		
+ -Thumbs.db		
+ -*.log		
+ -		
+ -		
+ -## Default docker-compose		
+ -/nbproject/private/		
+ -		
+ -### other ###		
+ -/.vagrant		
+ -/.sonar		
+ -		
+ -### Netbeans ###		
+ -/nbproject		
+ -		
+ -### phpstorm ###		
+ -/.idea		
+ -		
+ -### data ###		
+ -/data/*		
+ -!/data/build/.gitkeep		
+ -		
+ -### patternlab ###		
+ -/patternlab		
+ -		
+ -### vendor ###		
+ -/vendor		
+ -/bundlegenerator/vendor		
+ -/generator-dil/vendor		
+ -		
+ -### vagrant ###		
+ -/config/vagrant/provisioners/parameters		
+ -.vagrant/		
+ -		
+ -/bundlegenerator/app/cache
