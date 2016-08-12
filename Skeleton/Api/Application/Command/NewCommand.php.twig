@@ -47,15 +47,15 @@ class NewCommand extends AbstractCommand
         */
         public function get{{ field.name|capitalize }}()
         {
-        return $this->{{ field.name|lower }};
+        return $this->{{ field.name }};
         }
 
         /**
-        * @param mixed {{ field.name|lower }}
+        * @param mixed {{ field.name }}
         */
-        public function set{{ field.name|capitalize }}(${{ field.name|lower }})
+        public function set{{ field.name|capitalize }}(${{ field.name }})
         {
-        $this->{{ field.name|lower }} = {{ field.name|lower }};
+        $this->{{ field.name }} = ${{ field.name }};
         }
         {% endif %}
 
