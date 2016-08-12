@@ -1,0 +1,74 @@
+<?php
+
+namespace {{ projectName }}\InfrastructureBundle;
+
+
+use Sfynx\DddBundle\Layer\Infrastructure\Persistence\Generalisation\MultipleDatabase;
+use {{ projectName }}\InfrastructureBundle\DependencyInjection\Compiler\CreateRepositoryFactoryPass;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+use {{ projectName }}\InfrastructureBundle\DependencyInjection\{{ projectName }}InfrastructureBundleExtension;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Doctrine\DBAL\Types as ORM;
+use Doctrine\ODM\MongoDB\Types as ODM;
+use Doctrine\ODM\CouchDB\Types as CouchDB;
+use Doctrine\DBAL\Types\Type;
+
+class {{ projectName }}InfrastructureBundle extends Bundle
+{
+    public function getContainerExtension()
+    {
+        return new {{ projectName }}InfrastructureBundleExtension();
+    }
+
+    public function boot()
+    {
+        $dbDriver = $this->container->getParameter('database.driver');
+
+        if (MultipleDatabase::ORM_DATABASE_TYPE === $dbDriver) {
+            $this->loadOrmTypes();
+        }
+
+        if (MultipleDatabase::ODM_DATABASE_TYPE === $dbDriver) {
+            $this->loadOdmTypes();
+        }
+
+        if (MultipleDatabase::COUCHDB_DATABASE_TYPE === $dbDriver) {
+            $this->loadCouchDBTypes();
+        }
+
+
+    }
+
+    public function build(ContainerBuilder $container)
+    {
+        parent::build($container);
+        $container->addCompilerPass(new CreateRepositoryFactoryPass());
+    }
+
+    protected function loadOrmTypes()
+    {
+        $em = $this->container->get('doctrine.orm.entity_manager');
+
+        if (!ORM\Type::hasType("IdVO")) {
+            ORM\Type::addType('IdVO', 'Sfynx\DddBundle\Layer\Infrastructure\EntityType\Orm\IdType');
+            $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('IdVO', 'IdVO');
+        }
+
+{% for name,data in valueObjects %}
+        if (!ORM\Type::hasType("{{ name }}")) {
+            ORM\Type::addType('{{ name }}', '{{ projectName }}\Infrastructure\EntityType\Orm\{{ name }}Type');
+            $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('{{ name }}', '{{ name }}');
+        }
+{% endfor %}
+    }
+
+    protected function loadOdmTypes()
+    {
+
+    }
+
+    protected function loadCouchDBTypes()
+    {
+
+    }
+}

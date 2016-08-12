@@ -1,0 +1,22 @@
+<?php
+
+namespace {{ projectName }}\PresentationBundle;
+
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use {{ projectName }}\PresentationBundle\DependencyInjection\Compiler\ResettingListenersPass;
+use {{ projectName }}\PresentationBundle\DependencyInjection\{{ projectName }}PresentationBundleExtension;
+
+class {{ projectName }}PresentationBundle extends Bundle
+{
+    public function getContainerExtension()
+    {
+        return new {{ projectName }}PresentationBundleExtension();
+    }
+
+    public function build(ContainerBuilder $container) //Enregistrement du compilerPass "RegisterListenersPass"
+    {
+        parent::build($container);
+        $container->addCompilerPass(new ResettingListenersPass());
+    }
+}

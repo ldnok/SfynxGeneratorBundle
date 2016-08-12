@@ -1,0 +1,25 @@
+<?php
+
+namespace {{ projectName }}\Application\{{ entityName }}\Command\Validation\ValidationHandler;
+
+use Sfynx\DddBundle\Layer\Application\Generalisation\Validation\ValidationHandler\AbstractCommandValidationHandler;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
+/**
+ * Class NewCommandValidationHandler.
+ *
+ * @category   {{ projectName }}
+ * @package    Application
+ * @subpackage Command
+ */
+class NewCommandValidationHandler extends AbstractCommandValidationHandler
+{
+    protected function initConstraints()
+    {
+{% for field in entityFields %}
+{% if field.type !="id" %}
+        $this->add('{{ field.name }}',  new NotBlank());
+{% endif %}
+{% endfor %}
+    }
+}

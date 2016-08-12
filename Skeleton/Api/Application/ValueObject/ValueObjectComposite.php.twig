@@ -1,0 +1,75 @@
+<?php
+
+namespace {{ projectName }}\Domain\ValueObject;
+
+use Sfynx\DddBundle\Layer\Domain\ValueObject\Generalisation\ValueObjectInterface;
+use Sfynx\DddBundle\Layer\Domain\ValueObject\Generalisation\TraitValueObjectEquals;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use JMS\Serializer\Annotation\Since;
+
+/**
+ * @ORM\Embeddable
+ * @ODM\EmbeddedDocument
+ *
+ * @CouchDB\EmbeddedDocument
+ */
+class {{ voName }} implements ValueObjectInterface
+{
+
+    use TraitValueObjectEquals;
+
+    {%  for field in fields %}
+        {% if "\\" in field.type %}
+            {% set type = field.type|split("\\") %}
+            {% set key = type|length - 1  %}
+            {% set type = type[key] %}
+        {% else %}
+            {% set type = field.type %}
+        {% endif %}
+    /**
+     * @Since("1")
+     * @ORM\Column(type="{{ type }}")
+     * @ODM\Field(type="{{ type }}")
+     */
+    protected ${{ field.name }};
+    {% endfor %}
+
+{% for field in  fields %}
+    /**
+    * get the {{ field.name }} attribute value
+    * @return {{ field.type }} $value
+    */
+    public function get{{ field.name|capitalize }}() {
+        return $this->{{ field.name }};
+    }
+
+    /**
+    * Set the {{ field.name }} attribute
+    * @param {{ field.type }} $value
+    */
+    public function set{{ field.name|capitalize }}({{ field.type }} $value) {
+        return $this->{{ field.name }} = $value;
+    }
+{% endfor %}
+
+
+    public function __construct({{ constructorParams }}) {
+{% for field in  fields %}
+        $this->{{ field.name }} = ${{ field.name }};
+{% endfor %}
+    }
+
+    public function __toString() {
+{% set string = "" %}
+{% for field in  fields %}
+{% if "VO" in field.type %}
+{% set string = string ~  "$this->" ~ field.name ~ "->__toString().' '." %}
+{% else %}
+{% set string = string ~  "$this->" ~ field.name ~ ".' '." %}
+{% endif %}
+{% endfor %}
+        return {{ string|trim(".' '") }};
+    }
+}

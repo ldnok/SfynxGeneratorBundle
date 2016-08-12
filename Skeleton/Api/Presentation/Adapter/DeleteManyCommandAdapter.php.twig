@@ -1,0 +1,21 @@
+<?php
+
+namespace {{ projectName }}\Presentation\Adapter\{{ entityName }}\Command;
+
+use Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\AbstractDeleteManyCommandAdapter;
+use Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\CommandAdapterInterface;
+
+/**
+ * Class DeleteManyCommandAdapter.
+ *
+ * @category   {{ projectName }}
+ * @package    Presentation
+ * @subpackage Adapter
+ */
+class DeleteManyCommandAdapter extends AbstractDeleteManyCommandAdapter implements CommandAdapterInterface
+{
+    /**
+     * @var string $commandNamespace full namespace of DeleteManyCommand
+     */
+    protected $commandNamespace = \{{ projectName }}\Application\{{ entityName }}\Command\DeleteManyCommand::class;
+}

@@ -1,0 +1,47 @@
+<?php
+
+namespace {{ projectName }}\Application\{{ entityName }}\Command\Handler;
+
+use Sfynx\DddBundle\Layer\Application\Generalisation\Interfaces\CommandHandlerInterface;
+use Sfynx\DddBundle\Layer\Application\Generalisation\Interfaces\CommandInterface;
+use Sfynx\DddBundle\Layer\Domain\Workflow\Generalisation\WorkflowHandlerInterface;
+
+/**
+ * Class NewCommandHandler.
+ *
+ * @category   {{ projectName }}
+ * @package    Application
+ * @subpackage Command
+ */
+class NewCommandHandler implements CommandHandlerInterface
+{
+    /**
+     * @var WorkflowHandlerInterface
+     */
+    protected $workflowHandler;
+
+    /**
+     * @param WorkflowHandlerInterface $workflowHandler
+     */
+    public function __construct(WorkflowHandlerInterface $workflowHandler)
+    {
+        $this->workflowHandler = $workflowHandler;
+    }
+
+    /**
+    * @param CommandInterface $command
+    *
+    * @return \{{ projectName }}\Domain\Entity\{{ entityName }} $entity
+    */
+    public function process(CommandInterface $command)
+    {
+        $this->workflowHandler->process($command);
+
+        $entity = !empty($this->workflowHandler->data->entity) ? end($this->workflowHandler->data->entity) : null;
+        if (null === $entity) {
+            throw new \Exception('Entity has not been created');
+        }
+
+        return $entity;
+    }
+}

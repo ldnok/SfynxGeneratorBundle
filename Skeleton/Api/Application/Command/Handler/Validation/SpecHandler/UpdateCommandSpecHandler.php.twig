@@ -1,0 +1,34 @@
+<?php
+
+namespace {{ projectName }}\Application\{{ entityName }}\Command\Validation\SpecHandler;
+
+use Sfynx\DddBundle\Layer\Application\Generalisation\Validation\SpecHandler\AbstractCommandSpecHandler;
+use Sfynx\SpecificationBundle\Specification\Logical\XorSpec;
+use {{ projectName }}\Domain\Specification\Infrastructure\User\SpecIsRoleAdmin;
+use {{ projectName }}\Domain\Specification\Infrastructure\User\SpecIsRoleUser;
+use {{ projectName }}\Domain\Specification\Infrastructure\User\SpecIsRoleAnonymous;
+
+/**
+ * Class UpdateCommandValidationHandler.
+ *
+ * @category   {{ projectName }}
+ * @package    Application
+ * @subpackage Command
+ */
+class UpdateCommandSpecHandler extends AbstractCommandSpecHandler
+{
+    /**
+     * @return XorSpec
+     */
+    public function initSpecifications()
+    {
+        //it is an absurd example
+        return new XorSpec(
+            new XorSpec(
+                new SpecIsRoleAdmin("authenticate permission denied, you must have admin role"),
+                new SpecIsRoleAnonymous("authenticate permission denied, you must have anonymous role")
+            ),
+            new SpecIsRoleUser("authenticate permission denied, you must have user role")
+        );
+    }
+}

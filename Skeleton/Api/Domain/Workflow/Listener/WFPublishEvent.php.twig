@@ -1,0 +1,29 @@
+<?php
+
+namespace {{ projectName }}\Domain\Workflow\{{ entityName }}\Listener;
+
+
+use DddContext\Domain\Generalisation\Observer\ObservableInterface;
+use DddContext\Domain\Generalisation\Observer\ObserverInterface;
+use DddContext\Domain\Service\Generalisation\Manager\ManagerInterface;
+use DddContext\Infrastructure\Logger\Generalisation\TraitLogger;
+
+class WFPublishEvent implements ObserverInterface
+{
+    use TraitLogger;
+
+    protected $manager;
+
+    public function __construct(ManagerInterface $manager)
+    {
+        $this->manager = $manager;
+    }
+
+    /**
+     * @param WFObjectEvent $event
+     */
+    public function update(ObservableInterface $observable)
+    {
+
+    }
+}

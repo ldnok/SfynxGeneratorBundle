@@ -1,0 +1,31 @@
+<?php
+
+namespace {{ projectName }}\Presentation\Request\{{ entityName }}\Query;
+
+use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\QueryRequestInterface;
+use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\AbstractRequest;
+
+/**
+ * Class NewRequest.
+ *
+ * @category   {{ projectName }}
+ * @package    Presentation
+ * @subpackage Request
+ */
+class SearchByRequest extends AbstractRequest implements QueryRequestInterface
+{
+    protected $defaults = [
+        'start' => 0,
+        'count' => 10,
+    ];
+
+    protected $required = [
+        'criterias'
+    ];
+
+    protected $allowedTypes = [
+        'criterias'=>['array'],
+        'start'=>['integer'],
+        'count'=>['integer'],
+    ];
+}

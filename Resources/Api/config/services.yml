@@ -1,0 +1,15 @@
+parameters:
+    api.generator.class: Sfynx\DddGeneratorBundle\Generator\Api\DddApiGenerator
+    dddapi.generator.command.class: Sfynx\DddGeneratorBundle\Command\GenerateDddApiCommand
+
+services:
+    api.generator:
+        class: %api.generator.class%
+
+    dddapi.generator.command:
+        class: %dddapi.generator.command.class%
+        calls:
+          - [setGenerator, ["@api.generator"]]
+          - [setRootDir, ["%kernel.root_dir%"]]
+        tags:
+            -  { name: console.command }

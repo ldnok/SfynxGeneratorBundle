@@ -1,0 +1,21 @@
+<?php
+
+namespace {{ projectName }}\Presentation\Adapter\{{ entityName }}\Query;
+
+use Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\AbstractOneQueryAdapter;
+use Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\QueryAdapterInterface;
+
+/**
+ * Class OneQueryAdapter
+ *
+ * @category   {{ projectName }}
+ * @package    Presentation
+ * @subpackage Adapter
+ */
+class GetQueryAdapter extends AbstractOneQueryAdapter implements QueryAdapterInterface
+{
+    /**
+     * @var string $queryNamespace full namespace of GetQuery
+     */
+    protected $queryNamespace = \{{ projectName }}\Application\{{ entityName }}\Query\GetQuery::class;
+}

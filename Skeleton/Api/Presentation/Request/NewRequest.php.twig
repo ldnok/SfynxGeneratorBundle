@@ -1,0 +1,36 @@
+<?php
+
+namespace {{ projectName }}\Presentation\Request\{{ entityName }}\Command;
+
+use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\CommandRequestInterface;
+use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\AbstractRequest;
+
+/**
+ * Class NewRequest.
+ *
+ * @category   {{ projectName }}
+ * @package    Presentation
+ * @subpackage Request
+ */
+class NewRequest extends AbstractRequest implements CommandRequestInterface
+{
+    protected $defaults = [
+
+    ];
+
+    protected $required = [
+{% for field in entityFields %}
+{% if field.type!="id" %}
+        '{{ field.name }}',
+{% endif %}
+{% endfor %}
+    ];
+
+    protected $allowedTypes = [
+{% for field in entityFields %}
+{% if field.type!="id" %}
+        '{{ field.name }}'=>['{% if field.type!="id" %}{% if field.type=="number" %}integer{% elseif field.type=="datetime" %}string{% elseif field.type=="valueObject" %}array{% else %}{{ field.type }}{% endif %}{% else %}string{% endif %}'],
+{% endif %}
+{% endfor %}
+    ];
+}

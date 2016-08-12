@@ -1,0 +1,172 @@
+<?php
+
+namespace {{ projectName }}\Domain\Entity;
+
+use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
+use Symfony\Component\Validator\Constraints as Assert;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Traits\TraitDatetime;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Traits\TraitSimple;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Traits\TraitEnabled;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Interfaces\TraitDatetimeInterface;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Interfaces\TraitSimpleInterface;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Interfaces\TraitEnabledInterface;
+use JMS\Serializer\Annotation\Since;
+
+{% for vo in valueObjects %}
+use {{ vo.type|trim("\\") }};
+{% endfor %}
+
+
+/**
+ * @ORM\Entity
+ * @Orm\Table(name="{{ entityName }}")
+ * @ORM\HasLifecycleCallbacks
+ * @ODM\Document(collection="{{ entityName }}")
+ * @ODM\HasLifecycleCallbacks
+ */
+//class {{ entityName }} implements TraitDatetimeInterface, TraitSimpleInterface, TraitEnabledInterface {
+class {{ entityName }} {
+
+    //use TraitDatetime;
+
+    //use TraitSimple;
+
+    //use TraitEnabled;
+
+{% set constructParams = "" %}
+{% for field in  fields %}
+
+{% if field.type == "id" %}
+{% if field.voName is defined %}
+    /**
+     * @Since("1")
+     * @ORM\Column(type="IdVO")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="NONE")
+     * @ODM\Id(strategy="NONE", type="IdVO")
+     *
+     * @CouchDB\Id(strategy="ASSIGNED", type="IdVO")
+     */
+
+{% else %}
+    /**
+     * @Since("1")
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ODM\Id(strategy="AUTO", type="integer")
+     *
+     * @CouchDB\Id(strategy="ASSIGNED", type="integer")
+     */
+
+{% endif %}
+     protected $id;
+
+{% elseif field.type == "valueObject"%}
+    /**
+     * @Since("1")
+     * @ORM\Embedded(class="{{ valueObjects[field.voName].type|trim("\\") }}", columnPrefix="{{ field.name|lower }}_")
+     * @ODM\EmbedOne(targetDocument="{{ valueObjects[field.voName].type|trim("\\") }}")
+     * @CouchDB\EmbedOne(targetDocument="{{ valueObjects[field.voName].type|trim("\\") }}")
+     */
+
+     protected ${{ field.name|lower }};
+{% elseif field.type == "string" %}
+    /**
+     * @Since("1")
+     * @ORM\Column(type="string")
+     * @ODM\Field(type="string")
+     */
+
+     protected ${{ field.name|lower }};
+{% elseif field.type == "number" %}
+    /**
+     * @Since("1")
+     * @ORM\Column(type="integer")
+     * @ODM\Field(type="integer")
+     */
+
+     protected ${{ field.name|lower }};
+
+{% elseif field.type == "boolean" %}
+    /**
+     * @Since("1")
+     * @ORM\Column(type="boolean")
+     * @ODM\Field(type="boolean")
+     */
+
+     protected ${{ field.name|lower }};
+{% endif %}
+
+{% endfor %}
+
+     public static function makeInstance({{ constructorArgs }})
+     {
+         return new self({% for field in  fields %}${{ field.name }}{% if loop.index < fields|length %},{% endif %}{% endfor %});
+     }
+
+     protected function __construct({{ constructorArgs }})
+     {
+
+
+{% for field in  fields %}
+    {% if field.type == "id" %}
+{%  if field.voName is defined%}
+        if (null === ${{ field.name }}) {
+
+            $this->{{ field.type }} = new {{ field.voName }}();
+        }
+{% endif %}
+{% endif %}
+
+    {% if field.type != "id" %}
+        $this->set{{ field.name }}(${{ field.name }});
+    {% endif %}
+{% endfor %}
+    }
+
+
+{% for field in  fields %}
+{% if field.type == "id" or field.type=="idVO" %}
+     public function get{{ field.type|capitalize }}() {
+         return $this->{{ field.type }};
+     }
+
+     public function set{{ field.name|capitalize }}($value) {
+         return $this->{{ field.name }} = $value;
+     }
+    {% else %}
+        {% if field.type == "valueObject" %}
+            {% if valueObjects[field.voName]["name"] == field.voName %}
+                {% set namespace = valueObjects[field.voName]["type"]|split('\\') %}
+                {% set key = namespace|length - 1 %}
+                {% set namespace = namespace[key] %}
+            {% else %}
+                {% set namespace = "" %}
+            {% endif %}
+        {% else %}
+            {% set namespace = "" %}
+        {% endif %}
+
+     /**
+     * get the {{ field.name }} attribute value
+     * @return {{ field.type }} $value
+     */
+     public function get{{ field.name|capitalize }}() {
+         return $this->{{ field.name }};
+     }
+
+     /**
+     * Set the {{ field.name }} attribute
+     * @param {{ namespace }} {{ field.type }} $value
+     */
+     public function set{{ field.name|capitalize }}({{ namespace }} $value) {
+         return $this->{{ field.name }} = $value;
+     }
+{% endif %}
+{% endfor %}
+
+
+}

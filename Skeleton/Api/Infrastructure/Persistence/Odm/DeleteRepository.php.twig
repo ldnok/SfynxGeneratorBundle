@@ -1,0 +1,19 @@
+<?php
+
+namespace {{ projectName }}\Infrastructure\Persistence\Repository\Actor\CouchDB;
+
+use {{ projectName }}\Domain\Repository\ActorRepositoryInterface;
+use Sfynx\DddBundle\Layer\Infrastructure\Persistence\Generalisation\CouchDB\AbstractDeleteRepository;
+use {{ projectName }}\Infrastructure\Persistence\Repository\Actor\TraitEntityName;
+
+/**
+ * Class DeleteRepository
+ *
+ * @category   {{ projectName }}
+ * @package    Infrastructure
+ * @subpackage Repository
+ */
+class DeleteRepository extends AbstractDeleteRepository implements ActorRepositoryInterface
+{
+    use TraitEntityName;
+}

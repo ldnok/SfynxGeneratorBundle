@@ -1,0 +1,64 @@
+<?php
+
+namespace {{ projectName }}\Application\{{ entityName }}\Command;
+
+use Sfynx\DddBundle\Layer\Application\Generalisation\Command\AbstractCommand;
+
+/**
+ * Class NewCommand.
+ *
+ * @category   {{ projectName }}
+ * @package    Application
+ * @subpackage Command
+ */
+class NewCommand extends AbstractCommand
+{
+    /* TODO declare fields and create constructor and getters/setters */
+
+    {% set constructorArgs = "" %}
+    {% for field in entityFields %}
+        {% if field.type!="id" %}
+            {% set var = '$' ~ field.name ~ ','  %}
+            {% set constructorArgs = constructorArgs ~ var%}
+        {% endif %}
+    {% endfor %}
+
+     {% set constructorArgs = constructorArgs|trim(",") %}
+
+    /**
+     * NewCommand constructor.
+     {% for field in entityFields %}
+     * @param ${{ field.name }}
+     {% endfor %}
+     */
+    public function __construct({{ constructorArgs }})
+    {
+     {% for field in entityFields %}
+     {%  if field.type!="id"%}
+     $this->{{ field.name }} = ${{ field.name }};
+     {% endif %}
+     {% endfor %}
+    }
+
+    {% for field in entityFields %}
+        {% if field.type!="id" %}
+        /**
+        * @return mixed
+        */
+        public function get{{ field.name|capitalize }}()
+        {
+        return $this->{{ field.name|lower }};
+        }
+
+        /**
+        * @param mixed {{ field.name|lower }}
+        */
+        public function set{{ field.name|capitalize }}(${{ field.name|lower }})
+        {
+        $this->{{ field.name|lower }} = {{ field.name|lower }};
+        }
+        {% endif %}
+
+    {% endfor %}
+
+}

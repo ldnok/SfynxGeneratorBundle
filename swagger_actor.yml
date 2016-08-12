@@ -1,0 +1,553 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "1.0.0"
+  title: DemoAPI API. Permits to work with Actors
+
+
+paths:
+  /v1{_version}/actors.{_format}:
+    get:
+      operationId: getAll
+      x-controller: Actor
+      x-entity: Actor
+      description: |
+        Retrieve Actor
+      parameters:
+        - name: _version
+          in: path
+          required: true
+          description: Version of API
+          type: number
+        - name: _format
+          in: path
+          required: true
+          description: format of response
+          type: string
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Array Of actors
+            type: array
+            items:
+              title: Actor
+              type: object
+              properties:
+                idVO:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                situationVO:
+                  type: object
+                  properties:
+                    sexVO:
+                      type: object
+                      properties:
+                        sex:
+                          type: string
+                    birthday:
+                      type: object
+                contactVO:
+                  type: object
+                  properties:
+                    phoneNumber1:
+                      type: string
+                    phoneNumber2:
+                      type: string
+                profilVO:
+                  type: object
+                  properties:
+                    firstname:
+                      type: string
+                    lastname:
+                      type: string
+                salaryVO:
+                  type: object
+                  properties:
+                    currency:
+                      type: string
+                    value:
+                      type: number
+
+
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+
+
+
+  /v{_version}/actor.{_format}/{entityId}:
+    get:
+      operationId: get
+      x-controller: Actor
+      x-entity: Actor
+      description: |
+        Retrieve Actor
+      parameters:
+        - name: _version
+          in: path
+          required: true
+          description: Version of API
+          type: number
+        - name: _format
+          in: path
+          required: true
+          description: format of response
+          type: string
+        - name: entityId
+          in: path
+          required: true
+          description: Id of an entity
+          type: string
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Array Of actors
+            type: array
+            items:
+              title: Actor
+              type: object
+              properties:
+                idVO:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                situationVO:
+                  type: object
+                  properties:
+                    sexVO:
+                      type: object
+                      properties:
+                        sex:
+                          type: string
+                    birthday:
+                      type: object
+                contactVO:
+                  type: object
+                  properties:
+                    phoneNumber1:
+                      type: string
+                    phoneNumber2:
+                      type: string
+                profilVO:
+                  type: object
+                  properties:
+                    firstname:
+                      type: string
+                    lastname:
+                      type: string
+                salaryVO:
+                  type: object
+                  properties:
+                    currency:
+                      type: string
+                    value:
+                      type: number
+
+
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+
+
+  /v{_version}/actor/{entityId}:
+    put:
+      operationId: update
+      x-controller: Actor
+      x-entity: Actor
+      description: |
+        Update an Actor
+      parameters:
+        - name: _version
+          in: path
+          required: true
+          description: Version of API
+          type: number
+        - name: entityId
+          in: path
+          required: true
+          type: string
+          description: Actor Id
+        - name: Actor
+          in: body
+          required: true
+          description: Actor object
+          schema:
+            title: actor
+            type: object
+            properties:
+              entityid:
+                type: integer
+              profile:
+                 type: string
+              situation:
+                type: string
+              contact:
+                type: string
+              salary:
+                type: integer
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Result
+            type: array
+            items:
+              title: result
+              type: object
+              properties:
+                result:
+                  type: object
+                  properties:
+                    code:
+                      type: number
+                    msg:
+                     type: string
+                actor:
+                  type: object
+                  properties:
+                    idVO:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                    situationVO:
+                      type: object
+                      properties:
+                        sexVO:
+                          type: object
+                          properties:
+                            sex:
+                              type: string
+                        birthday:
+                          type: object
+                    contactVO:
+                      type: object
+                      properties:
+                        phoneNumber1:
+                          type: string
+                        phoneNumber2:
+                          type: string
+                    profilVO:
+                      type: object
+                      properties:
+                        firstname:
+                          type: string
+                        lastname:
+                          type: string
+                    salaryVO:
+                      type: object
+                      properties:
+                        currency:
+                          type: string
+                        value:
+                          type: number
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+  /v{_version}/actor:
+    post:
+      operationId: new
+      x-controller: Actor
+      x-entity: Actor
+      description: |
+        Add Actor
+      parameters:
+             - name: _version
+               in: path
+               required: true
+               description: Version of API
+               type: number
+             - name: entityId
+               in: path
+               required: true
+               type: string
+               description: Actor Id
+             - name: Actor
+               in: body
+               required: true
+               description: Actor object
+               schema:
+                 title: actor
+                 type: object
+                 properties:
+                   entityid:
+                     type: integer
+                   profile:
+                      type: string
+                   situation:
+                     type: string
+                   contact:
+                     type: string
+                   salary:
+                     type: integer
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Result
+            type: array
+            items:
+              title: result
+              type: object
+              properties:
+                result:
+                  type: object
+                  properties:
+                    code:
+                      type: number
+                    msg:
+                     type: string
+                actor:
+                  type: object
+                  properties:
+                    idVO:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                    situationVO:
+                      type: object
+                      properties:
+                        sexVO:
+                          type: object
+                          properties:
+                            sex:
+                              type: string
+                        birthday:
+                          type: object
+                    contactVO:
+                      type: object
+                      properties:
+                        phoneNumber1:
+                          type: string
+                        phoneNumber2:
+                          type: string
+                    profilVO:
+                      type: object
+                      properties:
+                        firstname:
+                          type: string
+                        lastname:
+                          type: string
+                    salaryVO:
+                      type: object
+                      properties:
+                        currency:
+                          type: string
+                        value:
+                          type: number
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+
+
+  /v{_version}/actor/{entityId}/{revision}:
+    delete:
+      operationId: delete
+      x-controller: Actor
+      x-entity: Actor
+      description: |
+        Delete an Actor
+      parameters:
+        - name: _version
+          in: path
+          required: true
+          description: Version of API
+          type: number
+        - name: entityId
+          in: path
+          required: true
+          description: Entity Id
+          type: number
+        - name: revision
+          in: path
+          required: true
+          description: Revision Id
+          type: number
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Result
+            type: array
+            items:
+              title: result
+              type: object
+              properties:
+                result:
+                  type: object
+                  properties:
+                    code:
+                      type: number
+                    msg:
+                     type: string
+                actor:
+                  type: object
+                  properties:
+                    idVO:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                    situationVO:
+                      type: object
+                      properties:
+                        sexVO:
+                          type: object
+                          properties:
+                            sex:
+                              type: string
+                        birthday:
+                          type: object
+                    contactVO:
+                      type: object
+                      properties:
+                        phoneNumber1:
+                          type: string
+                        phoneNumber2:
+                          type: string
+                    profilVO:
+                      type: object
+                      properties:
+                        firstname:
+                          type: string
+                        lastname:
+                          type: string
+                    salaryVO:
+                      type: object
+                      properties:
+                        currency:
+                          type: string
+                        value:
+                          type: number
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+
+
+
+
+
+
+x-valueObjects:
+  IdVO:
+    name: id
+    type: Sfynx\DddBundle\Layer\Domain\ValueObject\IdVO
+    x-fields:
+      id:
+        name: id
+        type: IdVO
+  ProfileVO:
+    name: ProfileVO
+    type: \DemoActor\Domain\ValueObject\ProfileVO
+
+    x-fields:
+      lastname:
+        name: lastname
+        type: string
+      firstname:
+        name: firstname
+        type: string
+  SituationVO:
+    name: SituationVO
+    type: \DemoActor\Domain\ValueObject\SituationVO
+    x-fields:
+      sexVO:
+        name: SexVO
+        type: SexVO
+      birthday:
+        name: birthday
+        type: string
+  ContactVO:
+    name: ContactVO
+    type: \DemoActor\Domain\ValueObject\ContactVO
+    x-fields:
+      phoneNumber1:
+        name: phoneNumber1
+        type: string
+      phoneNumber2:
+        name: phoneNumber2
+        type: string
+      email:
+        name: email
+        type: string
+  SalaryVO:
+    name: SalaryVO
+    type: \DemoActor\Domain\ValueObject\SalaryVO
+    x-fields:
+      value:
+        name: value
+        type: integer
+      currency:
+        name: currency
+        type: string
+  SexVO:
+    name: SexVO
+    type: \DemoActor\Domain\ValueObject\SexVO
+    x-fields:
+      gender:
+        name: gender
+        type: string
+
+x-entities:
+  Actor:
+    name: Actor
+    type: entity
+    x-fields:
+      entityId:
+        name: entityId
+        type: id
+        voName: IdVO
+      profile:
+        name: profile
+        type: valueObject
+        voName: ProfileVO
+      situation:
+        name: situation
+        type: valueObject
+        voName: SituationVO
+      contact:
+        name: contact
+        type: valueObject
+        voName: ContactVO
+      salary:
+        name: salary
+        type: valueObject
+        voName: SalaryVO
+
+
+

@@ -1,0 +1,41 @@
+<?php
+
+namespace {{ projectName }}\Domain\Service\{{ entityName }}\Factory\Orm;
+
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Factory\RepositoryFactoryInterface;
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Factory\TraitRepositoryFactory;
+use Sfynx\DddBundle\Layer\Infrastructure\Persistence\Generalisation\Odm\SaveRepository;
+use {{ projectName }}\Infrastructure\Persistence\Repository\{{ entityName }}\Orm\GetAllRepository;
+use {{ projectName }}\Infrastructure\Persistence\Repository\{{ entityName }}\Orm\DeleteManyRepository;
+use {{ projectName }}\Infrastructure\Persistence\Repository\{{ entityName }}\Orm\DeleteRepository;
+use {{ projectName }}\Infrastructure\Persistence\Repository\{{ entityName }}\Orm\GetByIdsRepository;
+use {{ projectName }}\Infrastructure\Persistence\Repository\{{ entityName }}\Orm\GetRepository;
+use {{ projectName }}\Infrastructure\Persistence\Repository\{{ entityName }}\Orm\SearchByRepository;
+
+class RepositoryFactory implements RepositoryFactoryInterface
+{
+    use TraitRepositoryFactory;
+
+    public function buildRepository($action)
+    {
+        switch($action) {
+            case RepositoryFactoryInterface::ONE_REPOSITORY :
+                return new GetRepository($this->manager);
+            case RepositoryFactoryInterface::SEARCHBY_REPOSITORY :
+                return new SearchByRepository($this->manager);
+            case RepositoryFactoryInterface::ALL_REPOSITORY :
+                return new GetAllRepository($this->manager);
+            case RepositoryFactoryInterface::GETBYIDS_REPOSITORY :
+                return new GetByIdsRepository($this->manager);
+            case RepositoryFactoryInterface::DELETEONE_REPOSITORY :
+                return new DeleteRepository($this->manager);
+            case RepositoryFactoryInterface::DELETEMANY_REPOSITORY :
+                return new DeleteManyRepository($this->manager);
+            case RepositoryFactoryInterface::NEW_REPOSITORY :
+            case RepositoryFactoryInterface::UPDATE_REPOSITORY :
+                return new SaveRepository($this->manager);
+            default :
+                throw new \Exception('Wrong key for repository');
+        }
+    }
+}

@@ -1,0 +1,404 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "1.0.0"
+  title: Country API. Permits to work with country
+
+
+paths:
+  /v{_version}/country:
+    get:
+      operationId: getAll
+      x-controller: Country
+      x-entity: Country
+      description: |
+        Get all countries
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Array Of Countries
+            type: array
+            items:
+              title: Country
+              type: object
+              properties:
+                entityid:
+                  type: integer
+                id_parent:
+                   type: integer
+                code:
+                  type: string
+                type:
+                  type: string
+                libelle:
+                  type: string
+                reference:
+                  type: string
+
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+    post:
+      operationId: new
+      x-controller: Country
+      x-entity: Country
+      description: |
+        update a country
+      parameters:
+        - name: countryId
+          in: path
+          required: true
+          type: string
+          description: Country Id
+
+        - name: country
+          in: body
+          required: true
+          description: Country Id
+          schema:
+            title: country
+            type: object
+            properties:
+              entityid:
+                type: integer
+              id_parent:
+                 type: integer
+              code:
+                type: string
+              type:
+                type: string
+              libelle:
+                type: string
+              reference:
+                type: string
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Response
+            type: object
+            properties:
+              country:
+                type: object
+                properties:
+                  entityid:
+                    type: integer
+                  id_parent:
+                     type: integer
+                  code:
+                    type: string
+                  type:
+                    type: string
+                  libelle:
+                    type: string
+                  reference:
+                    type: string
+              result:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  records:
+                    type: number
+                  msg:
+                    type: string
+
+
+  /v{_version}/country/{entityId}:
+    get:
+      operationId: get
+      x-controller: Country
+      x-entity: Country
+      description: |
+        Get `country` object with id *countryId*
+      parameters:
+        - name: entityId
+          in: path
+          required: true
+          type: string
+          description: Country Id
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Array Of Countries
+            type: array
+            items:
+              title: Country
+              type: object
+              properties:
+                id:
+                  type: integer
+                id_parent:
+                   type: integer
+                code:
+                  type: string
+                type:
+                  type: string
+                libelle:
+                  type: string
+                reference:
+                  type: string
+
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+    delete:
+      operationId: delete
+      x-controller: Country
+      x-entity: Country
+      description: |
+        delete a country
+      parameters:
+        - name: countryId
+          in: path
+          required: true
+          type: string
+          description: Country Id
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Response
+            type: object
+            properties:
+              country:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  id_parent:
+                     type: integer
+                  code:
+                    type: string
+                  type:
+                    type: string
+                  libelle:
+                    type: string
+                  reference:
+                    type: string
+              result:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  records:
+                    type: number
+                  msg:
+                    type: string
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+    put:
+      operationId: update
+      description: |
+        update a country
+      x-controller: Country
+      x-entity: Country
+      parameters:
+        - name: country
+          in: body
+          required: true
+          description: Country Id
+          schema:
+            title: country
+            type: object
+            properties:
+              id:
+                type: integer
+              id_parent:
+                 type: integer
+              code:
+                type: string
+              type:
+                type: string
+              libelle:
+                type: string
+              reference:
+                type: string
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Response
+            type: object
+            properties:
+              country:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  id_parent:
+                     type: integer
+                  code:
+                    type: string
+                  type:
+                    type: string
+                  libelle:
+                    type: string
+                  reference:
+                    type: string
+              result:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  records:
+                    type: number
+                  msg:
+                    type: string
+
+
+
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+
+  /v{_version}/country/searchBy:
+      get:
+        operationId: searchBy
+        x-controller: Country
+        x-entity: Country
+        description: |
+          Get `country` object with id *countryId*
+        parameters:
+          - name: criteria
+            in: body
+            required: true
+            description: criteria object
+            schema:
+              title: country
+              type: object
+              properties:
+                id:
+                  type: integer
+                id_parent:
+                   type: integer
+                code:
+                  type: string
+                type:
+                  type: string
+                libelle:
+                  type: string
+                reference:
+                  type: string
+        responses:
+          # 200 Response code
+          200:
+            description: Successful response
+            # A schema describing your response object.
+            # Use JSON Schema format
+            schema:
+              title: Country
+              type: object
+              properties:
+                id:
+                  type: integer
+                id_parent:
+                   type: integer
+                code:
+                  type: string
+                type:
+                  type: string
+                libelle:
+                  type: string
+                reference:
+                  type: string
+
+          # 403 Response code
+          403  :
+            description: Access forbidden
+          500:
+            description: An error occurs
+
+  /v{_version}/country/findbyname/{name}:
+      get:
+        operationId: findbyName
+        x-controller: Country
+        x-entity: Country
+        description: |
+        parameters:
+          - name: name
+            in: path
+            required: true
+            description: criteria object
+            schema:
+              title: country
+              type: object
+              properties:
+                id:
+                  type: integer
+                id_parent:
+                   type: integer
+                code:
+                  type: string
+                type:
+                  type: string
+                libelle:
+                  type: string
+                reference:
+                  type: string
+
+x-valueObjects:
+ IdVO:
+    name: id
+    type: Sfynx\DddBundle\Layer\Domain\ValueObject\IdVO
+    x-fields:
+      id:
+        name: id
+        type: IdVO
+
+x-entities:
+  Country:
+    name: country
+    type: entity
+    x-fields:
+      entityId:
+        name: entityId
+        type: id
+        voName: IdVO
+      libelle:
+        name: libelle
+        type: string
+      indicatif:
+        name: indicatif
+        type: number
+      iso:
+        name: iso
+        type: string
+      selectable:
+        name: selectable
+        type: boolean
+      reference:
+        name: reference
+        type: string
+
+

@@ -1,0 +1,99 @@
+<?php
+
+namespace {{ projectName }}\Domain\Service\{{ entityName }}\Manager;
+
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Factory\RepositoryFactoryInterface;
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Manager\AbstractManager;
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Manager\TraitDeleteMany;
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Manager\TraitDeleteOne;
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Manager\TraitGetAll;
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Manager\TraitGetByIds;
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Manager\TraitGetOne;
+use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Manager\TraitSearchBy;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Processor\ProcessorInterface;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Processor\TraitProcessor;
+use Sfynx\DddBundle\Layer\Infrastructure\Logger\Generalisation\TraitLogger;
+use Sfynx\DddBundle\Layer\Domain\ValueObject\IdVO;
+use {{ projectName }}\Domain\Entity\{{ entityName }};
+
+/**
+ * Class {{ entityName }}Manager
+ *
+ * @package
+ */
+class {{ entityName }}Manager extends AbstractManager implements ProcessorInterface
+{
+    use TraitProcessor;
+    use TraitLogger;
+    use TraitGetAll;
+    use TraitGetOne;
+    use TraitGetByIds;
+    use TraitDeleteOne;
+    use TraitDeleteMany;
+    use TraitSearchBy;
+
+    /**
+     * @param RepositoryFactoryInterface $factory
+     */
+    public function __construct(RepositoryFactoryInterface $factory) {
+        parent::__construct($factory);
+    }
+
+
+    public function create({{ constructorArgs }}) {
+        //hydrate with VO
+        $entity = {{ entityName }}::makeInstance({{ managerArgs }});
+
+        //execute prepersist processor
+        $this->executeProcess('prepersist_create', $entity);
+
+        // Persistance handler
+        $object = new \stdClass();
+        $object->entity = $entity;
+        $this->factory->buildRepository(RepositoryFactoryInterface::NEW_REPOSITORY)->execute($object);
+
+        //execute postpersist processor
+        $this->executeProcess('postpersist_create', $entity);
+
+        // Log handler
+        $this->logger->info("{{ entityName }} ".$entity->getId()." has been saved", array('{{ entityName|lower }}' => $entity));
+
+        return $entity;
+    }
+
+
+    public function update({{ managerArgs }}) {
+        //get {{ entityName }} by id
+        $object = new \stdClass();
+{% for field in fields %}
+{% if field.type == "id" %}
+        $object->entityId = ${{ field.name }}->id();
+        $entity = $this->factory->buildRepository(RepositoryFactoryInterface::ONE_REPOSITORY)->execute($object);
+{% endif %}
+{% endfor %}
+
+        if (null === $entity) {
+        //exception
+        }
+
+        //hydrate with VO
+{% for field in fields %}
+         $entity->set{{ field.name|capitalize }}(${{ field.name }});
+{% endfor %}
+
+        //execute prepersist processor
+        $this->executeProcess('prepersist_update', $entity);
+
+        // Persistance handler
+        $object->entity = $entity;
+        $this->factory->buildRepository(RepositoryFactoryInterface::UPDATE_REPOSITORY)->execute($object);
+
+        //execute postpersist processor
+        $this->executeProcess('postpersist_update', $entity);
+
+        // Log handler
+        $this->logger->info("{{ entityName }} ".$entity->getId()." has been saved", array('{{ entityName|lower }}' => $entity));
+
+        return $entity;
+    }
+}

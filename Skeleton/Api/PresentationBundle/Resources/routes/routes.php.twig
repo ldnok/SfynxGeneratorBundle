@@ -1,0 +1,14 @@
+{% for path,data in routes %}
+{% for verb,route in data %}
+{%  if route.entity == entityName %}
+project_{{ route.entity|lower }}_{{ route.verb|lower }}_{{ route.action|lower }}:
+  path: {{ path }}
+{% if "get" in route.verb or route.action == "searchBy" %}
+  defaults: { _controller: project.{{ projectName|lower }}.controller.query.{{ route.controller |lower}}:{{ route.action }}Action}
+{% else %}
+  defaults: { _controller: project.{{ projectName|lower }}.controller.command.{{ route.controller |lower}}:{{ route.action }}Action}
+{% endif %}
+  methods: {{ route.verb }}
+{% endif %}
+{% endfor %}
+{% endfor %}

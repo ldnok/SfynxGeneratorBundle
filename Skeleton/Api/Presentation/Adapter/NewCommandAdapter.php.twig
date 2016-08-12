@@ -1,0 +1,28 @@
+<?php
+
+namespace {{ projectName }}\Presentation\Adapter\{{ entityName }}\Command;
+
+use {{ projectName }}\Application\{{ entityName }}\Command\NewCommand;
+use Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\CommandAdapterInterface;
+use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\CommandRequestInterface;
+
+/**
+ * Class NewCommandAdapter.
+ *
+ * @category   {{ projectName }}
+ * @package    Presentation
+ * @subpackage Adapter
+ */
+class NewCommandAdapter implements CommandAdapterInterface
+{
+    /**
+     * @param CommandRequestInterface $request
+     * @return NewCommand
+     */
+    public function createCommandFromRequest(CommandRequestInterface $request)
+    {
+        $parameters = $request->getRequestParameters();
+
+        return new NewCommand({% for field in entityFields %}{% if field.type!="id" %}$parameters["{{ field.name }}"]{% if loop.index < entityFields|length %}, {% endif %}{% endif %}{% endfor %});
+    }
+}

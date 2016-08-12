@@ -1,0 +1,21 @@
+<?php
+
+namespace {{ projectName }}\Presentation\Adapter\{{ entityName }}\Query;
+
+use  Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\AbstractSearchByQueryAdapter;
+use  Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\QueryAdapterInterface;
+
+/**
+ * Class OneQueryAdapter
+ *
+ * @category   {{ projectName }}
+ * @package    Presentation
+ * @subpackage Adapter
+ */
+class SearchByQueryAdapter extends AbstractSearchByQueryAdapter implements QueryAdapterInterface
+{
+    /**
+     * @var string $SearchByQueryNamespace full namespace of SearchBy
+     */
+    protected $queryNamespace = '\{{ projectName }}\Application\{{ entityName }}\Query\SearchByQuery';
+}

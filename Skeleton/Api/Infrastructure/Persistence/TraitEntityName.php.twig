@@ -1,0 +1,16 @@
+<?php
+
+namespace {{ projectName }}\Infrastructure\Persistence\Repository\{{ entityName }};
+
+use {{ projectName }}\Domain\Entity\{{ entityName }};
+
+trait TraitEntityName
+{
+    /**
+     * @var string $_entityName full namespace of {{ entityName }} entity
+     */
+    protected function initEntityName()
+    {
+        $this->_entityName = {{ entityName }}::class;
+    }
+}

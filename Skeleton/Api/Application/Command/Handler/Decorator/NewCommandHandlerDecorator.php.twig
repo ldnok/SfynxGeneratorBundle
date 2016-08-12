@@ -1,0 +1,34 @@
+<?php
+
+namespace {{ projectName }}\Application\{{ entityName }}\Command\Handler\Decorator;
+
+use Sfynx\DddBundle\Layer\Application\Generalisation\Command\Handler\Decorator\AbstractCommandHandlerDecorator;
+use Sfynx\DddBundle\Layer\Application\Generalisation\Interfaces\CommandHandlerInterface;
+use Sfynx\DddBundle\Layer\Application\Generalisation\Interfaces\CommandInterface;
+
+class NewCommandHandlerDecorator extends AbstractCommandHandlerDecorator
+{
+    protected $validationHandler;
+    protected $specHandler;
+
+    public function __construct(CommandHandlerInterface $commandHandler, $validationHandler, $specHandler)
+    {
+        parent::__construct($commandHandler);
+        $this->validationHandler = $validationHandler;
+        $this->specHandler = $specHandler;
+    }
+
+    /**
+    * Method to decorate (override)
+    *
+    * @param CommandInterface $command
+    * @return mixed
+    */
+    public function process(CommandInterface $command)
+    {
+        $this->validationHandler->process($command);
+        $this->specHandler->process();
+
+        return $this->commandHandler->process($command);
+    }
+}

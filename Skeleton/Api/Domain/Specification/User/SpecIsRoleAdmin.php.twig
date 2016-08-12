@@ -1,0 +1,17 @@
+<?php
+
+namespace {{ projectName }}\Domain\Specification\Infrastructure\User;
+
+use Sfynx\SpecificationBundle\Specification\AbstractSpecification;
+
+class SpecIsRoleAdmin extends AbstractSpecification
+{
+    public function isSatisfiedBy(\stdClass $object)
+    {
+        if ($object->value->isGranted('ROLE_ADMIN')) {
+            return true;
+        }
+
+        return false;
+    }
+}

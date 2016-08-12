@@ -1,0 +1,284 @@
+# Example YAML to get you started quickly.
+# Be aware that YAML has indentation based scoping.
+# Code completion support is available so start typing for available options.
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "1.0.0"
+  title: Movies API. Permits to work with country
+
+
+paths:
+  /v{_version}/movies.{_format}:
+    get:
+      operationId: getAll
+      x-controller: Movie
+      x-entity: Movie
+      description: |
+        Get all movies
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Array Of Movies
+            type: array
+            items:
+              title: Movie
+              type: object
+              properties:
+                entityid:
+                  type: string
+                title:
+                   type: string
+                year:
+                  type: integer
+
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+    post:
+      operationId: new
+      x-controller: Movie
+      x-entity: Movie
+      description: |
+        update a movie
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          type: string
+          description: Movie Id
+
+        - name: movie
+          in: body
+          required: true
+          description: Movie Id
+          schema:
+            title: movie
+            type: object
+            properties:
+              entityid:
+                type: string
+              title:
+                 type: string
+              year:
+                type: integer
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Response
+            type: object
+            properties:
+              movie:
+                type: object
+                properties:
+                  entityid:
+                    type: integer
+                  title:
+                     type: string
+                  year:
+                    type: integer
+              result:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  records:
+                    type: number
+                  msg:
+                    type: string
+
+
+  /v{_version}/movie/{entityId}:
+    get:
+      operationId: get
+      x-controller: Movie
+      x-entity: Movie
+      description: |
+        Get `movie` object with id *entityId*
+      parameters:
+        - name: entityId
+          in: path
+          required: true
+          type: string
+          description: Movie Id
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Array Of Movies
+            type: array
+            items:
+              title: Movie
+              type: object
+              properties:
+                entityId:
+                  type: string
+                title:
+                  type: string
+                year:
+                  type: integer
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+    delete:
+      operationId: delete
+      x-controller: Movie
+      x-entity: Movie
+      description: |
+        delete a Movie
+      parameters:
+        - name: entityId
+          in: path
+          required: true
+          type: string
+          description: movie Id
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Response
+            type: string
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+    put:
+      operationId: update
+      description: |
+        update a movie
+      x-controller: Movie
+      x-entity: Movie
+      parameters:
+        - name: country
+          in: body
+          required: true
+          description: Movie Id
+          schema:
+            title: movie
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                 type: string
+              year:
+                type: integer
+      responses:
+        # 200 Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Response
+            type: object
+            properties:
+              movie:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  title:
+                     type: string
+                  year:
+                    type: integer
+              result:
+                type: object
+                properties:
+                  result:
+                    type: boolean
+                  records:
+                    type: number
+                  msg:
+                    type: string
+
+
+
+        # 403 Response code
+        403  :
+          description: Access forbidden
+        500:
+          description: An error occurs
+
+  /v{_version}/movies/{entityIds}:
+      get:
+        operationId: getByIds
+        x-controller: Movie
+        x-entity: Movie
+        description: |
+          Get `movie` object with id *entityId*
+        parameters:
+          - name: entityIds
+            in: path
+            required: true
+            type: string
+            description: Movie Id
+        responses:
+          # 200 Response code
+          200:
+            description: Successful response
+            # A schema describing your response object.
+            # Use JSON Schema format
+            schema:
+              title: Array Of Movies
+              type: array
+              items:
+                title: Movie
+                type: object
+                properties:
+                  entityId:
+                    type: string
+                  title:
+                    type: string
+                  year:
+                    type: integer
+          # 403 Response code
+          403  :
+            description: Access forbidden
+          500:
+            description: An error occurs
+
+x-valueObjects:
+ IdVO:
+    name: id
+    type: Sfynx\DddBundle\Layer\Domain\ValueObject\IdVO
+    x-fields:
+      id:
+        name: id
+        type: IdVO
+
+x-entities:
+  Movie:
+    name: movie
+    type: entity
+    x-fields:
+      entityId:
+        name: entityId
+        type: id
+        voName: IdVO
+      title:
+        name: title
+        type: string
+      year:
+        name: year
+        type: number

@@ -1,0 +1,31 @@
+<?php
+
+namespace {{ projectName }}\Infrastructure\EntityType\Orm;
+
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\StringType;
+
+class {{ voName }}Type extends StringType
+{
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        return (string) $value;
+    }
+
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        $className = $this->getNamespace().'\\'.$this->getName();
+
+        return new $className($value);
+    }
+
+    public function getName()
+    {
+         return '{{ voName }}';
+    }
+
+    protected function getNamespace()
+    {
+     return '{{ projectName }}\Domain\ValueObject';
+    }
+}

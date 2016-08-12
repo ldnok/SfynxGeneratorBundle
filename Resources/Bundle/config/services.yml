@@ -1,0 +1,15 @@
+parameters:
+    bundle.generator.class: Sfynx\DddGeneratorBundle\Generator\Bundle\DddBundleGenerator
+    bundlegenerator.generator.command.class: Sfynx\DddGeneratorBundle\Command\GenerateDddBundleCommand
+
+services:
+    api.generator:
+        class: %bundle.generator.class%
+
+    bundlegenerator.generator.command:
+        class: %bundlegenerator.generator.command.class%
+        calls:
+          - [setGenerator, ["@api.generator"]]
+          - [setRootDir, ["%kernel.root_dir%"]]
+        tags:
+            -  { name: console.command }

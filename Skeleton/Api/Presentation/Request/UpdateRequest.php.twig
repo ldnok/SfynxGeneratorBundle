@@ -1,0 +1,48 @@
+<?php
+
+namespace {{ projectName }}\Presentation\Request\  {{ entityName }}\Command;
+
+use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\CommandRequestInterface;
+use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\AbstractRequest;
+
+/**
+ * Class UpdateRequest.
+ *
+ * @category   {{ projectName }}
+ * @package    Presentation
+ * @subpackage Request
+ */
+class UpdateRequest extends AbstractRequest implements CommandRequestInterface
+{
+    protected $defaults = [
+    ];
+
+    protected $required = [
+{% for field in entityFields %}
+        '{{ field.name }}',
+{% endfor %}
+    ];
+
+    protected $allowedTypes = [
+{% for field in entityFields %}
+        '{{ field.name }}'=>['{% if field.type!="id" %}{% if field.type=="number" %}integer{% elseif field.type=="valueObject" %}array{% else %}{{ field.type }}{% endif %}{% else %}string{% endif %}'],
+{% endfor %}
+    ];
+
+
+
+    protected function setOptions()
+    {
+        $this->options = [];
+
+        //get request body
+        $this->options = json_decode($this->request->getContent(), true);
+        $this->options = (null !== $this->options) ? $this->options : [];
+
+        //get url's params
+        $entityId = $this->request->get('entityId');
+        if ($entityId !== null) {
+            $this->options['entityId'] = $entityId;
+        }
+    }
+}

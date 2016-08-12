@@ -1,0 +1,3 @@
+sfynx_ddd_generator_homepage:
+    path:     /
+    defaults: { _controller: SfynxDddGeneratorApi:Default:index }

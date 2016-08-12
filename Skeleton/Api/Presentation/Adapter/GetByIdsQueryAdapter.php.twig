@@ -1,0 +1,22 @@
+<?php
+
+namespace {{ projectName }}\Presentation\Adapter\{{ entityName }}\Query;
+
+use Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\AbstractGetByIdsQueryAdapter;
+use Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\QueryAdapterInterface;
+
+/**
+ * Class OneQueryAdapter
+ *
+ * @category   {{ projectName }}
+ * @package    Presentation
+ * @subpackage Adapter
+ */
+
+class GetByIdsQueryAdapter extends AbstractGetByIdsQueryAdapter implements QueryAdapterInterface
+{
+    /**
+     * @var string $queryNamespace full namespace of GetByIdsQuery
+     */
+    protected $queryNamespace = \{{ projectName }}\Application\{{ entityName }}\Query\GetByIdsQuery::class;
+}
