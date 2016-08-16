@@ -15,6 +15,13 @@ class NewCommand extends AbstractCommand
 {
     /* TODO declare fields and create constructor and getters/setters */
 
+ {% for field in entityFields %}
+     {%  if field.type!="id"%}
+         protected ${{ field.name }};
+     {% endif %}
+{% endfor %}
+
+
     {% set constructorArgs = "" %}
     {% for field in entityFields %}
         {% if field.type!="id" %}
@@ -28,7 +35,7 @@ class NewCommand extends AbstractCommand
     /**
      * NewCommand constructor.
      {% for field in entityFields %}
-     * @param ${{ field.name }}
+     * @param ${{ field.name|ucfirst }}
      {% endfor %}
      */
     public function __construct({{ constructorArgs }})
@@ -45,17 +52,20 @@ class NewCommand extends AbstractCommand
         /**
         * @return mixed
         */
-        public function get{{ field.name|capitalize }}()
+        public function get{{ field.name|ucfirst }}()
         {
-        return $this->{{ field.name }};
+
+        return $this->{{ field.name|ucfirst }};
         }
 
         /**
-        * @param mixed {{ field.name }}
+        * @param mixed {{ field.name|ucfirst }}
         */
-        public function set{{ field.name|capitalize }}(${{ field.name }})
+
+        public function set{{ field.name|ucfirst }}(${{ field.name|ucfirst }})
         {
-        $this->{{ field.name }} = ${{ field.name }};
+        $this->{{ field.name|ucfirst }} = ${{ field.name|ucfirst }};
+
         }
         {% endif %}
 

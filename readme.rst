@@ -103,11 +103,13 @@ then run
 
 
 
+
 Add the generator in your AppKernel.php
 -----------------------------------------
 new Sfynx\DddGeneratorBundle\SfynxDddGeneratorBundle(),
-
-
+new \Sfynx\DddBundle\SfynxDddBundle(),
+new \JMS\SerializerBundle\JMSSerializerBundle(),
+new \Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
 Create a swagger file (or use swagger.yml in this folder for test)
 --------------------------------------------------------------------
 
@@ -120,19 +122,19 @@ must be root user
 Launch the generator
 ----------------------
 
-SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE=vendor/sfynx/generatorBundle/swagger_country.yml
+SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE=vendor/sfynx-project/tool-generator-bundle/swagger_country.yml
 export SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE
 SYMFONY_SFYNX_CONTEXT_NAME=DemoCountry
 export SYMFONY_SFYNX_CONTEXT_NAME
 php app/console sfynx:generate:ddd:api --create-all
 
-SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE=vendor/sfynx/generatorBundle/swagger_actor.yml
+SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE=vendor/sfynx-project/tool-generator-bundle/swagger_actor.yml
 export SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE
 SYMFONY_SFYNX_CONTEXT_NAME=DemoActor
 export SYMFONY_SFYNX_CONTEXT_NAME
 php app/console sfynx:generate:ddd:api --create-all
 
-SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE=vendor/sfynx/generatorBundle/swagger_movie.yml
+SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE=vendor/sfynx-project/tool-generator-bundle/swagger_movie.yml
 export SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE
 SYMFONY_SFYNX_CONTEXT_NAME=DemoMovie
 export SYMFONY_SFYNX_CONTEXT_NAME
@@ -143,11 +145,11 @@ php app/console sfynx:generate:ddd:api --create-all
 Add this Bundle in AppKernel.php
 ----------------------------------------------
 
-    new \JMS\SerializerBundle\JMSSerializerBundle(),
-    new \Sfynx\DddBundle\SfynxDddBundle(),
+
+
     new \DemoGenerator\InfrastructureBundle\DemoGeneratorInfrastructureBundle(),
     new \DemoGenerator\PresentationBundle\DemoGeneratorPresentationBundle(),
-    new \Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+
 
 Add a link to routes of your generated context
 ------------------------------------------------
