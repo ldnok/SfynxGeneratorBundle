@@ -25,7 +25,7 @@ class NewCommand extends AbstractCommand
     {% set constructorArgs = "" %}
     {% for field in entityFields %}
         {% if field.type!="id" %}
-            {% set var = '$' ~ field.name ~ ','  %}
+            {% set var = '$' ~ field.name ~ ', '  %}
             {% set constructorArgs = constructorArgs ~ var%}
         {% endif %}
     {% endfor %}
@@ -35,7 +35,7 @@ class NewCommand extends AbstractCommand
     /**
      * NewCommand constructor.
      {% for field in entityFields %}
-     * @param ${{ field.name|ucfirst }}
+     * @param ${{ field.name }}
      {% endfor %}
      */
     public function __construct({{ constructorArgs }})
@@ -55,16 +55,16 @@ class NewCommand extends AbstractCommand
         public function get{{ field.name|ucfirst }}()
         {
 
-        return $this->{{ field.name|ucfirst }};
+        return $this->{{ field.name }};
         }
 
         /**
-        * @param mixed {{ field.name|ucfirst }}
+        * @param mixed {{ field.name }}
         */
 
-        public function set{{ field.name|ucfirst }}(${{ field.name|ucfirst }})
+        public function set{{ field.name|ucfirst }}(${{ field.name }})
         {
-        $this->{{ field.name|ucfirst }} = ${{ field.name|ucfirst }};
+        $this->{{ field.name }} = ${{ field.name }};
 
         }
         {% endif %}
