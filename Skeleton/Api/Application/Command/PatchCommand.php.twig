@@ -14,7 +14,7 @@ use Sfynx\DddBundle\Layer\Application\Generalisation\Command\AbstractCommand;
 class PatchCommand extends AbstractCommand
 {
 {% for field in entityFields %}
-    protected ${{ field.name|ucfirst}};
+    protected ${{ field.name}};
 {% endfor %}
 
     /**
@@ -24,7 +24,7 @@ class PatchCommand extends AbstractCommand
     public function __construct({{ constructorArgs }})
     {
 {% for field in entityFields %}
-        $this->{{ field.name|ucfirst }}= ${{ field.name|ucfirst}};
+        $this->{{ field.name }}= ${{ field.name}};
 {% endfor %}
     }
 
@@ -57,8 +57,8 @@ class PatchCommand extends AbstractCommand
     * get the {{ field.name|ucfirst }} attribute value
     * @return {{ field.type }} $value
     */
-    public function get{{ field.name|capitalize }}() {
-        return $this->{{ field.name|ucfirst }};
+    public function get{{ field.name|ucfirst }}() {
+        return $this->{{ field.name}};
     }
 
     /**
@@ -66,7 +66,7 @@ class PatchCommand extends AbstractCommand
     * @param {{ namespace }} {{ field.type }} $value
     */
     public function set{{ field.name|ucfirst }}({{ namespace }} $value) {
-        $this->{{ field.name|ucfirst }} = $value;
+        $this->{{ field.name}} = $value;
     }
 {% endif %}
 {% endfor %}
