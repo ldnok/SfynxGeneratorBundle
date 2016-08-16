@@ -72,7 +72,7 @@ class {{ entityName }} {
      * @CouchDB\EmbedOne(targetDocument="{{ valueObjects[field.voName].type|trim("\\") }}")
      */
 
-     protected ${{ field.name|lower }};
+     protected ${{ field.name }};
 {% elseif field.type == "string" %}
     /**
      * @Since("1")
@@ -80,7 +80,7 @@ class {{ entityName }} {
      * @ODM\Field(type="string")
      */
 
-     protected ${{ field.name|lower }};
+     protected ${{ field.name }};
 {% elseif field.type == "number" %}
     /**
      * @Since("1")
@@ -88,7 +88,7 @@ class {{ entityName }} {
      * @ODM\Field(type="integer")
      */
 
-     protected ${{ field.name|lower }};
+     protected ${{ field.name }};
 
 {% elseif field.type == "boolean" %}
     /**
@@ -97,7 +97,7 @@ class {{ entityName }} {
      * @ODM\Field(type="boolean")
      */
 
-     protected ${{ field.name|lower }};
+     protected ${{ field.name }};
 {% endif %}
 
 {% endfor %}
@@ -113,27 +113,25 @@ class {{ entityName }} {
 
 {% for field in  fields %}
     {% if field.type == "id" %}
-{%  if field.voName is defined%}
-        $this->{{ field.type }} = new {{ field.voName }}($entityId);
+    {%  if field.voName is defined%}
+        $this->{{ field.type }} = new {{ field.voName }}(${{ field.name }});
 {% endif %}
 {% endif %}
-
     {% if field.type != "id" %}
-        $this->set{{ field.name }}(${{ field.name }});
+        $this->set{{ field.name|ucfirst }}(${{ field.name }});
     {% endif %}
 {% endfor %}
-    }
-
+}
 
 {% for field in  fields %}
-{% if field.type == "id" or field.type=="idVO" %}
-     public function get{{ field.type|capitalize }}() {
-         return $this->{{ field.type }};
-     }
+    {% if field.type == "id" or field.type=="idVO" %}
+        public function get{{ field.type }}() {
+        return $this->{{ field.type }};
+        }
 
-     public function set{{ field.name|capitalize }}($value) {
-         return $this->{{ field.name }} = $value;
-     }
+        public function set{{ field.name|ucfirst }}($value) {
+        return $this->{{ field.name|ucfirst }} = $value;
+        }
     {% else %}
         {% if field.type == "valueObject" %}
             {% if valueObjects[field.voName]["name"] == field.voName %}
@@ -147,22 +145,22 @@ class {{ entityName }} {
             {% set namespace = "" %}
         {% endif %}
 
-     /**
-     * get the {{ field.name }} attribute value
-     * @return {{ field.type }} $value
-     */
-     public function get{{ field.name|capitalize }}() {
-         return $this->{{ field.name }};
-     }
+        /**
+        * get the {{ field.name|ucfirst }} attribute value
+        * @return {{ field.type }} $value
+        */
+        public function get{{ field.name|ucfirst }}() {
+        return $this->{{ field.name }};
+        }
 
-     /**
-     * Set the {{ field.name }} attribute
-     * @param {{ namespace }} {{ field.type }} $value
-     */
-     public function set{{ field.name|capitalize }}({{ namespace }} $value) {
-         return $this->{{ field.name }} = $value;
-     }
-{% endif %}
+        /**
+        * Set the {{ field.name|ucfirst }} attribute
+        * @param {{ namespace }} {{ field.type }} $value
+        */
+        public function set{{ field.name |ucfirst }}({{ namespace }} $value) {
+        return $this->{{ field.name }} = $value;
+        }
+    {% endif %}
 {% endfor %}
 
 

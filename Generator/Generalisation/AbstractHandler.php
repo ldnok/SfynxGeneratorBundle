@@ -2,6 +2,10 @@
 
 namespace Sfynx\DddGeneratorBundle\Generator\Generalisation;
 
+use Sfynx\DddGeneratorBundle\Twig\DDDExtension;
+use Twig_SimpleFilter;
+
+
 abstract class AbstractHandler
 {
     protected $rootSkeletonDir;
@@ -42,6 +46,8 @@ abstract class AbstractHandler
     protected function render($template, $parameters)
     {
         $twig = $this->getTwigEnvironment();
+        $filter = new Twig_SimpleFilter('ucfirst', array(DDDExtension::class, 'ucfirstFilter'));
+        $twig->addFilter($filter);
 
         return $twig->render($template, $parameters);
     }
