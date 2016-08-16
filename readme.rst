@@ -33,12 +33,12 @@ replace your composer.json by this content :
         "sensio/distribution-bundle": "~5.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-        "sfynx-project/tool-ddd-bundle": "dev-master",
+        "sfynx-project/tool-ddd-bundle": "@dev",
         "doctrine/mongodb-odm-bundle":"@dev",
         "doctrine/couchdb": "@dev",
         "doctrine/couchdb-odm": "@dev",
         "stof/doctrine-extensions-bundle":"@dev",
-        "sfynx/generatorbundle": "dev-develop",
+        "sfynx-project/tool-generator-bundle": "@dev",
         "stof/doctrine-extensions-bundle":"@dev"
     },
     "require-dev": {
@@ -79,14 +79,7 @@ replace your composer.json by this content :
         "branch-alias": {
             "dev-master": "2.8-dev"
         }
-    },
-
-    "repositories": [
-        {
-            "type":"vcs",
-            "url":"/home/dev/generator"
-        }
-    ]
+    }
 }
 
 
