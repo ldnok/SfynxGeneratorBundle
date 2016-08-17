@@ -42,9 +42,9 @@ class WFGenerateVOListener implements ObserverInterface
     {% if field.type=="id" %}
         if ($wfHandler->getCommand() instanceof UpdateCommand  || $wfHandler->getCommand() instanceof PatchCommand) {
 {% if field.voName is defined %}
-    $wfHandler->data->{{ field.name }}[] = new {{ field.voName }}($wfHandler->getCommand()->get{{ field.name|capitalize }}());
+    $wfHandler->data->{{ field.name }}[] = new {{ field.voName }}($wfHandler->getCommand()->get{{ field.name|ucfirst }}());
 {% else %}
-    $wfHandler->data->{{ field.name }}[] = $wfHandler->getCommand()->get{{ field.name|capitalize }}();
+    $wfHandler->data->{{ field.name }}[] = $wfHandler->getCommand()->get{{ field.name|ucfirst }}();
 {% endif %}
         }
     {% elseif field.type == "valueObject" %}
@@ -53,14 +53,14 @@ class WFGenerateVOListener implements ObserverInterface
             {% for name, data in valueObjects %}
                 {% if name == field.voName %}
                     {% for vofield in data.fields %}
-                        {% set parameters = parameters ~ "$wfHandler->getCommand()->get" ~ field.name|capitalize ~"()['"~ vofield.name ~"']," %}
+                        {% set parameters = parameters ~ "$wfHandler->getCommand()->get" ~ field.name|ucfirst ~"()['"~ vofield.name ~"']," %}
                     {% endfor %}
                 {% endif %}
             {% endfor %}
 
             $wfHandler->data->{{ field.name }}[] = new {{ field.voName }}({{ parameters|trim(',') }});
     {% else %}
-            $wfHandler->data->{{ field.name }}[] = $wfHandler->getCommand()->get{{ field.name|capitalize }}();
+            $wfHandler->data->{{ field.name }}[] = $wfHandler->getCommand()->get{{ field.name|ucfirst }}();
 
     {% endif %}
     return $this;
