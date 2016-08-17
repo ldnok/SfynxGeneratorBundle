@@ -34,7 +34,7 @@ class WFSaveEntity implements ObserverInterface
 {% set ifString = "" %}
 {% set paramsString = "" %}
 {% for field in fields %}
-        ${{ field.name }} = !empty($wfHandler->data->{{ field.name|lower }}) ? end($wfHandler->data->{{ field.name|lower }}) : null;
+        ${{ field.name }} = !empty($wfHandler->data->{{ field.name }}) ? end($wfHandler->data->{{ field.name }}) : null;
         {% if field.type == "valueObject" and field.type != "id" %}
             {% set ifString = ifString ~ "null == $" ~ field.name ~ "&&" %}
         {% endif %}
