@@ -1,0 +1,48 @@
+<?php
+
+namespace Tests;
+
+use \ReflectionMethod;
+use \Exception;
+
+/**
+ * @category   Tests
+ * @package    Generalisation
+ */
+trait TraitPrivateMethod
+{
+    /**
+     * call private/protected method
+     *
+     * @param   string    $class  class which will call private/protected method
+     * @param   string    $method private/protected method to call
+     * @param   object    $object instance of $class
+     * @param   null      $args   must be an array if not null
+     * @throws  Exception         if $args is not an array
+     * @return  mixed
+     * @example
+     * <code>
+     *   $this->callPrivateMethod(
+     *       'DemoApiContext\Domain\Workflow\Actor\Listener\ActorWFGenerateVOListener',
+     *       'setSituationVO',
+     *       $this->WFListener,
+     *       [$this->event]
+     *    );
+     * </code>
+     */
+    protected function callPrivateMethod($class, $method, $object, $args = null)
+    {
+        $method = new ReflectionMethod(
+            $class, $method
+        );
+        $method->setAccessible(true);
+        if (is_null($args)) {
+            return $method->invoke($object);
+        } else {
+            if (!is_array($args)) {
+                throw new Exception('$args param must be an array');
+            }
+            return $method->invokeArgs($object, $args);
+        }
+    }
+}

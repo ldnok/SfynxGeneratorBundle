@@ -6,15 +6,15 @@ swagger: '2.0'
 # This is your document metadata
 info:
   version: "1.0.0"
-  title: Country API. Permits to work with country
+  title: Entity API. Permits to work with country
 
 
 paths:
   /v{_version}/country:
     get:
       operationId: getAll
-      x-controller: Country
-      x-entity: Country
+      x-controller: Entity
+      x-entity: Entity
       description: |
         Get all countries
       responses:
@@ -27,7 +27,7 @@ paths:
             title: Array Of Countries
             type: array
             items:
-              title: Country
+              title: Entity
               type: object
               properties:
                 entityid:
@@ -50,8 +50,8 @@ paths:
           description: An error occurs
     post:
       operationId: new
-      x-controller: Country
-      x-entity: Country
+      x-controller: Entity
+      x-entity: Entity
       description: |
         update a country
       parameters:
@@ -59,12 +59,12 @@ paths:
           in: path
           required: true
           type: string
-          description: Country Id
+          description: Entity Id
 
         - name: country
           in: body
           required: true
-          description: Country Id
+          description: Entity Id
           schema:
             title: country
             type: object
@@ -120,8 +120,8 @@ paths:
   /v{_version}/country/{entityId}:
     get:
       operationId: get
-      x-controller: Country
-      x-entity: Country
+      x-controller: Entity
+      x-entity: Entity
       description: |
         Get `country` object with id *countryId*
       parameters:
@@ -129,7 +129,7 @@ paths:
           in: path
           required: true
           type: string
-          description: Country Id
+          description: Entity Id
       responses:
         # 200 Response code
         200:
@@ -140,7 +140,7 @@ paths:
             title: Array Of Countries
             type: array
             items:
-              title: Country
+              title: Entity
               type: object
               properties:
                 id:
@@ -164,8 +164,8 @@ paths:
 
     patch:
       operationId: patch
-      x-controller: Country
-      x-entity: Country
+      x-controller: Entity
+      x-entity: Entity
       description: |
         Update `country` object with id *countryId*
       parameters:
@@ -173,7 +173,7 @@ paths:
           in: path
           required: true
           type: string
-          description: Country Id
+          description: Entity Id
       responses:
         # 200 Response code
         200:
@@ -184,7 +184,7 @@ paths:
             title: Array Of Countries
             type: array
             items:
-              title: Country
+              title: Entity
               type: object
               properties:
                 id:
@@ -207,8 +207,8 @@ paths:
           description: An error occurs
     delete:
       operationId: delete
-      x-controller: Country
-      x-entity: Country
+      x-controller: Entity
+      x-entity: Entity
       description: |
         delete a country
       parameters:
@@ -216,7 +216,7 @@ paths:
           in: path
           required: true
           type: string
-          description: Country Id
+          description: Entity Id
       responses:
         # 200 Response code
         200:
@@ -260,13 +260,13 @@ paths:
       operationId: update
       description: |
         update a country
-      x-controller: Country
-      x-entity: Country
+      x-controller: Entity
+      x-entity: Entity
       parameters:
         - name: country
           in: body
           required: true
-          description: Country Id
+          description: Entity Id
           schema:
             title: country
             type: object
@@ -329,8 +329,8 @@ paths:
   /v{_version}/country/searchBy:
       post:
         operationId: searchBy
-        x-controller: Country
-        x-entity: Country
+        x-controller: Entity
+        x-entity: Entity
         description: |
           Get `country` object with id *countryId*
         parameters:
@@ -361,7 +361,7 @@ paths:
             # A schema describing your response object.
             # Use JSON Schema format
             schema:
-              title: Country
+              title: Entity
               type: object
               properties:
                 id:
@@ -386,8 +386,8 @@ paths:
   /v{_version}/country/findbyname/{name}:
       get:
         operationId: findbyName
-        x-controller: Country
-        x-entity: Country
+        x-controller: Entity
+        x-entity: Entity
         description: |
         parameters:
           - name: name
