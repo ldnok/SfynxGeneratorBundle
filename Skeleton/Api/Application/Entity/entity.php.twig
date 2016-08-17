@@ -30,9 +30,7 @@ use {{ vo.type|trim("\\") }};
 class {{ entityName }} {
 
     //use TraitDatetime;
-
     //use TraitSimple;
-
     //use TraitEnabled;
 
 {% set constructParams = "" %}
@@ -125,12 +123,21 @@ class {{ entityName }} {
 
 {% for field in  fields %}
     {% if field.type == "id" or field.type=="idVO" %}
+        /**
+        * get the id of entity
+        * @return {{ field.type }} $value
+        */
         public function get{{ field.type }}() {
         return $this->{{ field.type }};
         }
 
+        /**
+        * set the id of entity
+        * @return {{ entityName }}
+        */
         public function set{{ field.name|ucfirst }}($value) {
-        return $this->{{ field.name|ucfirst }} = $value;
+            $this->{{ field.name|ucfirst }} = $value;
+            return $this;
         }
     {% else %}
         {% if field.type == "valueObject" %}
@@ -146,19 +153,21 @@ class {{ entityName }} {
         {% endif %}
 
         /**
-        * get the {{ field.name|ucfirst }} attribute value
+        * get the {{ field.name }} attribute value
         * @return {{ field.type }} $value
         */
         public function get{{ field.name|ucfirst }}() {
-        return $this->{{ field.name }};
+            return $this->{{ field.name }};
         }
 
         /**
         * Set the {{ field.name|ucfirst }} attribute
         * @param {{ namespace }} {{ field.type }} $value
+        * @return {{ entityName }}
         */
         public function set{{ field.name |ucfirst }}({{ namespace }} $value) {
-        return $this->{{ field.name }} = $value;
+            $this->{{ field.name }} = $value;
+            return $this;
         }
     {% endif %}
 {% endfor %}
