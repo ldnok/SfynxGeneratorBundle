@@ -33,12 +33,12 @@ replace your composer.json by this content :
         "sensio/distribution-bundle": "~5.0",
         "sensio/framework-extra-bundle": "^3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
-        "sfynx-project/tool-ddd-bundle": "@dev",
+        "sfynx-project/tool-ddd-bundle": "dev-2.8-dev",
         "doctrine/mongodb-odm-bundle":"@dev",
         "doctrine/couchdb": "@dev",
         "doctrine/couchdb-odm": "@dev",
         "stof/doctrine-extensions-bundle":"@dev",
-        "sfynx-project/tool-generator-bundle": "@dev",
+        "sfynx-project/tool-generator-bundle": "dev2.8-dev",
         "stof/doctrine-extensions-bundle":"@dev"
     },
     "require-dev": {
