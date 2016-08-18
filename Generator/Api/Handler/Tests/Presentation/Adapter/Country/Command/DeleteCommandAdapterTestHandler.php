@@ -10,7 +10,7 @@ class DeleteCommandAdapterTestHandler extends AbstractHandler implements Handler
 {
     use  ExecuteTrait;
 
-    const SKELETON_DIR = 'Api/Tests/Presentation/Adapter/Country/Command';
+    const SKELETON_DIR = 'Api/Tests/Presentation/Adapter/Entity/Command';
     const SKELETON_TPL = 'DeleteCommandAdapterTest.php.twig';
 
     protected $targetPattern = '%s/%s/Tests/DeleteCommandAdapterTest.php';

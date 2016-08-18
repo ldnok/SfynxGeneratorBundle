@@ -10,7 +10,7 @@ class NewCommandAdapterTestHandler extends AbstractHandler implements HandlerInt
 {
     use  ExecuteTrait;
 
-    const SKELETON_DIR = 'Api/Tests/Presentation/Adapter/Country/Command';
+    const SKELETON_DIR = 'Api/Tests/Presentation/Adapter/Entity/Command';
     const SKELETON_TPL = 'NewCommandAdapterTest.php.twig';
 
     protected $targetPattern = '%s/%s/Tests/NewCommandAdapterTest.php';
