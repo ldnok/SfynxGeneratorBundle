@@ -83,20 +83,6 @@ replace your composer.json by this content :
 }
 
 
-Modify this line :
-  "url":"/home/dev/generator"
-By the path of generator repository on your file system.
-
-
-
-Go in /home/dev/generator and go on develop branch
-
-    git fetch
-    git chekout develop
-
-
-
-
 then run
     rm composer.lock
     composer install --ignore-platform-reqs

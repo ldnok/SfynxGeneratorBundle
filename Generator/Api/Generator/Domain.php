@@ -20,6 +20,8 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Entity\EntityHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Odm\RepositoryFactoryHandler as ODMRepositoryFactoryHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Orm\RepositoryFactoryHandler as ORMRepositoryFactoryHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\CouchDB\RepositoryFactoryHandler as COUCHDBRepositoryFactoryHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Domain\Service\Entity\Manager\CountryManagerTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Domain\Service\Entity\Factory\Orm\RepositoryFactoryTestHandler as ORMRepositoryFactoryTestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\ValueObject\ValueObjectCompositeHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\ValueObject\ValueObjectHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\ValueObject\ValueObjectTypeCouchDBHandler;
@@ -64,6 +66,7 @@ class Domain
         $this->generateSpecifications();
         $this->generateWorkflow();
         $this->generateValueObject();
+        $this->generateTests();
     }
 
     /**
@@ -245,7 +248,6 @@ class Domain
             $this->generator->addHandler(new WFRetrieveEntityHandler($parameters));
 
 
-
             $this->generator->execute();
             $this->generator->clear();
         }
@@ -298,5 +300,28 @@ class Domain
             $this->generator->execute();
             $this->generator->clear();
         }
+    }
+
+    public function generateTests()
+    {
+        foreach ($this->entities as $name => $data) {
+
+
+            $parameters = [
+                'rootDir' => $this->rootDir . "/src",
+                'projectDir' => $this->projectDir,
+                'projectName' => str_replace('src/', '', $this->projectDir),
+                'entityName' => ucfirst(strtolower($name)),
+            ];
+
+            $this->generator->addHandler(new ORMRepositoryFactoryTestHandler($parameters));
+
+            $this->generator->addHandler(new CountryManagerTestHandler($parameters));
+
+
+            $this->generator->execute();
+            $this->generator->clear();
+        }
+
     }
 }

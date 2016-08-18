@@ -12,6 +12,7 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\PatchAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\SearchByAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\SearchByQueryAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\UpdateAdapterHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Infrastructure\Persistence\TraitEntityNameHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Presentation\Coordination\ControllerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\PresentationBundle\Resources\ControllersHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\DeleteManyRequestHandler;
@@ -23,6 +24,20 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\NewRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\PatchRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\SearchByRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\UpdateRequestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Entity\Command\DeleteCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Entity\Command\NewCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Entity\Command\PatchCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Entity\Command\UpdateCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Entity\Command\ControllerCommandTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Entity\Query\ControllerQueryTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command\DeleteRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command\NewRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command\PatchRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command\UpdateRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Query\GetAllRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Query\GetRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Query\SearchByRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\TraitVerifyResolverHandler;
 
 class Presentation
 {
@@ -61,6 +76,7 @@ class Presentation
         $this->generateAdapter();
         $this->generateCoordination();
         $this->generateRequest();
+        $this->generateTests();
     }
 
     public function generateAdapter()
@@ -217,5 +233,103 @@ class Presentation
 
     }
 
+    public function generateTests()
+    {
+        foreach ($this->pathsToCreate as $route => $verbData) {
+            foreach ($verbData as $verb => $data) {
+                $controllers[$data["controller"]][] = ["action" => $data["action"], "path" => $route, "method" => $verb, "entityName" => $data['entity']];
 
+                $parameters = [
+                    'rootDir' => $this->rootDir . "/src",
+                    'projectDir' => $this->projectDir,
+                    'projectName' => str_replace('src/', '', $this->projectDir),
+                    'actionName' => ucfirst(strtolower($data['action'])),
+                    'entityName' => ucfirst(strtolower($data['entity'])),
+                    'entityFields' => $this->entities[$data["entity"]],
+                ];
+
+                $this->generator->addHandler(new UpdateCommandAdapterTestHandler($parameters));
+                $this->generator->addHandler(new PatchCommandAdapterTestHandler($parameters));
+                $this->generator->addHandler(new NewCommandAdapterTestHandler($parameters));
+                $this->generator->addHandler(new DeleteCommandAdapterTestHandler($parameters));
+
+                $this->generator->execute();
+                $this->generator->clear();
+
+                $testControllerCommand = false;
+                $testControllerQuery = false;
+
+                foreach ($controllers as $controller => $data) {
+
+
+                    $parametersQuery = [
+                        'rootDir' => $this->rootDir . "/src",
+                        'projectDir' => $this->projectDir,
+                        'projectName' => str_replace('src/', '', $this->projectDir),
+                        'controllerName' => $controller,
+                        'group' => "Query"
+                    ];
+
+                    $parametersCommand = [
+                        'rootDir' => $this->rootDir . "/src",
+                        'projectDir' => $this->projectDir,
+                        'projectName' => str_replace('src/', '', $this->projectDir),
+                        'controllerName' => $controller,
+                        'group' => "Command"
+                    ];
+
+
+
+                    foreach ($data as $action) {
+
+                        if (in_array($action["action"], ["put", "delete", "update", "new", "patch"])) {
+                            $parametersCommand["controllerData"][] = $action;
+                            $parametersCommand["entityName"] = $action["entityName"];
+
+                            $testControllerCommand = true;
+
+
+                        } else {
+                            $parametersQuery["controllerData"][] = $action;
+                            $parametersQuery["entityName"] = $action["entityName"];
+
+                            $testControllerQuery = true;
+
+                        }
+
+                        $controllerToCreate[$controller][$action["entityName"]] = true;
+                    }
+                }
+
+                if($testControllerQuery) {
+                    $this->generator->addHandler(new ControllerQueryTestHandler($parametersQuery));
+                    $this->generator->execute();
+                    $this->generator->clear();
+                }
+
+                if($testControllerCommand) {
+
+                    $this->generator->addHandler(new ControllerCommandTestHandler($parametersCommand));
+                    $this->generator->execute();
+                    $this->generator->clear();
+                }
+
+                $this->generator->addHandler(new UpdateRequestTestHandler($parameters));
+                $this->generator->addHandler(new NewRequestTestHandler($parameters));
+                $this->generator->addHandler(new DeleteRequestTestHandler($parameters));
+                //$this->generator->addHandler(new GetAllRequestTestHandler($parameters));
+                $this->generator->addHandler(new SearchByRequestTestHandler($parameters));
+                $this->generator->addHandler(new GetRequestTestHandler($parameters));
+                $this->generator->addHandler(new PatchRequestTestHandler($parameters));
+
+                $this->generator->execute();
+                $this->generator->clear();
+            }
+        }
+
+        $this->generator->addHandler(New TraitEntityNameHandler($parameters));
+        $this->generator->addHandler(New TraitVerifyResolverHandler($parameters));
+        $this->generator->execute();
+        $this->generator->clear();
+    }
 }
