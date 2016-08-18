@@ -30,6 +30,18 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Query\Handler\Get
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Query\Handler\GetQueryHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Query\Handler\SearchByQueryHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Query\SearchByQueryHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\Decorator\NewCommandHandlerDecoratorTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\Decorator\PatchCommandHandlerDecoratorTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\Decorator\UpdateCommandHandlerDecoratorTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\DeleteCommandHandlerTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\DeleteCommandTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\DeleteManyCommandHandlerTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\NewCommandHandlerTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\PatchCommandHandlerTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\UpdateCommandHandlerTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\NewCommandTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\UpdateCommandTestHandler;
+use Tests\Application\Country\Application\Country\Command\Validation\NewCommandValidationHandlerTest;
 
 class Application
 {
@@ -68,6 +80,7 @@ class Application
 
         $this->generateCommands();
         $this->generateQueries();
+        $this->generateTests();
     }
 
     public function generateCommands()
@@ -194,6 +207,95 @@ class Application
                     $this->generator->execute();
                     $this->generator->clear();
 
+                }
+            }
+        }
+    }
+
+    public function generateTests() {
+        foreach ($this->pathsToCreate as $route => $verbData) {
+            foreach ($verbData as $verb => $data) {
+                if (in_array($data["action"], ["update", "new", "delete", "patch"])) {
+                    $constructorParams = $managerArgs = "";
+                    foreach ($this->entities[$data["entity"]] as $field) {
+                        if ($data["action"] == "new") {
+                            $constructorParams .= "$" . $field['name'] . ",";
+                            if ($field["type"] != "id") {
+                                $managerArgs .= "$" . $field['name'] . ",";
+                            }
+                        } else {
+                            $constructorParams .= "$" . $field['name'] . ",";
+                            $managerArgs .= "$" . $field['name'] . ",";
+                        }
+                    }
+
+                    $parameters = [
+                        'rootDir' => $this->rootDir . "/src",
+                        'projectDir' => $this->projectDir,
+                        'projectName' => str_replace('src/', '', $this->projectDir),
+                        'actionName' => ucfirst(strtolower($data['action'])),
+                        'entityName' => ucfirst(strtolower($data['entity'])),
+                        'entityFields' => $this->entities[$data['entity']],
+                        'managerArgs' => trim($managerArgs, ','),
+                        'fields' => $this->entities[$data['entity']],
+                        'valueObjects' => $this->valueObjects,
+                        'constructorArgs' => trim($constructorParams, ','),
+                        'valueObjects' => $this->valueObjects,
+                    ];
+
+                    // Command
+                    $this->generator->addHandler(new UpdateCommandTestHandler($parameters));
+                    // Decorator
+                    $this->generator->addHandler(new UpdateCommandHandlerDecoratorTestHandler($parameters));
+                    // Handler
+                    $this->generator->addHandler(new UpdateCommandHandlerTestHandler($parameters));
+
+
+                    // Command
+                    $this->generator->addHandler(new NewCommandTestHandler($parameters));
+                    // Decorator
+                    $this->generator->addHandler(new NewCommandHandlerDecoratorTestHandler($parameters));
+                    // Handler
+                    $this->generator->addHandler(new NewCommandHandlerTestHandler($parameters));
+                    // SpecHandler
+
+                    $this->generator->addHandler(new NewCommandValidationHandlerTest($parameters));
+
+
+                    // Command
+                    $this->generator->addHandler(new DeleteCommandTestHandler($parameters));
+                    // Handler
+                    $this->generator->addHandler(new DeleteManyCommandHandlerTestHandler($parameters));
+                    $this->generator->addHandler(new DeleteCommandHandlerTestHandler($parameters));
+
+
+                    // Command
+                    $this->generator->addHandler(new PatchCommandHandlerTestHandler($parameters));
+                    // Decorator
+                    $this->generator->addHandler(new PatchCommandHandlerDecoratorTestHandler($parameters));
+                    // Handler
+                    $this->generator->addHandler(new PatchCommandHandlerTestHandler($parameters));
+                    // SpecHandler
+
+                    /*
+                    $this->generator->addHandler(new GetAllQueryHandler($parameters));
+                    $this->generator->addHandler(new GetAllQueryHandlerHandler($parameters));
+
+
+                    $this->generator->addHandler(new GetQueryHandler($parameters));
+                    $this->generator->addHandler(new GetQueryHandlerHandler($parameters));
+
+                    $this->generator->addHandler(new GetByIdsHandler($parameters));
+                    $this->generator->addHandler(new GetByIdsHandlerHandler($parameters));
+
+
+                    $this->generator->addHandler(new SearchByQueryHandler($parameters));
+                    $this->generator->addHandler(new SearchByQueryHandlerHandler($parameters));
+                    */
+
+
+                    $this->generator->execute();
+                    $this->generator->clear();
                 }
             }
         }

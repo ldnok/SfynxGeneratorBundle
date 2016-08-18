@@ -20,6 +20,8 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Entity\EntityHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Odm\RepositoryFactoryHandler as ODMRepositoryFactoryHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Orm\RepositoryFactoryHandler as ORMRepositoryFactoryHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\CouchDB\RepositoryFactoryHandler as COUCHDBRepositoryFactoryHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Domain\Service\Entity\Factory\Orm\CountryManagerTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Domain\Service\Entity\Factory\Orm\RepositoryFactoryHandler as ORMRepositoryFactoryTestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\ValueObject\ValueObjectCompositeHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\ValueObject\ValueObjectHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\ValueObject\ValueObjectTypeCouchDBHandler;
@@ -64,6 +66,7 @@ class Domain
         $this->generateSpecifications();
         $this->generateWorkflow();
         $this->generateValueObject();
+        $this->generateTests();
     }
 
     /**
@@ -297,6 +300,37 @@ class Domain
 
             $this->generator->execute();
             $this->generator->clear();
+        }
+    }
+
+    public function generateTests() {
+        foreach ($this->pathsToCreate as $route => $verbData) {
+            foreach ($verbData as $verb => $data) {
+
+
+                $parameters = [
+                    'rootDir' => $this->rootDir . "/src",
+                    'projectDir' => $this->projectDir,
+                    'projectName' => str_replace('src/', '', $this->projectDir),
+                    'actionName' => ucfirst(strtolower($data['action'])),
+                    'entityName' => ucfirst(strtolower($data['entity'])),
+                    'entityFields' => $this->entities[$data['entity']],
+                    'fields' => $this->entities[$data['entity']],
+                    'valueObjects' => $this->valueObjects,
+                    'valueObjects' => $this->valueObjects,
+                ];
+
+                $this->generator->addHandler(new ORMRepositoryFactoryTestHandler($parameters));
+
+                $this->generator->addHandler(new CountryManagerTestHandler($parameters));
+
+
+
+
+                $this->generator->execute();
+                $this->generator->clear();
+            }
+
         }
     }
 }
