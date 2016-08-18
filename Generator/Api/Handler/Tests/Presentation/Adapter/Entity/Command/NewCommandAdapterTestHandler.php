@@ -1,6 +1,6 @@
 <?php
 
-namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Entity\Command;
 
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
@@ -13,7 +13,7 @@ class NewCommandAdapterTestHandler extends AbstractHandler implements HandlerInt
     const SKELETON_DIR = 'Api/Tests/Presentation/Adapter/Entity/Command';
     const SKELETON_TPL = 'NewCommandAdapterTest.php.twig';
 
-    protected $targetPattern = '%s/%s/Tests/NewCommandAdapterTest.php';
+    protected $targetPattern = '%s/%s/Tests/Presentation/Adapter/%s/Command/NewCommandAdapterTest.php';
     protected $target;
 
     protected function setTarget()

@@ -28,7 +28,8 @@
     "symfony/framework-bundle": ">=2.1",
     "twig/twig": "*",
     "symfony/console":"*",
-    "phpunit/phpunit":"*"
+    "phpunit/phpunit":"*",
+    "phake/phake":"*"
   },
   "autoload": {
     "psr-4": { "Sfynx\\DddGeneratorBundle\\": "" }

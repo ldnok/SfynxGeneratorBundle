@@ -1,6 +1,6 @@
 <?php
 
-namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command;
 
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
@@ -10,10 +10,10 @@ class PatchRequestTestHandler extends AbstractHandler implements HandlerInterfac
 {
     use  ExecuteTrait;
 
-    const SKELETON_DIR = 'Api/Tests/Presentation/Request/Command';
+    const SKELETON_DIR = 'Api/Tests/Presentation/Request/Entity/Command';
     const SKELETON_TPL = 'PatchRequestTest.php.twig';
 
-    protected $targetPattern = '%s/%s/Tests/Presentation/Request/Command/PatchRequestTest.php';
+    protected $targetPattern = '%s/%s/Tests/Presentation/Request/%s/Command/PatchRequestTest.php';
     protected $target;
 
     protected function setTarget()
@@ -22,8 +22,7 @@ class PatchRequestTestHandler extends AbstractHandler implements HandlerInterfac
             $this->targetPattern,
             $this->parameters['rootDir'],
             $this->parameters['projectDir'],
-            ucfirst($this->parameters['entityName']),
-            ucfirst($this->parameters['actionName'])
+            ucfirst($this->parameters['entityName'])
         );
     }
 }

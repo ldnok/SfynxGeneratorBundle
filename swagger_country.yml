@@ -422,7 +422,7 @@ x-valueObjects:
 
 x-entities:
   Country:
-    name: Country
+    name: Entity
     type: entity
     x-fields:
       entityId:

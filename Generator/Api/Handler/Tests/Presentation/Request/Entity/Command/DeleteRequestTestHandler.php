@@ -1,6 +1,6 @@
 <?php
 
-namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command;
 
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
@@ -10,10 +10,10 @@ class DeleteRequestTestHandler extends AbstractHandler implements HandlerInterfa
 {
     use  ExecuteTrait;
 
-    const SKELETON_DIR = 'Api/Tests/Presentation/Request/Command';
+    const SKELETON_DIR = 'Api/Tests/Presentation/Request/Entity/Command';
     const SKELETON_TPL = 'DeleteRequestTest.php.twig';
 
-    protected $targetPattern = '%s/%s/Tests/Presentation/Request/Command/DeleteRequestTest.php';
+    protected $targetPattern = '%s/%s/Tests/Presentation/Request/%s/Command/DeleteRequestTest.php';
     protected $target;
 
     protected function setTarget()
@@ -22,8 +22,7 @@ class DeleteRequestTestHandler extends AbstractHandler implements HandlerInterfa
             $this->targetPattern,
             $this->parameters['rootDir'],
             $this->parameters['projectDir'],
-            ucfirst($this->parameters['entityName']),
-            ucfirst($this->parameters['actionName'])
+            ucfirst($this->parameters['entityName'])
         );
     }
 }

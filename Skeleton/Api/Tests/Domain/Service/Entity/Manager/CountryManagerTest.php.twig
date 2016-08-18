@@ -13,9 +13,9 @@ use Sfynx\DddBundle\Layer\Domain\ValueObject\IdVO;
 use Sfynx\DddBundle\Layer\Infrastructure\Logger\Logger;
 use Sfynx\DddBundle\Layer\Infrastructure\Persistence\Generalisation\CouchDB\SaveRepository;
 use Sfynx\DddBundle\Layer\Infrastructure\Validator\Constraint\IdValidator;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class CountryManagerTest extends  WebTestCase
+
+class CountryManagerTest extends  \PHPUnit_Framework_TestCase
 {
     protected $emailManager;
     protected $repo;

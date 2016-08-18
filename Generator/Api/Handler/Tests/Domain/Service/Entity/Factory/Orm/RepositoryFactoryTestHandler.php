@@ -22,8 +22,7 @@ class RepositoryFactoryTestHandler extends AbstractHandler implements HandlerInt
             $this->targetPattern,
             $this->parameters['rootDir'],
             $this->parameters['projectDir'],
-            ucfirst($this->parameters['entityName']),
-            ucfirst($this->parameters['actionName'])
+            ucfirst($this->parameters['entityName'])
         );
     }
 }

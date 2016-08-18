@@ -1,6 +1,6 @@
 <?php
 
-namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Query;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Query;
 
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
@@ -10,10 +10,10 @@ class SearchByRequestTestHandler extends AbstractHandler implements HandlerInter
 {
     use  ExecuteTrait;
 
-    const SKELETON_DIR = 'Api/Tests/Presentation/Request/Query';
+    const SKELETON_DIR = 'Api/Tests/Presentation/Request/Entity/Query';
     const SKELETON_TPL = 'SearchByRequestTest.php.twig';
 
-    protected $targetPattern = '%s/%s/Tests/Presentation/Request/Query/SearchByRequestTest.php';
+    protected $targetPattern = '%s/%s/Tests/Presentation/Request/%s/Query/SearchByRequestTest.php';
     protected $target;
 
     protected function setTarget()
@@ -22,8 +22,7 @@ class SearchByRequestTestHandler extends AbstractHandler implements HandlerInter
             $this->targetPattern,
             $this->parameters['rootDir'],
             $this->parameters['projectDir'],
-            ucfirst($this->parameters['entityName']),
-            ucfirst($this->parameters['actionName'])
+            ucfirst($this->parameters['entityName'])
         );
     }
 }
