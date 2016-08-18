@@ -38,10 +38,12 @@ class Domain
     protected $paths = [];
     protected $pathsToCreate = [];
     protected $projectDir;
+    protected $destinationPath;
 
-    public function __construct($generator, $entities, $entitiesToCreate, $valueObjects, $valueObjectsToCreate, $paths, $pathsToCreate, $rootDir, $projectDir, $output)
+    public function __construct($generator, $entities, $entitiesToCreate, $valueObjects, $valueObjectsToCreate, $paths, $pathsToCreate, $rootDir, $projectDir, $destinationPath, $output)
     {
         $this->generator = $generator;
+        $this->destinationPath = $destinationPath;
         $this->output = $output;
         $this->entities = $entities;
         $this->entitiesToCreate = $entitiesToCreate;
@@ -51,7 +53,6 @@ class Domain
         $this->pathsToCreate = $pathsToCreate;
         $this->projectDir = $projectDir;
         $this->rootDir = $rootDir;
-
     }
 
     public function generate()
@@ -98,6 +99,7 @@ class Domain
                     'valueObjects' => $this->valueObjects,
                     'constructorArgs' => trim($constructorParams, ','),
                     'valueObjects' => $this->valueObjects,
+                    'destinationPath' => $this->destinationPath,
                 ];
 
                 $this->generator->addHandler(new EntityHandler($parameters));
@@ -142,6 +144,7 @@ class Domain
                     'valueObjects' => $this->valueObjects,
                     'constructorArgs' => trim($constructorParams, ','),
                     'valueObjects' => $this->valueObjects,
+                    'destinationPath' => $this->destinationPath,
                 ];
 
                 $this->generator->addHandler(new COUCHDBRepositoryFactoryHandler($parameters));
@@ -177,7 +180,8 @@ class Domain
             'rootDir' => $this->rootDir . "/src",
             'projectDir' => $this->projectDir,
             'projectName' => str_replace('src/', '', $this->projectDir),
-            'entities' => $this->entities
+            'entities' => $this->entities,
+            'destinationPath' => $this->destinationPath,
         ];
 
         $this->generator->addHandler(new SpecIsRoleAdminHandler($parameters));
@@ -231,8 +235,7 @@ class Domain
                 'valueObjects' => $this->valueObjects,
                 'entityName' => $entityName,
                 'constructorArgs' => trim($constructorParams, ','),
-                'fields' => $this->entities[$entityName],
-                'valueObjects' => $this->valueObjects,
+                'destinationPath' => $this->destinationPath,
 
             ];
 
@@ -268,7 +271,7 @@ class Domain
                 'voName' => str_replace('vo', 'VO', $name),
                 'projectName' => str_replace('src/', '', $this->projectDir),
                 'valueObjects' => $this->valueObjects,
-
+                'destinationPath' => $this->destinationPath,
             ];
 
 
@@ -317,15 +320,12 @@ class Domain
                     'entityFields' => $this->entities[$data['entity']],
                     'fields' => $this->entities[$data['entity']],
                     'valueObjects' => $this->valueObjects,
-                    'valueObjects' => $this->valueObjects,
+                    'destinationPath' => $this->destinationPath,
                 ];
 
                 $this->generator->addHandler(new ORMRepositoryFactoryTestHandler($parameters));
 
                 $this->generator->addHandler(new CountryManagerTestHandler($parameters));
-
-
-
 
                 $this->generator->execute();
                 $this->generator->clear();

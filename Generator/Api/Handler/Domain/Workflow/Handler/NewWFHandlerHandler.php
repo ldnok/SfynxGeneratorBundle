@@ -20,7 +20,7 @@ class NewWFHandlerHandler extends AbstractHandler implements HandlerInterface
     {
         $this->target = sprintf(
             $this->targetPattern,
-            $this->parameters['rootDir'],
+            $this->parameters['destinationPath'],
             $this->parameters['projectDir'],
             $this->parameters['entityName']
         );

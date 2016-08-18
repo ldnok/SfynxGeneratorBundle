@@ -21,7 +21,7 @@ class NewCommandSpecHandler extends AbstractHandler implements HandlerInterface
     {
         $this->target = sprintf(
             $this->targetPattern,
-            $this->parameters['rootDir'],
+            $this->parameters['destinationPath'],
             $this->parameters['projectDir'],
             ucfirst($this->parameters['entityName'])
         );

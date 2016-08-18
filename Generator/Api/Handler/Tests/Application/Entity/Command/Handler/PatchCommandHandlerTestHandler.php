@@ -20,7 +20,7 @@ class PatchCommandHandlerTestHandler extends AbstractHandler implements HandlerI
     {
         $this->target = sprintf(
             $this->targetPattern,
-            $this->parameters['rootDir'],
+            $this->parameters['destinationPath'],
             $this->parameters['projectDir'],
             ucfirst($this->parameters['entityName']),
             ucfirst($this->parameters['actionName'])

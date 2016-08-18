@@ -17,10 +17,12 @@ class InfrastructureBundle
     protected $paths = [];
     protected $pathsToCreate = [];
     protected $projectDir;
+    protected $destinationPath;
 
-    public function __construct($generator, $entities, $entitiesToCreate, $valueObjects, $valueObjectsToCreate, $paths, $pathsToCreate, $rootDir, $projectDir, $output)
+    public function __construct($generator, $entities, $entitiesToCreate, $valueObjects, $valueObjectsToCreate, $paths, $pathsToCreate, $rootDir, $projectDir, $destinationPath, $output)
     {
         $this->output = $output;
+        $this->destinationPath = $destinationPath;
         $this->entities = $entities;
         $this->entitiesToCreate = $entitiesToCreate;
         $this->valueObjects = $valueObjects;

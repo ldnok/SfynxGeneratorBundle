@@ -29,6 +29,7 @@ class GenerateDddApiCommand extends Command
     protected $generator;
     protected $actionsToCreate;
     protected $rootDir;
+    protected $destinationPath;
 
     protected $config;
     protected $entities = [];
@@ -67,17 +68,18 @@ class GenerateDddApiCommand extends Command
     {
 
         $this
-            ->setName('sfynx:generate:ddd:api')
+            ->setName('sfynx:api')
             ->setDescription('Generates a ddd api')
             ->addArgument('path-to-swagger-file', InputArgument::OPTIONAL, 'Path to swagger yml file.')
+            ->addArgument('destination-path', InputArgument::OPTIONAL, 'Destination path', '/tmp')
             ->addOption('create-all', null, InputOption::VALUE_NONE, 'Generate all items.')
             ->setHelp("Generate a ddd rest API for an entity");
     }
 
     public function interact(InputInterface $input, OutputInterface $output)
     {
-
         $dialog = $this->getHelper('question');
+        //set argument : path_to_swagger_file
         if (isset($_SERVER['SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE'])) {
             $pathToSwaggerEntityFile = $_SERVER['SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE'];
         } else {
@@ -86,7 +88,6 @@ class GenerateDddApiCommand extends Command
                 $output,
                 new Question('Path to swagger yml file: ')
             );
-
 
             while (!is_file($pathToSwaggerEntityFile)) {
                 //Set the entity name
@@ -99,12 +100,31 @@ class GenerateDddApiCommand extends Command
                     new Question('Path to swagger yml file: ')
                 );
             }
-
-
-            $input->setArgument('path-to-swagger-file', $pathToSwaggerEntityFile);
         }
-
         $input->setArgument('path-to-swagger-file', $pathToSwaggerEntityFile);
+
+        //set argument : destination_path
+        if (isset($_SERVER['SYMFONY_SFYNX_PATH_TO_DEST_FILES'])) {
+            $destPath = $_SERVER['SYMFONY_SFYNX_PATH_TO_DEST_FILES'];
+        } else {
+            $destPath = $dialog->ask(
+                $input,
+                $output,
+                new Question('destination path: ')
+            );
+
+            while (!is_dir($destPath) || !is_writable($destPath)) {
+                //Set the entity name
+                $output->writeln("This directory doesn't exist or is not writable");
+                $dialog = $this->getHelper('question');
+                $destPath = $dialog->ask(
+                    $input,
+                    $output,
+                    new Question('Path to swagger yml file: ')
+                );
+            }
+        }
+        $input->setArgument('destination-path', $destPath);
 
         // Parse swagger File
         $this->parseSwaggerFile($input, $output);
@@ -187,8 +207,6 @@ class GenerateDddApiCommand extends Command
                 $result["entity"] = $verbData["x-entity"];
                 $results[$path][$verb] = $result;
             }
-
-
         }
         return $results;
     }
@@ -246,13 +264,14 @@ class GenerateDddApiCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $projectDir = $_SERVER['SYMFONY_SFYNX_CONTEXT_NAME'];
+        $destinationPath = $input->getArgument('destination-path');
 
-        $applicationGenerator = new Application($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $output);
-        $domainGenerator = new Domain($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $output);
-        $presentationGenerator = new Presentation($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $output);
-        $presentationBundleGenerator = new PresentationBundle($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $output);
-        $infrastructureGenerator = new Infrastructure($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $output);
-        $infrastructureBundleGenerator = new InfrastructureBundle($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $output);
+        $applicationGenerator = new Application($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $domainGenerator = new Domain($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $presentationGenerator = new Presentation($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $presentationBundleGenerator = new PresentationBundle($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $infrastructureGenerator = new Infrastructure($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $infrastructureBundleGenerator = new InfrastructureBundle($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
 
 
         $applicationGenerator->generate();

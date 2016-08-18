@@ -20,7 +20,7 @@ class RoutesHandler extends AbstractHandler implements HandlerInterface
     {
         $this->target = sprintf(
             $this->targetPattern,
-            $this->parameters['rootDir'],
+            $this->parameters['destinationPath'],
             $this->parameters['projectDir'],
             strtolower($this->parameters['entityName'])
 

@@ -55,10 +55,12 @@ class Application
     protected $paths = [];
     protected $pathsToCreate = [];
     protected $projectDir;
+    protected $destinationPath;
 
-    public function __construct($generator, $entities, $entitiesToCreate, $valueObjects, $valueObjectsToCreate, $paths, $pathsToCreate, $rootDir, $projectDir, $output)
+    public function __construct($generator, $entities, $entitiesToCreate, $valueObjects, $valueObjectsToCreate, $paths, $pathsToCreate, $rootDir, $projectDir, $destinationPath, $output)
     {
         $this->generator = $generator;
+        $this->destinationPath = $destinationPath;
         $this->output = $output;
         $this->entities = $entities;
         $this->entitiesToCreate = $entitiesToCreate;
@@ -113,6 +115,7 @@ class Application
                         'valueObjects' => $this->valueObjects,
                         'constructorArgs' => trim($constructorParams, ','),
                         'valueObjects' => $this->valueObjects,
+                        'destinationPath' => $this->destinationPath,
                     ];
 
 

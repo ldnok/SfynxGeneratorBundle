@@ -20,7 +20,7 @@ class SearchByQueryAdapterHandler extends AbstractHandler implements HandlerInte
     {
         $this->target = sprintf(
             $this->targetPattern,
-            $this->parameters['rootDir'],
+            $this->parameters['destinationPath'],
             $this->parameters['projectDir'],
             ucfirst($this->parameters['entityName'])
         );

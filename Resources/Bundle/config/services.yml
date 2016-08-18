@@ -10,6 +10,5 @@ services:
         class: %bundlegenerator.generator.command.class%
         calls:
           - [setGenerator, ["@api.generator"]]
-          - [setRootDir, ["%kernel.root_dir%"]]
         tags:
             -  { name: console.command }

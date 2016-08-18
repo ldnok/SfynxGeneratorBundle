@@ -1,0 +1,49 @@
+#!/usr/bin/env php
+<?php
+
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
+function includeIfExists($file)
+{
+    if (file_exists($file)) {
+        return include $file;
+    }
+}
+
+if (
+    (!$loader = includeIfExists(__DIR__.'/../vendor/autoload.php'))
+    && (!$loader = includeIfExists(__DIR__.'/../../../autoload.php'))
+) {
+    die(
+        'You must set up the project dependencies, run the following commands:'.PHP_EOL.
+        'curl -s http://getcomposer.org/installer | php'.PHP_EOL.
+        'php composer.phar install'.PHP_EOL
+    );
+}
+
+$app = new \Sfynx\DddGeneratorBundle\Console\SfynxGeneratorApplication('Sfynx DDD Generator', 'v1.0');
+
+$container = new ContainerBuilder();
+$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/Api/config'));
+$loader->load('config.yml');
+$loader->load('services.yml');
+
+$loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/Bundle/config'));
+$loader->load('config.yml');
+$loader->load('services.yml');
+
+$rootDir = dirname(__DIR__);
+
+//register sfynx:api command
+$commandApi = $container->get('dddapi.generator.command');
+$commandApi->setRootDir($rootDir);
+$app->add($commandApi);
+
+//register sfynx:bundle command
+$commandBundle = $container->get('bundlegenerator.generator.command');
+$commandBundle->setRootDir($rootDir);
+$app->add($commandBundle);
+
+$app->run();

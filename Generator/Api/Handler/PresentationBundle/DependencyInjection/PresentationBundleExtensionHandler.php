@@ -20,7 +20,7 @@ class PresentationBundleExtensionHandler extends AbstractHandler implements Hand
     {
         $this->target = sprintf(
             $this->targetPattern,
-            $this->parameters['rootDir'],
+            $this->parameters['destinationPath'],
             $this->parameters['projectDir'],
             ucfirst($this->parameters['projectName'])
         );

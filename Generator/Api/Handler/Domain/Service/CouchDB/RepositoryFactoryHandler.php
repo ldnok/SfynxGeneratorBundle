@@ -20,7 +20,7 @@ class RepositoryFactoryHandler extends AbstractHandler implements HandlerInterfa
     {
         $this->target = sprintf(
             $this->targetPattern,
-            $this->parameters['rootDir'],
+            $this->parameters['destinationPath'],
             $this->parameters['projectDir'],
             $this->parameters['entityName']
         );

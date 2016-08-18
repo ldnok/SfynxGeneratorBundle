@@ -19,10 +19,12 @@ class PresentationBundle
     protected $paths = [];
     protected $pathsToCreate = [];
     protected $projectDir;
+    protected $destinationPath;
 
-    public function __construct($generator, $entities, $entitiesToCreate, $valueObjects, $valueObjectsToCreate, $paths, $pathsToCreate, $rootDir, $projectDir, $output)
+    public function __construct($generator, $entities, $entitiesToCreate, $valueObjects, $valueObjectsToCreate, $paths, $pathsToCreate, $rootDir, $projectDir, $destinationPath, $output)
     {
         $this->generator = $generator;
+        $this->destinationPath = $destinationPath;
         $this->output = $output;
         $this->entities = $entities;
         $this->entitiesToCreate = $entitiesToCreate;
@@ -77,7 +79,8 @@ class PresentationBundle
                 'projectDir' => $this->projectDir,
                 'projectName' => str_replace('src/', '', $this->projectDir),
                 'routes' => $this->paths,
-                'entityName' => $entity
+                'entityName' => $entity,
+                'destinationPath' => $this->destinationPath,
             ];
 
             $this->generator->addHandler(new RoutesHandler($parameters));

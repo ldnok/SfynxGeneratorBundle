@@ -45,7 +45,7 @@ class GenerateDddBundleCommand extends Command
     {
 
         $this
-            ->setName('sfynx:generate:ddd:bundle')
+            ->setName('sfynx:bundle')
             ->setDescription('Generates a ddd bundle')
             ->setHelp("Generate a ddd bundle"); 
     }

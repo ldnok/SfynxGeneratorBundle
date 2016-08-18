@@ -24,12 +24,17 @@
     }
   ],
   "require": {
-    "php": ">=5.3.2",
-    "symfony/framework-bundle": ">=2.1",
-    "twig/twig": "*",
-    "symfony/console":"*"
+    "php": ">=5.6",
+    "twig/twig": "~1.15",
+    "symfony/console": "~2.5|~3.0",
+    "symfony/config": "~2.4|~3.0",
+    "symfony/yaml": "~2.4|~3.0",
+    "symfony/dependency-injection": "~2.4|~3.0"
   },
   "autoload": {
     "psr-4": { "Sfynx\\DddGeneratorBundle\\": "" }
-  }
+  },
+  "bin": [
+    "bin/generator"
+  ]
 }
