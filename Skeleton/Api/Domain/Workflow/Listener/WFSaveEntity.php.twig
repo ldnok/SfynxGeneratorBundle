@@ -7,6 +7,7 @@ use Sfynx\DddBundle\Layer\Domain\Generalisation\Observer\ObserverInterface;
 use Sfynx\DddBundle\Layer\Domain\Service\Generalisation\Manager\ManagerInterface;
 use Sfynx\DddBundle\Layer\Infrastructure\Logger\Generalisation\TraitLogger;
 use {{   projectName }}\Application\{{  entityName }}\Command\UpdateCommand;
+use {{   projectName }}\Application\{{  entityName }}\Command\PatchCommand;
 
 /**
  * Class WFGenerateVOListener
@@ -49,7 +50,7 @@ class WFSaveEntity implements ObserverInterface
         }
         {% endif %}
 
-        if ($wfHandler->getCommand() instanceof UpdateCommand) {
+        if ($wfHandler->getCommand() instanceof UpdateCommand || $wfHandler->getCommand() instanceof PatchCommand) {
             $entityId = !empty($wfHandler->data->entityId) ? end($wfHandler->data->entityId) : null;
             if (null === $entityId) {
                 $message = 'Id Value Object not found';
