@@ -1,19 +1,19 @@
 <?php
 
-namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Domain\Service\Entity\Manager;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Query;
 
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
 use Sfynx\DddGeneratorBundle\Generator\Generalisation\ExecuteTrait;
 
-class CountryManagerTestHandler extends AbstractHandler implements HandlerInterface
+class GetRequestTestHandler extends AbstractHandler implements HandlerInterface
 {
     use  ExecuteTrait;
 
-    const SKELETON_DIR = 'Api/Tests/Domain/Service/Entity/Manager';
-    const SKELETON_TPL = 'CountryManagerTest.php.twig';
+    const SKELETON_DIR = 'Api/Tests/Presentation/Request/Entity/Query';
+    const SKELETON_TPL = 'GetRequestTest.php.twig';
 
-    protected $targetPattern = '%s/%s/Tests/Domain/Service/%s/Manager/%sManagerTest.php';
+    protected $targetPattern = '%s/%s/Tests/Presentation/Request/%s/Query/GetRequestTest.php';
     protected $target;
 
     protected function setTarget()
@@ -22,7 +22,6 @@ class CountryManagerTestHandler extends AbstractHandler implements HandlerInterf
             $this->targetPattern,
             $this->parameters['destinationPath'],
             $this->parameters['projectDir'],
-            ucfirst($this->parameters['entityName']),
             ucfirst($this->parameters['entityName'])
         );
     }

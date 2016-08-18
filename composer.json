@@ -6,7 +6,6 @@
   "license": "GPL-3.0+",
   "authors": [
     {
-
       "name": "Etienne de Longeaux",
       "email": "etienne.delongeaux@gmail.com"
     },
@@ -30,6 +29,10 @@
     "symfony/config": "~2.4|~3.0",
     "symfony/yaml": "~2.4|~3.0",
     "symfony/dependency-injection": "~2.4|~3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit":"*",
+    "phake/phake":"*"
   },
   "autoload": {
     "psr-4": { "Sfynx\\DddGeneratorBundle\\": "" }

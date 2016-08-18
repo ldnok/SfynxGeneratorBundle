@@ -14,7 +14,7 @@ use Sfynx\DddBundle\Layer\Application\Generalisation\Command\AbstractCommand;
 class UpdateCommand extends AbstractCommand
 {
 {% for field in entityFields %}
-    protected ${{ field.name|ucfirst}};
+    protected ${{ field.name}};
 {% endfor %}
 
     /**
@@ -24,7 +24,7 @@ class UpdateCommand extends AbstractCommand
     public function __construct({{ constructorArgs }})
     {
 {% for field in entityFields %}
-        $this->{{ field.name|ucfirst }}= ${{ field.name|ucfirst}};
+        $this->{{ field.name }}= ${{ field.name}};
 {% endfor %}
     }
 

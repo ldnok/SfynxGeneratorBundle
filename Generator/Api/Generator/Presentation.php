@@ -12,6 +12,7 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\PatchAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\SearchByAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\SearchByQueryAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\UpdateAdapterHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Infrastructure\Persistence\TraitEntityNameHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Presentation\Coordination\ControllerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\PresentationBundle\Resources\ControllersHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\DeleteManyRequestHandler;
@@ -23,19 +24,20 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\NewRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\PatchRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\SearchByRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\UpdateRequestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command\DeleteCommandAdapterTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command\NewCommandAdapterTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command\PatchCommandAdapterTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command\UpdateCommandAdapterTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Command\ControllerCommandTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Query\ControllerQueryTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command\DeleteRequestTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command\NewRequestTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command\PatchRequestTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command\UpdateRequestTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Query\GetAllRequestTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Query\GetRequestTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Query\SearchByRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Entity\Command\DeleteCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Entity\Command\NewCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Entity\Command\PatchCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Entity\Command\UpdateCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Entity\Command\ControllerCommandTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Entity\Query\ControllerQueryTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command\DeleteRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command\NewRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command\PatchRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Command\UpdateRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Query\GetAllRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Query\GetRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Entity\Query\SearchByRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\TraitVerifyResolverHandler;
 
 class Presentation
 {
@@ -76,7 +78,7 @@ class Presentation
         $this->generateAdapter();
         $this->generateCoordination();
         $this->generateRequest();
-        $this - generateTests();
+        $this->generateTests();
     }
 
     public function generateAdapter()
@@ -256,6 +258,9 @@ class Presentation
                 $this->generator->execute();
                 $this->generator->clear();
 
+                $testControllerCommand = false;
+                $testControllerQuery = false;
+
                 foreach ($controllers as $controller => $data) {
 
 
@@ -276,29 +281,37 @@ class Presentation
                     ];
 
 
+
                     foreach ($data as $action) {
 
                         if (in_array($action["action"], ["put", "delete", "update", "new", "patch"])) {
                             $parametersCommand["controllerData"][] = $action;
                             $parametersCommand["entityName"] = $action["entityName"];
 
-                            $this->generator->addHandler(new ControllerCommandTestHandler($parametersCommand));
-                            $this->generator->execute();
-                            $this->generator->clear();
+                            $testControllerCommand = true;
+
 
                         } else {
                             $parametersQuery["controllerData"][] = $action;
                             $parametersQuery["entityName"] = $action["entityName"];
 
-                            $this->generator->addHandler(new ControllerQueryTestHandler($parametersQuery));
-                            $this->generator->execute();
-                            $this->generator->clear();
+                            $testControllerQuery = true;
 
                         }
 
                         $controllerToCreate[$controller][$action["entityName"]] = true;
                     }
+                }
 
+                if($testControllerQuery) {
+                    $this->generator->addHandler(new ControllerQueryTestHandler($parametersQuery));
+                    $this->generator->execute();
+                    $this->generator->clear();
+                }
+
+                if($testControllerCommand) {
+
+                    $this->generator->addHandler(new ControllerCommandTestHandler($parametersCommand));
                     $this->generator->execute();
                     $this->generator->clear();
                 }
@@ -306,7 +319,7 @@ class Presentation
                 $this->generator->addHandler(new UpdateRequestTestHandler($parameters));
                 $this->generator->addHandler(new NewRequestTestHandler($parameters));
                 $this->generator->addHandler(new DeleteRequestTestHandler($parameters));
-                $this->generator->addHandler(new GetAllRequestTestHandler($parameters));
+                //$this->generator->addHandler(new GetAllRequestTestHandler($parameters));
                 $this->generator->addHandler(new SearchByRequestTestHandler($parameters));
                 $this->generator->addHandler(new GetRequestTestHandler($parameters));
                 $this->generator->addHandler(new PatchRequestTestHandler($parameters));
@@ -315,5 +328,10 @@ class Presentation
                 $this->generator->clear();
             }
         }
+
+        $this->generator->addHandler(New TraitEntityNameHandler($parameters));
+        $this->generator->addHandler(New TraitVerifyResolverHandler($parameters));
+        $this->generator->execute();
+        $this->generator->clear();
     }
 }

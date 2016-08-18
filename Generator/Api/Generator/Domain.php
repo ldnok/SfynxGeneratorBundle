@@ -20,8 +20,8 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Entity\EntityHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Odm\RepositoryFactoryHandler as ODMRepositoryFactoryHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Orm\RepositoryFactoryHandler as ORMRepositoryFactoryHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\CouchDB\RepositoryFactoryHandler as COUCHDBRepositoryFactoryHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Domain\Service\Entity\Factory\Orm\CountryManagerTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Domain\Service\Entity\Factory\Orm\RepositoryFactoryHandler as ORMRepositoryFactoryTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Domain\Service\Entity\Manager\CountryManagerTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Domain\Service\Entity\Factory\Orm\RepositoryFactoryTestHandler as ORMRepositoryFactoryTestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\ValueObject\ValueObjectCompositeHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\ValueObject\ValueObjectHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\ValueObject\ValueObjectTypeCouchDBHandler;
@@ -99,7 +99,6 @@ class Domain
                     'valueObjects' => $this->valueObjects,
                     'constructorArgs' => trim($constructorParams, ','),
                     'valueObjects' => $this->valueObjects,
-                    'destinationPath' => $this->destinationPath,
                 ];
 
                 $this->generator->addHandler(new EntityHandler($parameters));
@@ -144,7 +143,6 @@ class Domain
                     'valueObjects' => $this->valueObjects,
                     'constructorArgs' => trim($constructorParams, ','),
                     'valueObjects' => $this->valueObjects,
-                    'destinationPath' => $this->destinationPath,
                 ];
 
                 $this->generator->addHandler(new COUCHDBRepositoryFactoryHandler($parameters));
@@ -236,9 +234,7 @@ class Domain
                 'entityName' => $entityName,
                 'constructorArgs' => trim($constructorParams, ','),
                 'destinationPath' => $this->destinationPath,
-
             ];
-
 
             $this->generator->addHandler(new NewWFHandlerHandler($parameters));
             $this->generator->addHandler(new UpdateWFHandlerHandler($parameters));
@@ -250,8 +246,6 @@ class Domain
             $this->generator->addHandler(new WFSaveEntityHandler($parameters));
             $this->generator->addHandler(new WFRetrieveEntityHandler($parameters));
 
-
-
             $this->generator->execute();
             $this->generator->clear();
         }
@@ -259,12 +253,8 @@ class Domain
 
     public function generateValueObject()
     {
-
-
         // Create valueObjects
         foreach ($this->valueObjects as $name => $voToCreate) {
-
-
             $parameters = [
                 'rootDir' => $this->rootDir . "/src",
                 'projectDir' => $this->projectDir,
@@ -273,7 +263,6 @@ class Domain
                 'valueObjects' => $this->valueObjects,
                 'destinationPath' => $this->destinationPath,
             ];
-
 
             $composite = false;
 
@@ -285,9 +274,7 @@ class Domain
             foreach ($voToCreate["fields"] as $field) {
                 $constructorParams .= "$" . $field["name"] . ",";
             }
-
             $parameters["constructorParams"] = trim($constructorParams, ",");
-
 
             if ($composite) {
                 $this->generator->addHandler(new ValueObjectCompositeHandler($parameters));
@@ -295,42 +282,32 @@ class Domain
                 $this->generator->addHandler(new ValueObjectHandler($parameters));
             }
 
-
             $this->generator->addHandler(new ValueObjectTypeCouchDBHandler($parameters));
             $this->generator->addHandler(new ValueObjectTypeODMHandler($parameters));
             $this->generator->addHandler(new ValueObjectTypeORMHandler($parameters));
-
 
             $this->generator->execute();
             $this->generator->clear();
         }
     }
 
-    public function generateTests() {
-        foreach ($this->pathsToCreate as $route => $verbData) {
-            foreach ($verbData as $verb => $data) {
+    public function generateTests()
+    {
+        foreach ($this->entities as $name => $data) {
 
+            $parameters = [
+                'rootDir' => $this->rootDir . "/src",
+                'projectDir' => $this->projectDir,
+                'projectName' => str_replace('src/', '', $this->projectDir),
+                'entityName' => ucfirst(strtolower($name)),
+                'destinationPath' => $this->destinationPath,
+            ];
 
-                $parameters = [
-                    'rootDir' => $this->rootDir . "/src",
-                    'projectDir' => $this->projectDir,
-                    'projectName' => str_replace('src/', '', $this->projectDir),
-                    'actionName' => ucfirst(strtolower($data['action'])),
-                    'entityName' => ucfirst(strtolower($data['entity'])),
-                    'entityFields' => $this->entities[$data['entity']],
-                    'fields' => $this->entities[$data['entity']],
-                    'valueObjects' => $this->valueObjects,
-                    'destinationPath' => $this->destinationPath,
-                ];
+            $this->generator->addHandler(new ORMRepositoryFactoryTestHandler($parameters));
+            $this->generator->addHandler(new CountryManagerTestHandler($parameters));
 
-                $this->generator->addHandler(new ORMRepositoryFactoryTestHandler($parameters));
-
-                $this->generator->addHandler(new CountryManagerTestHandler($parameters));
-
-                $this->generator->execute();
-                $this->generator->clear();
-            }
-
+            $this->generator->execute();
+            $this->generator->clear();
         }
     }
 }

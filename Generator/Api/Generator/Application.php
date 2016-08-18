@@ -34,7 +34,7 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Comm
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\Decorator\PatchCommandHandlerDecoratorTestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\Decorator\UpdateCommandHandlerDecoratorTestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\DeleteCommandHandlerTestHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\DeleteCommandTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\DeleteCommandTestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\DeleteManyCommandHandlerTestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\NewCommandHandlerTestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Application\Entity\Command\Handler\PatchCommandHandlerTestHandler;
@@ -260,9 +260,7 @@ class Application
                     $this->generator->addHandler(new NewCommandHandlerDecoratorTestHandler($parameters));
                     // Handler
                     $this->generator->addHandler(new NewCommandHandlerTestHandler($parameters));
-                    // SpecHandler
 
-                    $this->generator->addHandler(new NewCommandValidationHandlerTest($parameters));
 
 
                     // Command
