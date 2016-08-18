@@ -1,91 +1,29 @@
 <?php
 
-namespace Tests\Presentation\Coordination\Country\Query;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Query;
 
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\ExecuteTrait;
 
-use DemoCountry\Application\Country\Query\Handler\GetAllQueryHandler;
-use DemoCountry\Application\Country\Query\Handler\GetQueryHandler;
-use DemoCountry\Application\Country\Query\Handler\SearchByQueryHandler;
-use DemoCountry\Application\Country\Query\Handler\GetByIdsQueryHandler;
-use DemoCountry\Presentation\Adapter\Country\Query\GetAllQueryAdapter;
-use DemoCountry\Presentation\Adapter\Country\Query\GetQueryAdapter;
-use DemoCountry\Presentation\Adapter\Country\Query\SearchByQueryAdapter;
-use DemoCountry\Presentation\Coordination\Country\Query\Controller;
-use DemoCountry\Presentation\Request\Country\Query\GetAllRequest;
-use DemoCountry\Presentation\Request\Country\Query\GetRequest;
-use DemoCountry\Presentation\Request\Country\Query\SearchByRequest;
-use \Phake;
-
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Request\SymfonyStrategy;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Resolver\ResolverStrategy;
-use Sfynx\DddBundle\Layer\Presentation\Response\Handler\ResponseHandler;
-
-use Symfony\Component\HttpFoundation\Response;
-
-
-class ControllerTest extends \PHPUnit_Framework_TestCase
+class ControllerTestHandler extends AbstractHandler implements HandlerInterface
 {
+    use  ExecuteTrait;
 
-    public function setUp()
+    const SKELETON_DIR = 'Api/Tests/Presentation/Coordination/Query';
+    const SKELETON_TPL = 'ControllerTest.php.twig';
+
+    protected $targetPattern = '%s/%s/Tests/Presentation/Coordination/Query/ControllerTest.php';
+    protected $target;
+
+    protected function setTarget()
     {
-        $this->request = Phake::mock(SymfonyStrategy::class);
-        $this->resolver = Phake::mock(ResolverStrategy::class);
-        $this->responseHandler = Phake::mock(ResponseHandler::class);
-
-        Phake::when($this->responseHandler)->create(Phake::anyParameters())->thenReturn($this->responseHandler);
-        Phake::when($this->responseHandler)->getResponse(Phake::anyParameters())->thenReturn(Phake::mock(Response::class));
-
-        $this->entity = ["id" => "00c1ab20-6e1e-4c54-83b4-62e677aba7ec"];
-
-        $this->getAllQueryHandler = Phake::mock(GetAllQueryHandler::class);
-        $this->getQueryHandler = Phake::mock(GetQueryHandler::class);
-        $this->getByIdsQueryHandler = Phake::mock(GetByIdsQueryHandler::class);
-        $this->searchByQueryHandler = Phake::mock(SearchByQueryHandler::class);
-
-
-
-        Phake::when($this->getAllQueryHandler)->process(Phake::anyParameters())->thenReturn([$this->entity, $this->entity]);
-        Phake::when($this->getQueryHandler)->process(Phake::anyParameters())->thenReturn($this->entity);
-        Phake::when($this->getByIdsQueryHandler)->process(Phake::anyParameters())->thenReturn([$this->entity, $this->entity]);
-        Phake::when($this->searchByQueryHandler)->process(Phake::anyParameters())->thenReturn([$this->entity, $this->entity]);
-
-        $this->controller = new Controller($this->request, $this->resolver, $this->responseHandler, $this->getAllQueryHandler, $this->getByIdsQueryHandler, $this->getQueryHandler, $this->searchByQueryHandler);
-    }
-
-    public function testGetAllAction()
-    {
-        $adapter = new GetAllQueryAdapter();
-        $query = $adapter->createQueryFromRequest(
-            new GetAllRequest($this->request, $this->resolver)
+        $this->target = sprintf(
+            $this->targetPattern,
+            $this->parameters['rootDir'],
+            $this->parameters['projectDir'],
+            ucfirst($this->parameters['entityName']),
+            ucfirst($this->parameters['actionName'])
         );
-
-        $this->controller->getAllAction();
-        Phake::verify($this->getAllQueryHandler, Phake::times(1))->process($query);
-        Phake::verify($this->responseHandler, Phake::times(1))->create([$this->entity, $this->entity], Response::HTTP_OK);
-    }
-
-    public function testGetAction()
-    {
-        $adapter = new GetQueryAdapter();
-        $query = $adapter->createQueryFromRequest(
-            new GetRequest($this->request, $this->resolver)
-        );
-
-        $this->controller->getAction();
-        Phake::verify($this->getQueryHandler, Phake::times(1))->process($query);
-        Phake::verify($this->responseHandler, Phake::times(1))->create($this->entity, Response::HTTP_OK);
-    }
-
-
-    public function testSearchByAction()
-    {
-        $adapter = new SearchByQueryAdapter();
-        $query = $adapter->createQueryFromRequest(
-            new SearchByRequest($this->request, $this->resolver)
-        );
-
-        $this->controller->searchByAction();
-        Phake::verify($this->searchByQueryHandler, Phake::times(1))->process($query);
-        Phake::verify($this->responseHandler, Phake::times(1))->create([$this->entity,$this->entity], Response::HTTP_OK);
     }
 }

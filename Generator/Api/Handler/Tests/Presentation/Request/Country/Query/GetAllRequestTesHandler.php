@@ -1,46 +1,29 @@
 <?php
 
-namespace Tests\Presentation\Request\Country\Command;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Query;
 
-require_once __DIR__.'/../../../../TraitVerifyResolver.php';
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\ExecuteTrait;
 
-use DemoCountry\Presentation\Request\Country\Query\GetAllRequest;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\CommandRequestInterface;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\QueryRequestInterface;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Request\RequestInterface;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Request\SymfonyStrategy;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Resolver\ResolverInterface;
-use DemoCountry\Presentation\Request\Country\Command\DeleteRequest;
-use \Phake;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Resolver\ResolverStrategy;
-use Tests\src\Email\TraitVerifyResolver;
-
-class GetAllRequestTest extends \PHPUnit_Framework_TestCase
+class GetAllRequestTestHandler extends AbstractHandler implements HandlerInterface
 {
+    use  ExecuteTrait;
 
-    /**
-     * @var RequestInterface
-     */
-    protected $requestStrategy;
-    /**
-     * @var ResolverInterface
-     */
-    protected $resolverStrategy;
-    /**
-     * @var NewRequest
-     */
-    protected $request;
+    const SKELETON_DIR = 'Api/Tests/Presentation/Request/Query';
+    const SKELETON_TPL = 'GetAllRequestTest.php.twig';
 
-    public function setUp()
+    protected $targetPattern = '%s/%s/Tests/Presentation/Request/Query/GetAllRequestTest.php';
+    protected $target;
+
+    protected function setTarget()
     {
-        $this->SymfonyStrategy = Phake::mock(SymfonyStrategy::class);
-        $this->resolver = Phake::mock(ResolverStrategy::class);
-        $this->request = new GetAllRequest($this->SymfonyStrategy,$this->resolver);
-
-    }
-
-    public function testGetRequestInterface()
-    {
-        $this->assertInstanceof(QueryRequestInterface::class,$this->request);
+        $this->target = sprintf(
+            $this->targetPattern,
+            $this->parameters['rootDir'],
+            $this->parameters['projectDir'],
+            ucfirst($this->parameters['entityName']),
+            ucfirst($this->parameters['actionName'])
+        );
     }
 }

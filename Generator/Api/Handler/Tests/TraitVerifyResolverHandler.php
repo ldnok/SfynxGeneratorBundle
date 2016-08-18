@@ -1,16 +1,29 @@
 <?php
 
-namespace Tests;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests;
 
-use \Phake;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\ExecuteTrait;
 
-trait TraitVerifyResolver
+class TraitVerifyResolverHandler extends AbstractHandler implements HandlerInterface
 {
-    protected function verifyResolverCalls($resolver, $a=1, $b=1, $c=1, $d=1)
+    use  ExecuteTrait;
+
+    const SKELETON_DIR = 'Api/Tests/';
+    const SKELETON_TPL = 'TraitVerifyResolver.php.twig';
+
+    protected $targetPattern = '%s/%s/Tests/TraitVerifyResolver.php';
+    protected $target;
+
+    protected function setTarget()
     {
-        Phake::verify($resolver, Phake::times($a))->setDefaults(Phake::anyParameters());
-        Phake::verify($resolver, Phake::times($b))->setRequired(Phake::anyParameters());
-        Phake::verify($resolver, Phake::times($c))->setAllowedTypes(Phake::anyParameters());
-        Phake::verify($resolver, Phake::times($d))->resolve(Phake::anyParameters());
+        $this->target = sprintf(
+            $this->targetPattern,
+            $this->parameters['rootDir'],
+            $this->parameters['projectDir'],
+            ucfirst($this->parameters['entityName']),
+            ucfirst($this->parameters['actionName'])
+        );
     }
 }

@@ -23,6 +23,19 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\NewRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\PatchRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\SearchByRequestHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Request\UpdateRequestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command\DeleteCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command\NewCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command\PatchCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command\UpdateCommandAdapterTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Command\ControllerCommandTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Query\ControllerQueryTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command\DeleteRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command\NewRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command\PatchRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command\UpdateRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Query\GetAllRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Query\GetRequestTestHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Query\SearchByRequestTestHandler;
 
 class Presentation
 {
@@ -61,6 +74,7 @@ class Presentation
         $this->generateAdapter();
         $this->generateCoordination();
         $this->generateRequest();
+        $this - generateTests();
     }
 
     public function generateAdapter()
@@ -217,5 +231,87 @@ class Presentation
 
     }
 
+    public function generateTests()
+    {
+        foreach ($this->pathsToCreate as $route => $verbData) {
+            foreach ($verbData as $verb => $data) {
+                $controllers[$data["controller"]][] = ["action" => $data["action"], "path" => $route, "method" => $verb, "entityName" => $data['entity']];
 
+                $parameters = [
+                    'rootDir' => $this->rootDir . "/src",
+                    'projectDir' => $this->projectDir,
+                    'projectName' => str_replace('src/', '', $this->projectDir),
+                    'actionName' => ucfirst(strtolower($data['action'])),
+                    'entityName' => ucfirst(strtolower($data['entity'])),
+                    'entityFields' => $this->entities[$data["entity"]],
+                ];
+
+                $this->generator->addHandler(new UpdateCommandAdapterTestHandler($parameters));
+                $this->generator->addHandler(new PatchCommandAdapterTestHandler($parameters));
+                $this->generator->addHandler(new NewCommandAdapterTestHandler($parameters));
+                $this->generator->addHandler(new DeleteCommandAdapterTestHandler($parameters));
+
+                $this->generator->execute();
+                $this->generator->clear();
+
+                foreach ($controllers as $controller => $data) {
+
+
+                    $parametersQuery = [
+                        'rootDir' => $this->rootDir . "/src",
+                        'projectDir' => $this->projectDir,
+                        'projectName' => str_replace('src/', '', $this->projectDir),
+                        'controllerName' => $controller,
+                        'group' => "Query"
+                    ];
+
+                    $parametersCommand = [
+                        'rootDir' => $this->rootDir . "/src",
+                        'projectDir' => $this->projectDir,
+                        'projectName' => str_replace('src/', '', $this->projectDir),
+                        'controllerName' => $controller,
+                        'group' => "Command"
+                    ];
+
+
+                    foreach ($data as $action) {
+
+                        if (in_array($action["action"], ["put", "delete", "update", "new", "patch"])) {
+                            $parametersCommand["controllerData"][] = $action;
+                            $parametersCommand["entityName"] = $action["entityName"];
+
+                            $this->generator->addHandler(new ControllerCommandTestHandler($parametersCommand));
+                            $this->generator->execute();
+                            $this->generator->clear();
+
+                        } else {
+                            $parametersQuery["controllerData"][] = $action;
+                            $parametersQuery["entityName"] = $action["entityName"];
+
+                            $this->generator->addHandler(new ControllerQueryTestHandler($parametersQuery));
+                            $this->generator->execute();
+                            $this->generator->clear();
+
+                        }
+
+                        $controllerToCreate[$controller][$action["entityName"]] = true;
+                    }
+
+                    $this->generator->execute();
+                    $this->generator->clear();
+                }
+
+                $this->generator->addHandler(new UpdateRequestTestHandler($parameters));
+                $this->generator->addHandler(new NewRequestTestHandler($parameters));
+                $this->generator->addHandler(new DeleteRequestTestHandler($parameters));
+                $this->generator->addHandler(new GetAllRequestTestHandler($parameters));
+                $this->generator->addHandler(new SearchByRequestTestHandler($parameters));
+                $this->generator->addHandler(new GetRequestTestHandler($parameters));
+                $this->generator->addHandler(new PatchRequestTestHandler($parameters));
+
+                $this->generator->execute();
+                $this->generator->clear();
+            }
+        }
+    }
 }

@@ -1,41 +1,29 @@
 <?php
 
-namespace Tests\Presentation\Adapter\Country\Command;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Adapter\Country\Command;
 
-use DemoCountry\Presentation\Adapter\Country\Command\NewCommandAdapter;
-use DemoCountry\Presentation\Request\Country\Command\NewRequest;
-use Sfynx\DddBundle\Layer\Application\Generalisation\Interfaces\CommandInterface;
-use Sfynx\DddBundle\Layer\Presentation\Adapter\Generalisation\CommandAdapterInterface;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\CommandRequestInterface;
-use \Phake;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\ExecuteTrait;
 
-class NewCommandAdapterTest extends \PHPUnit_Framework_TestCase
+class NewCommandAdapterTestHandler extends AbstractHandler implements HandlerInterface
 {
-    /**
-     * @var NewCommandAdapter
-     */
-    protected $adapter;
+    use  ExecuteTrait;
 
-    /**
-     * @var CommandRequestInterface
-     */
-    protected $request;
+    const SKELETON_DIR = 'Api/Tests/Presentation/Adapter/Country/Command';
+    const SKELETON_TPL = 'NewCommandAdapterTest.php.twig';
 
-    public function setUp()
+    protected $targetPattern = '%s/%s/Tests/NewCommandAdapterTest.php';
+    protected $target;
+
+    protected function setTarget()
     {
-        $this->adapter = new NewCommandAdapter();
-        $this->request  = Phake::mock(NewRequest::class);
-    }
-
-    public function testInterfaces()
-    {
-        $this->assertInstanceOf(CommandAdapterInterface::class,$this->adapter);
-    }
-
-    public function testCreateCommandFromRequest()
-    {
-        $this->adapter->createCommandFromRequest($this->request);
-        Phake::verify($this->request,Phake::times(1))->getRequestParameters();
-
+        $this->target = sprintf(
+            $this->targetPattern,
+            $this->parameters['rootDir'],
+            $this->parameters['projectDir'],
+            ucfirst($this->parameters['entityName']),
+            ucfirst($this->parameters['actionName'])
+        );
     }
 }

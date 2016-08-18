@@ -1,100 +1,29 @@
 <?php
 
-namespace Tests\Presentation\Coordination\Country\Command;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Coordination\Command;
 
-use DemoCountry\Application\Country\Command\Handler\Decorator\NewCommandHandlerDecorator;
-use DemoCountry\Application\Country\Command\Handler\Decorator\PatchCommandHandlerDecorator;
-use DemoCountry\Application\Country\Command\Handler\Decorator\UpdateCommandHandlerDecorator;
-use DemoCountry\Application\Country\Command\Handler\DeleteCommandHandler;
-use DemoCountry\Application\Country\Command\Handler\DeleteManyCommandHandler;
-use DemoCountry\Domain\Entity\Country;
-use DemoCountry\Presentation\Adapter\Country\Command\DeleteCommandAdapter;
-use DemoCountry\Presentation\Adapter\Country\Command\NewCommandAdapter;
-use DemoCountry\Presentation\Adapter\Country\Command\PatchCommandAdapter;
-use DemoCountry\Presentation\Adapter\Country\Command\UpdateCommandAdapter;
-use DemoCountry\Presentation\Coordination\Country\Command\Controller;
-use DemoCountry\Presentation\Request\  Country\Command\PatchRequest;
-use DemoCountry\Presentation\Request\  Country\Command\UpdateRequest;
-use DemoCountry\Presentation\Request\Country\Command\DeleteRequest;
-use DemoCountry\Presentation\Request\Country\Command\NewRequest;
-use \Phake;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Request\SymfonyStrategy;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Resolver\ResolverStrategy;
-use Sfynx\DddBundle\Layer\Presentation\Response\Handler\ResponseHandler;
-use Symfony\Component\HttpFoundation\Response;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\ExecuteTrait;
 
-
-class ControllerTest extends \PHPUnit_Framework_TestCase
+class ControllerTestHandler extends AbstractHandler implements HandlerInterface
 {
+    use  ExecuteTrait;
 
-    public function setUp()
+    const SKELETON_DIR = 'Api/Tests/Presentation/Coordination/Command';
+    const SKELETON_TPL = 'ControllerTest.php.twig';
+
+    protected $targetPattern = '%s/%s/Tests/Presentation/Coordination/Command/ControllerTest.php';
+    protected $target;
+
+    protected function setTarget()
     {
-        $this->request = Phake::mock(SymfonyStrategy::class);
-        $this->resolver = Phake::mock(ResolverStrategy::class);
-        $this->responseHandler = Phake::mock(ResponseHandler::class);
-
-        Phake::when($this->responseHandler)->create(Phake::anyParameters())->thenReturn($this->responseHandler);
-        Phake::when($this->responseHandler)->getResponse(Phake::anyParameters())->thenReturn(Phake::mock(Response::class));
-
-        $this->deleteHandler = Phake::mock(DeleteCommandHandler::class);
-        $this->deleteManyHandler = Phake::mock(DeleteManyCommandHandler::class);
-        $this->updateHandler = Phake::mock(UpdateCommandHandlerDecorator::class);
-        $this->newHandler = Phake::mock(NewCommandHandlerDecorator::class);
-        $this->patchHandler = Phake::mock(PatchCommandHandlerDecorator::class);
-        $this->entity = ["id" => "00c1ab20-6e1e-4c54-83b4-62e677aba7ec"];
-        Phake::when($this->newHandler)->process(Phake::anyParameters())->thenReturn($this->entity);
-        Phake::when($this->patchHandler)->process(Phake::anyParameters())->thenReturn($this->entity);
-        Phake::when($this->deleteHandler)->process(Phake::anyParameters())->thenReturn(1);
-        Phake::when($this->updateHandler)->process(Phake::anyParameters())->thenReturn($this->entity);
-
-        $this->controller = new Controller($this->request, $this->resolver, $this->responseHandler, $this->deleteHandler, $this->deleteManyHandler, $this->updateHandler, $this->newHandler, $this->patchHandler);
-    }
-
-    public function testNewAction()
-    {
-        $adapter = new NewCommandAdapter();
-        $command = $adapter->createCommandFromRequest(
-            new NewRequest($this->request, $this->resolver)
+        $this->target = sprintf(
+            $this->targetPattern,
+            $this->parameters['rootDir'],
+            $this->parameters['projectDir'],
+            ucfirst($this->parameters['entityName']),
+            ucfirst($this->parameters['actionName'])
         );
-
-        $this->controller->newAction();
-        Phake::verify($this->newHandler, Phake::times(1))->process($command);
-        Phake::verify($this->responseHandler, Phake::times(1))->create($this->entity, Response::HTTP_OK);
-    }
-
-    public function testPatchAction()
-    {
-        $adapter = new PatchCommandAdapter();
-        $command = $adapter->createCommandFromRequest(
-            new PatchRequest($this->request, $this->resolver)
-        );
-
-        $this->controller->patchAction();
-        Phake::verify($this->patchHandler, Phake::times(1))->process($command);
-        Phake::verify($this->responseHandler, Phake::times(1))->create($this->entity, Response::HTTP_OK);
-    }
-
-    public function testDeleteAction()
-    {
-        $adapter = new DeleteCommandAdapter();
-        $command = $adapter->createCommandFromRequest(
-            new DeleteRequest($this->request, $this->resolver)
-        );
-
-        $this->controller->deleteAction();
-        Phake::verify($this->deleteHandler, Phake::times(1))->process($command);
-        Phake::verify($this->responseHandler, Phake::times(1))->create(["message" => '1 row deleted'], Response::HTTP_OK);
-    }
-
-    public function testupdateAction()
-    {
-        $adapter = new UpdateCommandAdapter();
-        $command = $adapter->createCommandFromRequest(
-            new UpdateRequest($this->request, $this->resolver)
-        );
-
-        $this->controller->updateAction();
-        Phake::verify($this->updateHandler, Phake::times(1))->process($command);
-        Phake::verify($this->responseHandler, Phake::times(1))->create($this->entity, Response::HTTP_OK);
     }
 }

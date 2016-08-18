@@ -1,48 +1,29 @@
 <?php
 
-namespace Tests;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests;
 
-use \ReflectionMethod;
-use \Exception;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\ExecuteTrait;
 
-/**
- * @category   Tests
- * @package    Generalisation
- */
-trait TraitPrivateMethod
+class TraitPrivateMethodHandler extends AbstractHandler implements HandlerInterface
 {
-    /**
-     * call private/protected method
-     *
-     * @param   string    $class  class which will call private/protected method
-     * @param   string    $method private/protected method to call
-     * @param   object    $object instance of $class
-     * @param   null      $args   must be an array if not null
-     * @throws  Exception         if $args is not an array
-     * @return  mixed
-     * @example
-     * <code>
-     *   $this->callPrivateMethod(
-     *       'DemoApiContext\Domain\Workflow\Actor\Listener\ActorWFGenerateVOListener',
-     *       'setSituationVO',
-     *       $this->WFListener,
-     *       [$this->event]
-     *    );
-     * </code>
-     */
-    protected function callPrivateMethod($class, $method, $object, $args = null)
+    use  ExecuteTrait;
+
+    const SKELETON_DIR = 'Api/Tests/';
+    const SKELETON_TPL = 'TraitPrivateMethod.php.twig';
+
+    protected $targetPattern = '%s/%s/Tests/TraitPrivateMethod.php';
+    protected $target;
+
+    protected function setTarget()
     {
-        $method = new ReflectionMethod(
-            $class, $method
+        $this->target = sprintf(
+            $this->targetPattern,
+            $this->parameters['rootDir'],
+            $this->parameters['projectDir'],
+            ucfirst($this->parameters['entityName']),
+            ucfirst($this->parameters['actionName'])
         );
-        $method->setAccessible(true);
-        if (is_null($args)) {
-            return $method->invoke($object);
-        } else {
-            if (!is_array($args)) {
-                throw new Exception('$args param must be an array');
-            }
-            return $method->invokeArgs($object, $args);
-        }
     }
 }

@@ -1,43 +1,29 @@
 <?php
 
-namespace Tests\Presentation\Request\Country\Command;
+namespace Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\Presentation\Request\Command;
 
-require_once __DIR__.'/../../../../TraitVerifyResolver.php';
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\AbstractHandler;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\HandlerInterface;
+use Sfynx\DddGeneratorBundle\Generator\Generalisation\ExecuteTrait;
 
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\CommandRequestInterface;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Request\RequestInterface;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Request\SymfonyStrategy;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Resolver\ResolverInterface;
-use DemoCountry\Presentation\Request\Country\Command\PatchRequest;
-use \Phake;
-use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\Resolver\ResolverStrategy;
-
-class PatchRequestTest extends \PHPUnit_Framework_TestCase
+class PatchRequestTestHandler extends AbstractHandler implements HandlerInterface
 {
+    use  ExecuteTrait;
 
-    /**
-     * @var RequestInterface
-     */
-    protected $requestStrategy;
-    /**
-     * @var ResolverInterface
-     */
-    protected $resolverStrategy;
-    /**
-     * @var NewRequest
-     */
-    protected $request;
+    const SKELETON_DIR = 'Api/Tests/Presentation/Request/Command';
+    const SKELETON_TPL = 'PatchRequestTest.php.twig';
 
-    public function setUp()
+    protected $targetPattern = '%s/%s/Tests/Presentation/Request/Command/PatchRequestTest.php';
+    protected $target;
+
+    protected function setTarget()
     {
-        $this->SymfonyStrategy = Phake::mock(SymfonyStrategy::class);
-        $this->resolver = Phake::mock(ResolverStrategy::class);
-        $this->request = new PatchRequest($this->SymfonyStrategy,$this->resolver);
-
-    }
-
-    public function testGetRequestInterface()
-    {
-        $this->assertInstanceof(CommandRequestInterface::class,$this->request);
+        $this->target = sprintf(
+            $this->targetPattern,
+            $this->parameters['rootDir'],
+            $this->parameters['projectDir'],
+            ucfirst($this->parameters['entityName']),
+            ucfirst($this->parameters['actionName'])
+        );
     }
 }
