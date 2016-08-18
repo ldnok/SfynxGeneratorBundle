@@ -11,7 +11,7 @@ class PatchCommandHandlerDecoratorHandler extends AbstractHandler implements Han
     use  ExecuteTrait;
 
     const SKELETON_DIR = 'Api/Application/Command/Handler/Decorator';
-    const SKELETON_TPL = 'PAtchCommandHandlerDecorator.php.twig';
+    const SKELETON_TPL = 'PatchCommandHandlerDecorator.php.twig';
 
     protected $targetPattern = '%s/%s/Application/%s/Command/Handler/Decorator/PatchCommandHandlerDecorator.php';
     protected $target;
