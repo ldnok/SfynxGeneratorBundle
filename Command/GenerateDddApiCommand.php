@@ -5,14 +5,12 @@
  */
 namespace Sfynx\DddGeneratorBundle\Command;
 
-
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Application;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Domain;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Infrastructure;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\InfrastructureBundle;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Presentation;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\PresentationBundle;
-
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,15 +19,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Yaml\Parser;
 
-
 class GenerateDddApiCommand extends Command
 {
-
-
     protected $generator;
     protected $actionsToCreate;
     protected $rootDir;
     protected $destinationPath;
+    protected $contextName;
 
     protected $config;
     protected $entities = [];
@@ -38,7 +34,6 @@ class GenerateDddApiCommand extends Command
     protected $valueObjectsToCreate = [];
     protected $paths = [];
     protected $pathsToCreate = [];
-
 
     public function setGenerator($generator)
     {
@@ -66,10 +61,10 @@ class GenerateDddApiCommand extends Command
      */
     public function configure()
     {
-
         $this
             ->setName('sfynx:api')
             ->setDescription('Generates a ddd api')
+            ->addArgument('context-name', InputArgument::REQUIRED, 'Context name')
             ->addArgument('path-to-swagger-file', InputArgument::OPTIONAL, 'Path to swagger yml file.')
             ->addArgument('destination-path', InputArgument::OPTIONAL, 'Destination path', '/tmp')
             ->addOption('create-all', null, InputOption::VALUE_NONE, 'Generate all items.')
@@ -126,8 +121,23 @@ class GenerateDddApiCommand extends Command
         }
         $input->setArgument('destination-path', $destPath);
 
+        //set argument : context-name
+        if (isset($_SERVER['SYMFONY_SFYNX_CONTEXT_NAME'])) {
+            $contextName = $_SERVER['SYMFONY_SFYNX_CONTEXT_NAME'];
+        } else {
+            $contextName = $dialog->ask(
+                $input,
+                $output,
+                new Question('context name: ')
+            );
+        }
+        $input->setArgument('context-name', $contextName);
+
         // Parse swagger File
         $this->parseSwaggerFile($input, $output);
+
+//        var_dump($input);
+//        die('ok');
     }
 
     /**
@@ -139,7 +149,6 @@ class GenerateDddApiCommand extends Command
      */
     public function parseSwaggerFile($input, $output)
     {
-
         $dialog = $this->getHelper('question');
         $ymlParser = new Parser();
         $this->config = $ymlParser->parse(file_get_contents($input->getArgument('path-to-swagger-file')));
@@ -148,7 +157,6 @@ class GenerateDddApiCommand extends Command
         $this->paths = $this->parseRoutes();
 
         foreach ($this->valueObjects as $voName => $fields) {
-
             if ($input->getOption("create-all") || $dialog->ask(
                     $input,
                     $output,
@@ -156,12 +164,10 @@ class GenerateDddApiCommand extends Command
                 )
             ) {
                 $this->valueObjectsToCreate[] = $voName;
-
             }
         }
 
         foreach ($this->entities as $entityName => $fields) {
-
             if ($input->getOption("create-all") || $dialog->ask(
                     $input,
                     $output,
@@ -184,9 +190,7 @@ class GenerateDddApiCommand extends Command
                 }
             }
         }
-
     }
-
 
     /**
      * Parse route from a parsed Swagger File
@@ -211,7 +215,6 @@ class GenerateDddApiCommand extends Command
         return $results;
     }
 
-
     /**
      * Parse Value object from a swagger file
      */
@@ -234,7 +237,6 @@ class GenerateDddApiCommand extends Command
         return $results;
     }
 
-
     /**
      * Parse entities from a swagger file
      */
@@ -253,7 +255,6 @@ class GenerateDddApiCommand extends Command
         return $results;
     }
 
-
     /**
      *
      * Main function, execute the generator
@@ -263,7 +264,7 @@ class GenerateDddApiCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $projectDir = $_SERVER['SYMFONY_SFYNX_CONTEXT_NAME'];
+        $projectDir = $input->getArgument('context-name');
         $destinationPath = $input->getArgument('destination-path');
 
         $applicationGenerator = new Application($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
@@ -273,13 +274,11 @@ class GenerateDddApiCommand extends Command
         $infrastructureGenerator = new Infrastructure($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
         $infrastructureBundleGenerator = new InfrastructureBundle($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
 
-
         $applicationGenerator->generate();
         $domainGenerator->generate();
         $presentationGenerator->generate();
         $presentationBundleGenerator->generate();
         $infrastructureGenerator->generate();
         $infrastructureBundleGenerator->generate();
-
     }
 }
