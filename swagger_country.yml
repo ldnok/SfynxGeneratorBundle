@@ -13,8 +13,8 @@ paths:
   /v{_version}/country:
     get:
       operationId: getAll
-      x-controller: Entity
-      x-entity: Entity
+      x-controller: Country
+      x-entity: Country
       description: |
         Get all countries
       responses:
@@ -50,8 +50,8 @@ paths:
           description: An error occurs
     post:
       operationId: new
-      x-controller: Entity
-      x-entity: Entity
+      x-controller: Country
+      x-entity: Country
       description: |
         update a country
       parameters:
@@ -120,8 +120,8 @@ paths:
   /v{_version}/country/{entityId}:
     get:
       operationId: get
-      x-controller: Entity
-      x-entity: Entity
+      x-controller: Country
+      x-entity: Country
       description: |
         Get `country` object with id *countryId*
       parameters:
@@ -164,8 +164,8 @@ paths:
 
     patch:
       operationId: patch
-      x-controller: Entity
-      x-entity: Entity
+      x-controller: Country
+      x-entity: Country
       description: |
         Update `country` object with id *countryId*
       parameters:
@@ -260,8 +260,8 @@ paths:
       operationId: update
       description: |
         update a country
-      x-controller: Entity
-      x-entity: Entity
+      x-controller: Country
+      x-entity: Country
       parameters:
         - name: country
           in: body
@@ -329,8 +329,8 @@ paths:
   /v{_version}/country/searchBy:
       post:
         operationId: searchBy
-        x-controller: Entity
-        x-entity: Entity
+        x-controller: Country
+        x-entity: Country
         description: |
           Get `country` object with id *countryId*
         parameters:
@@ -386,8 +386,8 @@ paths:
   /v{_version}/country/findbyname/{name}:
       get:
         operationId: findbyName
-        x-controller: Entity
-        x-entity: Entity
+        x-controller: Country
+        x-entity: Country
         description: |
         parameters:
           - name: name
@@ -422,7 +422,7 @@ x-valueObjects:
 
 x-entities:
   Country:
-    name: country
+    name: Country
     type: entity
     x-fields:
       entityId:

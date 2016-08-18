@@ -83,20 +83,6 @@ replace your composer.json by this content :
 }
 
 
-Modify this line :
-  "url":"/home/dev/generator"
-By the path of generator repository on your file system.
-
-
-
-Go in /home/dev/generator and go on develop branch
-
-    git fetch
-    git chekout develop
-
-
-
-
 then run
     rm composer.lock
     composer install --ignore-platform-reqs
@@ -110,6 +96,7 @@ new Sfynx\DddGeneratorBundle\SfynxDddGeneratorBundle(),
 new \Sfynx\DddBundle\SfynxDddBundle(),
 new \JMS\SerializerBundle\JMSSerializerBundle(),
 new \Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+
 Create a swagger file (or use swagger.yml in this folder for test)
 --------------------------------------------------------------------
 
@@ -147,15 +134,15 @@ Add this Bundle in AppKernel.php
 
 
 
-    new \DemoGenerator\InfrastructureBundle\DemoGeneratorInfrastructureBundle(),
-    new \DemoGenerator\PresentationBundle\DemoGeneratorPresentationBundle(),
+    new \DemoCountry\InfrastructureBundle\DemoCountryInfrastructureBundle(),
+    new \DemoCountry\PresentationBundle\DemoCountryPresentationBundle(),
 
 
 Add a link to routes of your generated context
 ------------------------------------------------
 
   project_demogenerator_routing:
-     resource: "@DemoGeneratorPresentationBundle/Resources/config/routes/routing_<entityName>.yml"
+     resource: "@DemoCountryPresentationBundle/Resources/config/routes/routing_<entityName>.yml"
      prefix: /api
 
 
@@ -164,7 +151,7 @@ Indicate the Context Database Type
 
 add this lines in app/config/config.yml
 
-    DemoGenerator_infrastructure:
+    DemoCountry_infrastructure:
         database_type: orm
 
 Indicate the database.driver variable in app/config/parameters.yml
@@ -179,16 +166,16 @@ Add this config sections in your config file :
         auto_mapping: true
         mappings:
             StofDoctrineExtensionsBundle: ~
-            DemoGenerator:
+            DemoCountry:
                 type: annotation
-                alias: DemoGenerator
-                prefix: DemoGenerator\Domain\Entity
-                dir: "%kernel.root_dir%/../src/DemoGenerator/Domain/Entity"
-            DemoGeneratorVO:
+                alias: DemoCountry
+                prefix: DemoCountry\Domain\Entity
+                dir: "%kernel.root_dir%/../src/DemoCountry/Domain/Entity"
+            DemoCountryVO:
                 type: annotation
-                alias: DemoGeneratorVO
-                prefix: DemoGenerator\Domain\ValueObject
-                dir: "%kernel.root_dir%/../src/DemoGenerator/Domain/ValueObject"
+                alias: DemoCountryVO
+                prefix: DemoCountry\Domain\ValueObject
+                dir: "%kernel.root_dir%/../src/DemoCountry/Domain/ValueObject"
             SfynxDddBundle:
                 type: annotation
                 alias: VO
