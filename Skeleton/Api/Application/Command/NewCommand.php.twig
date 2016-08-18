@@ -13,24 +13,22 @@ use Sfynx\DddBundle\Layer\Application\Generalisation\Command\AbstractCommand;
  */
 class NewCommand extends AbstractCommand
 {
-    /* TODO declare fields and create constructor and getters/setters */
 
- {% for field in entityFields %}
-     {%  if field.type!="id"%}
-         protected ${{ field.name }};
-     {% endif %}
-{% endfor %}
-
+    {% for field in entityFields %}
+    {%  if field.type!="id"%}
+    protected ${{ field.name }};
+    {% endif %}
+    {% endfor %}
 
     {% set constructorArgs = "" %}
     {% for field in entityFields %}
-        {% if field.type!="id" %}
-            {% set var = '$' ~ field.name ~ ', '  %}
-            {% set constructorArgs = constructorArgs ~ var%}
-        {% endif %}
+    {% if field.type!="id" %}
+    {% set var = '$' ~ field.name ~ ', '  %}
+    {% set constructorArgs = constructorArgs ~ var%}
+    {% endif %}
     {% endfor %}
 
-     {% set constructorArgs = constructorArgs|trim(",") %}
+    {% set constructorArgs = constructorArgs|trim(", ") %}
 
     /**
      * NewCommand constructor.
@@ -41,34 +39,30 @@ class NewCommand extends AbstractCommand
     public function __construct({{ constructorArgs }})
     {
      {% for field in entityFields %}
-     {%  if field.type!="id"%}
+     {% if field.type != "id"%}
      $this->{{ field.name }} = ${{ field.name }};
      {% endif %}
      {% endfor %}
     }
 
     {% for field in entityFields %}
-        {% if field.type!="id" %}
-        /**
-        * @return mixed
-        */
-        public function get{{ field.name|ucfirst }}()
-        {
-
+    {% if field.type!="id" %}
+    /**
+    * @return mixed
+    */
+    public function get{{ field.name|ucfirst }}()
+    {
         return $this->{{ field.name }};
-        }
+    }
 
-        /**
-        * @param mixed {{ field.name }}
-        */
-
-        public function set{{ field.name|ucfirst }}(${{ field.name }})
-        {
+    /**
+    * @param mixed {{ field.name }}
+    */
+    public function set{{ field.name|ucfirst }}(${{ field.name }})
+    {
         $this->{{ field.name }} = ${{ field.name }};
-
-        }
-        {% endif %}
-
+    }
+    {% endif %}
     {% endfor %}
 
 }
