@@ -31,15 +31,15 @@ class PatchCommand extends AbstractCommand
 
 {% for field in  entityFields %}
 {% if field.type == "id" or field.type=="IdVO" %}
-    public function get{{ field.name|capitalize }}() {
-        return $this->{{ field.name|ucfirst }};
+    public function get{{ field.name|ucfirst }}() {
+        return $this->{{ field.name }};
     }
     /**
     * Set the {{ field.name|ucfirst }} attribute
     * @param  {{ field.name|ucfirst }} $value
     */
     public function set{{ field.name|ucfirst }}($value) {
-        $this->{{ field.name|ucfirst }} = $value;
+        $this->{{ field.name }} = $value;
     }
 {% else %}
         {% if field.type == "valueObject" %}
@@ -54,7 +54,7 @@ class PatchCommand extends AbstractCommand
             {% set namespace = "" %}
         {% endif %}
     /**
-    * get the {{ field.name|ucfirst }} attribute value
+    * get the {{ field.name }} attribute value
     * @return {{ field.type }} $value
     */
     public function get{{ field.name|ucfirst }}() {
