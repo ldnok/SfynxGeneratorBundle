@@ -256,9 +256,6 @@ class Presentation
                 $this->generator->execute();
                 $this->generator->clear();
 
-                $testControllerCommand = false;
-                $testControllerQuery = false;
-
                 foreach ($controllers as $controller => $data) {
 
 
@@ -279,40 +276,34 @@ class Presentation
                     ];
 
 
-
                     foreach ($data as $action) {
 
                         if (in_array($action["action"], ["put", "delete", "update", "new", "patch"])) {
                             $parametersCommand["controllerData"][] = $action;
                             $parametersCommand["entityName"] = $action["entityName"];
 
-                            $testControllerCommand = true;
-
+                            $this->generator->addHandler(new ControllerCommandTestHandler($parametersCommand));
+                            $this->generator->execute();
+                            $this->generator->clear();
 
                         } else {
                             $parametersQuery["controllerData"][] = $action;
                             $parametersQuery["entityName"] = $action["entityName"];
 
-                            $testControllerQuery = true;
+                            $this->generator->addHandler(new ControllerQueryTestHandler($parametersQuery));
+                            $this->generator->execute();
+                            $this->generator->clear();
 
                         }
 
                         $controllerToCreate[$controller][$action["entityName"]] = true;
                     }
+
+                    $controllersToCreate[] = $controllerToCreate;
+
+
                 }
 
-                if($testControllerQuery) {
-                    $this->generator->addHandler(new ControllerQueryTestHandler($parametersQuery));
-                    $this->generator->execute();
-                    $this->generator->clear();
-                }
-
-                if($testControllerCommand) {
-
-                    $this->generator->addHandler(new ControllerCommandTestHandler($parametersCommand));
-                    $this->generator->execute();
-                    $this->generator->clear();
-                }
 
                 $this->generator->addHandler(new UpdateRequestTestHandler($parameters));
                 $this->generator->addHandler(new NewRequestTestHandler($parameters));
