@@ -1,8 +1,6 @@
 <?php
-/**
- * Sfynx Bundle Generator Symfony command
- * @author "Nicolas Blaudez <nblaudez@gmail.com>"
- */
+//todo : à revoir
+
 namespace Sfynx\DddGeneratorBundle\Command;
 
 use DemoApiContext\PresentationBundle\DependencyInjection\Compiler\ResettingListenersPass;
@@ -28,11 +26,8 @@ use Symfony\Component\Console\Question\Question;
 
 use Sfynx\DddGeneratorBundle\Generator\Bundle\Handler\InfrastructureBundle\DependencyInjection\ConfigurationHandler;
 
-
-class GenerateDddBundleCommand extends Command
+class GenerateDddStructureCommand extends Command
 {
-
-
     protected $generator;
     protected $rootDir;
     protected $bundleName;
@@ -43,11 +38,11 @@ class GenerateDddBundleCommand extends Command
      */
     public function configure()
     {
-
         $this
-            ->setName('sfynx:bundle')
-            ->setDescription('Generates a ddd bundle')
-            ->setHelp("Generate a ddd bundle"); 
+            ->setName('sfynx:structure')
+            ->setDescription('Generates a ddd structure')
+            ->addArgument('destination-path', InputArgument::OPTIONAL, 'Destination path', '/tmp')
+            ->setHelp("Generate a ddd structure");
     }
 
     public function interact(InputInterface $input, OutputInterface $output)
@@ -58,11 +53,37 @@ class GenerateDddBundleCommand extends Command
             $output,
             new Question('Enter the name of the bundle : ')
         );
+
+        //set argument : destination_path
+        if (isset($_SERVER['SYMFONY_SFYNX_PATH_TO_DEST_FILES'])) {
+            $destPath = $_SERVER['SYMFONY_SFYNX_PATH_TO_DEST_FILES'];
+        } else {
+            $destPath = $dialog->ask(
+                $input,
+                $output,
+                new Question('destination path: ')
+            );
+
+            while (!is_dir($destPath) || !is_writable($destPath)) {
+                //Set the entity name
+                $output->writeln("This directory doesn't exist or is not writable");
+                $dialog = $this->getHelper('question');
+                $destPath = $dialog->ask(
+                    $input,
+                    $output,
+                    new Question('Path to swagger yml file: ')
+                );
+            }
+        }
+        $input->setArgument('destination-path', $destPath);
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-
+        $destPath = $input->getArgument('destination-path');
+        if (null !== $destPath) {
+            $this->rootDir = $destPath;
+        }
         mkdir($this->rootDir."/".$this->bundleName);
 
         mkdir($this->rootDir."/".$this->bundleName."/Application");
@@ -154,7 +175,7 @@ class GenerateDddBundleCommand extends Command
     }
 
     public function setRootDir($rootDir) {
-        $this->rootDir = $rootDir."/../src/";
+        $this->rootDir = $rootDir;
     }
 
 }

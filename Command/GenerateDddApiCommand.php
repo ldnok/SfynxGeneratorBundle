@@ -1,8 +1,5 @@
 <?php
-/**
- * Sfynx Api Generator Symfony command
- * @author "Nicolas Blaudez <nblaudez@gmail.com>"
- */
+
 namespace Sfynx\DddGeneratorBundle\Command;
 
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Application;
@@ -47,11 +44,6 @@ class GenerateDddApiCommand extends Command
 
     public function setRootDir($rootDir)
     {
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-            $rootDir = str_replace("\\app", "", $rootDir);
-        } else {
-            $rootDir = str_replace("/app", "", $rootDir);
-        }
         $this->rootDir = $rootDir;
     }
 
@@ -135,9 +127,6 @@ class GenerateDddApiCommand extends Command
 
         // Parse swagger File
         $this->parseSwaggerFile($input, $output);
-
-//        var_dump($input);
-//        die('ok');
     }
 
     /**
