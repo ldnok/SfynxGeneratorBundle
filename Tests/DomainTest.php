@@ -139,27 +139,12 @@ class DomainTest extends \PHPUnit_Framework_TestCase
             $this->assertFileExists(__DIR__ . "/../../../../src/" . $this->environment . "/Domain/Workflow/" . $entity . "/Listener/WFSaveEntity.php");
             $this->assertTrue($this->checkNamespace($this->environment . "\\Domain\\Workflow\\$entity\\Listener", __DIR__ . "/../../../../src/" . $this->environment . "/Domain/Workflow/" . $entity . "/Listener/WFSaveEntity.php"));
             $this->assertTrue($this->checkClassName("WFSaveEntity", __DIR__ . "/../../../../src/" . $this->environment . "/Domain/Workflow/" . $entity . "/Listener/WFSaveEntity.php"));
-
         }
-
-        $this->assertFileExists(__DIR__ . "/../../../../src/" . $this->environment . "/Domain/Specification/Infrastructure/User/SpecIsRoleAdmin.php");
-        $this->assertTrue($this->checkNamespace($this->environment . "\\Domain\\Specification\\Infrastructure\\User", __DIR__ . "/../../../../src/" . $this->environment . "/Domain/Specification/Infrastructure/User/SpecIsRoleAdmin.php"));
-        $this->assertTrue($this->checkClassName("SpecIsRoleAdmin", __DIR__ . "/../../../../src/" . $this->environment . "/Domain/Specification/Infrastructure/User/SpecIsRoleAdmin.php"));
-
-        $this->assertFileExists(__DIR__ . "/../../../../src/" . $this->environment . "/Domain/Specification/Infrastructure/User/SpecIsRoleAnonymous.php");
-        $this->assertTrue($this->checkNamespace($this->environment . "\\Domain\\Specification\\Infrastructure\\User", __DIR__ . "/../../../../src/" . $this->environment . "/Domain/Specification/Infrastructure/User/SpecIsRoleAnonymous.php"));
-        $this->assertTrue($this->checkClassName("SpecIsRoleAnonymous", __DIR__ . "/../../../../src/" . $this->environment . "/Domain/Specification/Infrastructure/User/SpecIsRoleAnonymous.php"));
-
-        $this->assertFileExists(__DIR__ . "/../../../../src/" . $this->environment . "/Domain/Specification/Infrastructure/User/SpecIsRoleUser.php");
-        $this->assertTrue($this->checkNamespace($this->environment . "\\Domain\\Specification\\Infrastructure\\User", __DIR__ . "/../../../../src/" . $this->environment . "/Domain/Specification/Infrastructure/User/SpecIsRoleUser.php"));
-        $this->assertTrue($this->checkClassName("SpecIsRoleUser", __DIR__ . "/../../../../src/" . $this->environment . "/Domain/Specification/Infrastructure/User/SpecIsRoleUser.php"));
-
 
         foreach ($this->valueObjects as $voName => $fields) {
             $this->assertFileExists(__DIR__ . "/../../../../src/" . $this->environment . "/Domain/ValueObject/" . $voName . ".php");
             $this->assertTrue($this->checkNamespace($this->environment . "\\Domain\\ValueObject", __DIR__ . "/../../../../src/" . $this->environment . "/Domain/ValueObject/" . $voName . ".php"));
             $this->assertTrue($this->checkClassName($voName, __DIR__ . "/../../../../src/" . $this->environment . "/Domain/ValueObject/" . $voName . ".php"));
-
         }
 
     }
