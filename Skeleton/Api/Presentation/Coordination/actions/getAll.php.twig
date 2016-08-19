@@ -1,4 +1,4 @@
-    public function getAllAction()
+    public function {{ action.action }}Action()
     {
         $adapter = new GetAllQueryAdapter();
         $query = $adapter->createQueryFromRequest(
