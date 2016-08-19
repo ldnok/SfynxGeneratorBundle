@@ -41,8 +41,6 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Tests\TraitVerifyResolverHand
 
 class Presentation
 {
-
-
     protected $generator;
     protected $entities = [];
     protected $entitiesToCreate = [];
@@ -70,7 +68,6 @@ class Presentation
 
     public function generate()
     {
-
         $this->output->writeln("#############################################");
         $this->output->writeln("#     GENERATE PRESENTATION STRUCTURE       #");
         $this->output->writeln("#############################################");
@@ -98,6 +95,7 @@ class Presentation
                 'actionName' => ucfirst(strtolower($data['action'])),
                 'entityName' => ucfirst(strtolower($data['entity'])),
                 'entityFields' => $this->entities[$data["entity"]],
+                'destinationPath' => $this->destinationPath,
             ];
             $parameters['constructorArgs'] = trim($constructorParams, ',');
 
@@ -118,17 +116,13 @@ class Presentation
 
     public function generateCoordination()
     {
-
         foreach ($this->pathsToCreate as $route => $verbData) {
             foreach ($verbData as $verb => $data) {
                 $controllers[$data["controller"]][] = ["action" => $data["action"], "path" => $route, "method" => $verb, "entityName" => $data['entity']];
             }
         }
 
-
         foreach ($controllers as $controller => $data) {
-
-
             $parametersQuery = [
                 'rootDir' => $this->rootDir . "/src",
                 'projectDir' => $this->projectDir,
@@ -144,7 +138,6 @@ class Presentation
                 'controllerName' => $controller,
                 'group' => "Command"
             ];
-
 
             foreach ($data as $action) {
 
@@ -170,8 +163,6 @@ class Presentation
             }
 
             $controllersToCreate[] = $controllerToCreate;
-
-
         }
 
 
@@ -215,8 +206,6 @@ class Presentation
                     'entityFields' => $this->entities[$data["entity"]],
                 ];
                 $parameters['constructorArgs'] = trim($constructorParams, ',');
-
-
             }
 
             $this->generator->addHandler(new UpdateRequestHandler($parameters));
@@ -232,7 +221,6 @@ class Presentation
             $this->generator->execute();
             $this->generator->clear();
         }
-
     }
 
     public function generateTests()

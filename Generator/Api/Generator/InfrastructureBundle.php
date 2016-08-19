@@ -50,7 +50,8 @@ class InfrastructureBundle
             'projectDir' => $this->projectDir,
             'projectName' => str_replace('src/', '', $this->projectDir),
             'entities' => $this->entities,
-            'valueObjects' => $this->valueObjects
+            'valueObjects' => $this->valueObjects,
+            'destinationPath' => $this->destinationPath,
         ];
 
         $this->generator->addHandler(new CreateRepositoryFactoryPassHandler($parameters));

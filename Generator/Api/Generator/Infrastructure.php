@@ -94,7 +94,7 @@ class Infrastructure
                     'fields' => $this->entities[$data['entity']],
                     'valueObjects' => $this->valueObjects,
                     'constructorArgs' => trim($constructorParams, ','),
-                    'valueObjects' => $this->valueObjects,
+                    'destinationPath' => $this->destinationPath,
                 ];
 
                 $this->generator->addHandler(new IPDeleteManyRepositoryHandler($parameters));
