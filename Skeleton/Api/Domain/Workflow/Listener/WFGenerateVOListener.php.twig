@@ -22,7 +22,7 @@ class WFGenerateVOListener implements ObserverInterface
 {
 
 {% for field in fields %}
-    private ${{ field.name|lower }};
+    private ${{ field.name }};
 {% endfor %}
 
 
@@ -33,12 +33,12 @@ class WFGenerateVOListener implements ObserverInterface
     public function update(ObservableInterface $wfHandler)
     {
 {% for field in fields %}
-        $this->set{{ field.name|capitalize }}($wfHandler);
+        $this->set{{ field.name|ucfirst }}($wfHandler);
 {% endfor %}
 }
 
 {% for field in fields %}
-    public function set{{ field.name|capitalize }}(ObservableInterface $wfHandler) {
+    public function set{{ field.name|ucfirst }}(ObservableInterface $wfHandler) {
     {% if field.type=="id" %}
         if ($wfHandler->getCommand() instanceof UpdateCommand  || $wfHandler->getCommand() instanceof PatchCommand) {
 {% if field.voName is defined %}
