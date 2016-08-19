@@ -55,24 +55,6 @@ Replacer your composer.json
             "sensio/generator-bundle": "~3.0",
             "symfony/phpunit-bridge": "~2.7"
         },
-        "scripts": {
-            "post-install-cmd": [
-                "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-                "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-                    "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-                "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
-        ],
-        "post-update-cmd": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-                "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
-            ]
-        },
         "config": {
             "bin-dir": "bin",
             "platform": {
@@ -80,12 +62,6 @@ Replacer your composer.json
             }
         },
         "extra": {
-            "symfony-app-dir": "app",
-            "symfony-web-dir": "web",
-            "symfony-assets-install": "relative",
-            "incenteev-parameters": {
-                "file": "app/config/parameters.yml"
-            },
             "branch-alias": {
                 "dev-master": "2.8-dev"
             }
