@@ -12,7 +12,7 @@
             new NewRequest($this->request, $this->resolver)
         );
         if ($entity = $this->newCommandHandlerDecorator->process($command)) {
-            return $this->responseHandler->create($entity, Response::HTTP_OK)->getResponse();
+            return $this->responseHandler->create($entity, Response::HTTP_CREATED)->getResponse();
         }
         //if error
         $result = ["message" =>"validation handler not accepted"];

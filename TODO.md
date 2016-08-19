@@ -8,3 +8,4 @@
 * faire la génération du fichier config/swagger.yml (déjà commencé)
 * ajouter les proceessor monolog (cf etienne)
 * ajouter le EventListener/handlerException (cf etienne)
+* ajouter les tenantId
