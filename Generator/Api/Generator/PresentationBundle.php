@@ -34,7 +34,6 @@ class PresentationBundle
         $this->pathsToCreate = $pathsToCreate;
         $this->projectDir = $projectDir;
         $this->rootDir = $rootDir;
-
     }
 
     public function generate()
@@ -86,7 +85,6 @@ class PresentationBundle
 
             $this->generator->addHandler(new RoutesHandler($parameters));
             $this->generator->addHandler(new ApplicationHandler($parameters));
-
 
             $this->generator->execute();
             $this->generator->clear();

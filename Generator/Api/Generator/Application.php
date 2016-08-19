@@ -109,7 +109,6 @@ class Application
                         'fields' => $this->entities[$data['entity']],
                         'valueObjects' => $this->valueObjects,
                         'constructorArgs' => trim($constructorParams, ','),
-                        'valueObjects' => $this->valueObjects,
                         'destinationPath' => $this->destinationPath,
                     ];
 
@@ -234,7 +233,8 @@ class Application
                         'fields' => $this->entities[$data['entity']],
                         'valueObjects' => $this->valueObjects,
                         'constructorArgs' => trim($constructorParams, ','),
-                        'valueObjects' => $this->valueObjects,
+                        'destinationPath' => $this->destinationPath,
+
                     ];
 
                     // Command

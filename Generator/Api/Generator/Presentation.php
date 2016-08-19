@@ -256,7 +256,8 @@ class Presentation
                         'projectDir' => $this->projectDir,
                         'projectName' => str_replace('src/', '', $this->projectDir),
                         'controllerName' => $controller,
-                        'group' => "Query"
+                        'group' => "Query",
+                        'destinationPath' => $this->destinationPath,
                     ];
 
                     $parametersCommand = [
@@ -264,7 +265,8 @@ class Presentation
                         'projectDir' => $this->projectDir,
                         'projectName' => str_replace('src/', '', $this->projectDir),
                         'controllerName' => $controller,
-                        'group' => "Command"
+                        'group' => "Command",
+                        'destinationPath' => $this->destinationPath,
                     ];
 
 
@@ -273,6 +275,7 @@ class Presentation
                         if (in_array($action["action"], ["put", "delete", "update", "new", "patch"])) {
                             $parametersCommand["controllerData"][] = $action;
                             $parametersCommand["entityName"] = $action["entityName"];
+                            $parametersCommand["destinationPath"] = $this->destinationPath;
 
                             $this->generator->addHandler(new ControllerCommandTestHandler($parametersCommand));
                             $this->generator->execute();
@@ -281,6 +284,7 @@ class Presentation
                         } else {
                             $parametersQuery["controllerData"][] = $action;
                             $parametersQuery["entityName"] = $action["entityName"];
+                            $parametersQuery["destinationPath"] = $this->destinationPath;
 
                             $this->generator->addHandler(new ControllerQueryTestHandler($parametersQuery));
                             $this->generator->execute();

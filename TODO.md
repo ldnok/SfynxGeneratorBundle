@@ -6,3 +6,5 @@
 * move the handlers 
 * ajouter le getSwaggerFile dans le Query controller comme dans le corps
 * faire la génération du fichier config/swagger.yml (déjà commencé)
+* ajouter les proceessor monolog (cf etienne)
+* ajouter le EventListener/handlerException (cf etienne)
