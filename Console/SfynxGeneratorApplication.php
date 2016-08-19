@@ -3,7 +3,7 @@
 namespace Sfynx\DddGeneratorBundle\Console;
 
 use Sfynx\DddGeneratorBundle\Command\GenerateDddApiCommand;
-use Sfynx\DddGeneratorBundle\Command\GenerateDddBundleCommand;
+use Sfynx\DddGeneratorBundle\Command\GenerateDddStructureCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,7 +46,7 @@ class SfynxGeneratorApplication extends Application
 //        $defaultCommands = parent::getDefaultCommands();
 //
 //        $defaultCommands[] = new GenerateDddApiCommand();
-//        $defaultCommands[] = new GenerateDddBundleCommand();
+//        $defaultCommands[] = new GenerateDddStructureCommand();
 //
 //        return $defaultCommands;
 //    }

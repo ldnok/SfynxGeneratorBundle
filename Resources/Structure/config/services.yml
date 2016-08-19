@@ -1,6 +1,6 @@
 parameters:
     structure.generator.class: Sfynx\DddGeneratorBundle\Generator\Bundle\DddBundleGenerator
-    structure.generator.command.class: Sfynx\DddGeneratorBundle\Command\GenerateDddBundleCommand
+    structure.generator.command.class: Sfynx\DddGeneratorBundle\Command\GenerateDddStructureCommand
 
 services:
     api.generator:
