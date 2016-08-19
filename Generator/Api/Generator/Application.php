@@ -1,7 +1,6 @@
 <?php
 namespace Sfynx\DddGeneratorBundle\Generator\Api\Generator;
 
-
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Adapter\SearchByAdapterHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\DeleteCommandHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Application\Command\Handler\Decorator\NewCommandHandlerDecoratorHandler;
@@ -45,8 +44,6 @@ use Tests\Application\Country\Application\Country\Command\Validation\NewCommandV
 
 class Application
 {
-
-
     protected $generator;
     protected $entities = [];
     protected $entitiesToCreate = [];
@@ -70,12 +67,10 @@ class Application
         $this->pathsToCreate = $pathsToCreate;
         $this->projectDir = $projectDir;
         $this->rootDir = $rootDir;
-
     }
 
     public function generate()
     {
-
         $this->output->writeln("#############################################");
         $this->output->writeln("# GENERATE APPLICATION STRUCTURE            #");
         $this->output->writeln("#############################################");
@@ -118,7 +113,6 @@ class Application
                         'destinationPath' => $this->destinationPath,
                     ];
 
-
                     // Command
                     $this->generator->addHandler(new UpdateCommandHandler($parameters));
                     // Decorator
@@ -146,8 +140,6 @@ class Application
                     // Handler
                     $this->generator->addHandler(new DeleteManyCommandHandlerHandler($parameters));
                     $this->generator->addHandler(new DeleteCommandHandlerHandler($parameters));
-
-
 
                     // Command
                     $this->generator->addHandler(new PatchCommandHandler($parameters));
@@ -209,7 +201,6 @@ class Application
 
                     $this->generator->execute();
                     $this->generator->clear();
-
                 }
             }
         }
@@ -253,15 +244,12 @@ class Application
                     // Handler
                     $this->generator->addHandler(new UpdateCommandHandlerTestHandler($parameters));
 
-
                     // Command
                     $this->generator->addHandler(new NewCommandTestHandler($parameters));
                     // Decorator
                     $this->generator->addHandler(new NewCommandHandlerDecoratorTestHandler($parameters));
                     // Handler
                     $this->generator->addHandler(new NewCommandHandlerTestHandler($parameters));
-
-
 
                     // Command
                     $this->generator->addHandler(new DeleteCommandTestHandler($parameters));
@@ -293,7 +281,6 @@ class Application
                     $this->generator->addHandler(new SearchByQueryHandler($parameters));
                     $this->generator->addHandler(new SearchByQueryHandlerHandler($parameters));
                     */
-
 
                     $this->generator->execute();
                     $this->generator->clear();

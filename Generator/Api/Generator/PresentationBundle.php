@@ -55,7 +55,8 @@ class PresentationBundle
             'rootDir' => $this->rootDir . "/src",
             'projectDir' => $this->projectDir,
             'projectName' => str_replace('src/', '', $this->projectDir),
-            'entities' => $this->entities
+            'entities' => $this->entities,
+            'destinationPath' => $this->destinationPath,
         ];
 
         $this->generator->addHandler(new PresentationBundleHandler($parameters));

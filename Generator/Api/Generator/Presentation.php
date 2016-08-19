@@ -128,7 +128,8 @@ class Presentation
                 'projectDir' => $this->projectDir,
                 'projectName' => str_replace('src/', '', $this->projectDir),
                 'controllerName' => $controller,
-                'group' => "Query"
+                'group' => "Query",
+                'destinationPath' => $this->destinationPath,
             ];
 
             $parametersCommand = [
@@ -136,7 +137,8 @@ class Presentation
                 'projectDir' => $this->projectDir,
                 'projectName' => str_replace('src/', '', $this->projectDir),
                 'controllerName' => $controller,
-                'group' => "Command"
+                'group' => "Command",
+                'destinationPath' => $this->destinationPath,
             ];
 
             foreach ($data as $action) {
@@ -176,6 +178,7 @@ class Presentation
                 'projectDir' => $this->projectDir,
                 'projectName' => str_replace('src/', '', $this->projectDir),
                 'controllers' => $controllersToCreate[$controller],
+                'destinationPath' => $this->destinationPath,
             ];
 
             $this->generator->addHandler(new ControllersHandler($parameters));
@@ -185,17 +188,14 @@ class Presentation
         }
     }
 
-
     public function generateRequest()
     {
         foreach ($this->pathsToCreate as $route => $verbData) {
             foreach ($verbData as $verb => $data) {
-
                 $constructorParams = "";
                 foreach ($this->entities[$data["entity"]] as $field) {
                     $constructorParams .= "$" . $field['name'] . ",";
                 }
-
 
                 $parameters = [
                     'rootDir' => $this->rootDir . "/src",
@@ -204,6 +204,7 @@ class Presentation
                     'actionName' => ucfirst(strtolower($data['action'])),
                     'entityName' => ucfirst(strtolower($data['entity'])),
                     'entityFields' => $this->entities[$data["entity"]],
+                    'destinationPath' => $this->destinationPath,
                 ];
                 $parameters['constructorArgs'] = trim($constructorParams, ',');
             }
@@ -236,6 +237,7 @@ class Presentation
                     'actionName' => ucfirst(strtolower($data['action'])),
                     'entityName' => ucfirst(strtolower($data['entity'])),
                     'entityFields' => $this->entities[$data["entity"]],
+                    'destinationPath' => $this->destinationPath,
                 ];
 
                 $this->generator->addHandler(new UpdateCommandAdapterTestHandler($parameters));
@@ -285,15 +287,10 @@ class Presentation
                             $this->generator->clear();
 
                         }
-
                         $controllerToCreate[$controller][$action["entityName"]] = true;
                     }
-
                     $controllersToCreate[] = $controllerToCreate;
-
-
                 }
-
 
                 $this->generator->addHandler(new UpdateRequestTestHandler($parameters));
                 $this->generator->addHandler(new NewRequestTestHandler($parameters));

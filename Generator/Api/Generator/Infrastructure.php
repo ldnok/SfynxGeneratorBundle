@@ -42,12 +42,10 @@ class Infrastructure
         $this->pathsToCreate = $pathsToCreate;
         $this->projectDir = $projectDir;
         $this->rootDir = $rootDir;
-
     }
 
     public function generate()
     {
-
         $this->output->writeln("#############################################");
         $this->output->writeln("# GENERATE INFRASTRUCTURE STRUCTURE         #");
         $this->output->writeln("#############################################");
