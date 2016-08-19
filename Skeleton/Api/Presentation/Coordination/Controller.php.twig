@@ -41,7 +41,6 @@ use Sfynx\DddBundle\Layer\Presentation\Response\Generalisation\ResponseHandlerIn
 class Controller
 {
 
-
     {% if group == "Command" %}
     /** @var  \{{ projectName }}\Application\{{ entityName }}\Command\Handler\DeleteCommandHandler */
     protected $deleteCommandHandler;
@@ -84,6 +83,7 @@ class Controller
         $this->newCommandHandlerDecorator = $newCommandHandlerDecorator;
         $this->patchCommandHandlerDecorator = $patchCommandHandlerDecorator;
     }
+
 {% elseif group == "Query" %}
     /** @var RequestInterface */
     protected $request;
@@ -117,17 +117,16 @@ class Controller
     QueryHandlerInterface $getByIdsQueryHandler,
     QueryHandlerInterface $getQueryHandler,
     QueryHandlerInterface $searchByQueryHandler
-    ) {
-    $this->request = $request;
-    $this->resolver = $resolver;
-    $this->responseHandler = $responseHandler;
-    $this->getAllQueryHandler = $getAllQueryHandler;
-    $this->getQueryHandler = $getQueryHandler;
-    $this->getByIdsQueryHandler = $getByIdsQueryHandler;
-    $this->searchByQueryHandler = $searchByQueryHandler;
+    ){
+        $this->request = $request;
+        $this->resolver = $resolver;
+        $this->responseHandler = $responseHandler;
+        $this->getAllQueryHandler = $getAllQueryHandler;
+        $this->getQueryHandler = $getQueryHandler;
+        $this->getByIdsQueryHandler = $getByIdsQueryHandler;
+        $this->searchByQueryHandler = $searchByQueryHandler;
     }
     {% endif %}
-
 
 {% for action in controllerData %}
 

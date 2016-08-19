@@ -1,5 +1,11 @@
 <?php
 
+{% set entityIdName = 'id' %}
+{% for field in entityFields %}
+{% if field.type == "id" %}
+{% set entityIdName = field.name %}
+{% endif %}
+{% endfor %}
 namespace {{ projectName }}\Presentation\Request\{{ entityName }}\Command;
 
 use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\CommandRequestInterface;
@@ -15,24 +21,22 @@ use Sfynx\DddBundle\Layer\Presentation\Request\Generalisation\AbstractRequest;
 class PatchRequest extends AbstractRequest implements CommandRequestInterface
 {
     protected $defaults = [
-    {% for field in entityFields %}
-        {%  if field.type != "id" %}
-         '{{ field.name }}'=>'',
-        {% endif %}
-    {% endfor %}
-    ];
-
-    protected $required = [
-        'entityId'
-    ];
-
-    protected $allowedTypes = [
 {% for field in entityFields %}
-        '{{ field.name }}'=>['{% if field.type!="id" %}{% if field.type=="number" %}integer{% elseif field.type=="boolean" %}string{% elseif field.type=="valueObject" %}array{% else %}{{ field.type }}{% endif %}{% else %}string{% endif %}'],
+{% if field.type != "id" %}
+        '{{ field.name }}' => '',
+    {% endif %}
 {% endfor %}
     ];
 
+    protected $required = [
+        '{{ entityIdName }}',
+    ];
 
+    protected $allowedTypes = [
+    {% for field in entityFields %}
+        '{{ field.name }}' => ['{% if field.type!="id" %}{% if field.type=="number" %}integer{% elseif field.type=="boolean" %}string{% elseif field.type=="valueObject" %}array{% else %}{{ field.type }}{% endif %}{% else %}string{% endif %}'],
+    {% endfor %}
+    ];
 
     protected function setOptions()
     {
@@ -43,9 +47,9 @@ class PatchRequest extends AbstractRequest implements CommandRequestInterface
         $this->options = (null !== $this->options) ? $this->options : [];
 
         //get url's params
-        $entityId = $this->request->get('entityId');
-        if ($entityId !== null) {
-            $this->options['entityId'] = $entityId;
+        ${{ entityIdName }} = $this->request->get('{{ entityIdName }}');
+        if (${{ entityIdName }} !== null) {
+            $this->options['{{ entityIdName }}'] = ${{ entityIdName }};
         }
     }
 }
