@@ -5,9 +5,6 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Repository\EntityRepos
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Manager\ManagerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Processor\PostPersistProcessHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Service\Processor\PrePersistProcessHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Specification\User\SpecIsRoleAdminHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Specification\User\SpecIsRoleAnonymousHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Specification\User\SpecIsRoleUserHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Handler\NewWFHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Handler\PatchWFHandlerHandler;
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\Domain\Workflow\Handler\UpdateWFHandlerHandler;
@@ -57,14 +54,12 @@ class Domain
 
     public function generate()
     {
-
         $this->output->writeln("#############################################");
         $this->output->writeln("# GENERATE DOMAIN  STRUCTURE                #");
         $this->output->writeln("#############################################");
 
         $this->generateEntitiesAndRepositoriesInterfaces();
         $this->generateServices();
-        $this->generateSpecifications();
         $this->generateWorkflow();
         $this->generateValueObject();
         $this->generateTests();
@@ -107,7 +102,6 @@ class Domain
                 $this->generator->clear();
             }
         }
-
     }
 
     /**
@@ -158,36 +152,7 @@ class Domain
                 $this->generator->execute();
                 $this->generator->clear();
             }
-
         }
-
-
-    }
-
-    /**
-     *
-     * Generate :
-     * /Domain/Specification/Infrastructure/{entityName}/SpecIsRoleAdmin.php
-     * /Domain/Specification/Infrastructure/{entityName}/SpecIsRoleAnonymous.php
-     * /Domain/Specification/Infrastructure/{entityName}/SpecIsRoleUser.php
-     */
-    public function generateSpecifications()
-    {
-
-        $parameters = [
-            'rootDir' => $this->rootDir . "/src",
-            'projectDir' => $this->projectDir,
-            'projectName' => str_replace('src/', '', $this->projectDir),
-            'entities' => $this->entities,
-            'destinationPath' => $this->destinationPath,
-        ];
-
-        $this->generator->addHandler(new SpecIsRoleAdminHandler($parameters));
-        $this->generator->addHandler(new SpecIsRoleAnonymousHandler($parameters));
-        $this->generator->addHandler(new SpecIsRoleUserHandler($parameters));
-
-        $this->generator->execute();
-        $this->generator->clear();
     }
 
     /**

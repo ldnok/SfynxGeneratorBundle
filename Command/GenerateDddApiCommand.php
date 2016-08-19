@@ -1,5 +1,5 @@
 <?php
-
+//todo à revoir
 namespace Sfynx\DddGeneratorBundle\Command;
 
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Application;

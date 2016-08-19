@@ -4,13 +4,9 @@ namespace {{ projectName }}\Application\{{ entityName }}\Command\Validation\Spec
 
 use Sfynx\DddBundle\Layer\Application\Generalisation\Validation\SpecHandler\AbstractCommandSpecHandler;
 use Sfynx\SpecificationBundle\Specification\Logical\TrueSpec;
-use Sfynx\SpecificationBundle\Specification\Logical\XorSpec;
-use {{ projectName }}\Domain\Specification\Infrastructure\User\SpecIsRoleAdmin;
-use {{ projectName }}\Domain\Specification\Infrastructure\User\SpecIsRoleUser;
-use {{ projectName }}\Domain\Specification\Infrastructure\User\SpecIsRoleAnonymous;
 
 /**
- * Class NewCommandValidationHandler.
+ * Class NewCommandSpecHandler.
  *
  * @category   {{ projectName }}
  * @package    Application
@@ -19,11 +15,10 @@ use {{ projectName }}\Domain\Specification\Infrastructure\User\SpecIsRoleAnonymo
 class NewCommandSpecHandler extends AbstractCommandSpecHandler
 {
     /**
-     * @return XorSpec
+     * @return TrueSpec
      */
     public function initSpecifications()
     {
-        //it is an absurd example
         return new TrueSpec();
     }
 }
