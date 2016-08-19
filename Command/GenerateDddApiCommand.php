@@ -130,6 +130,33 @@ class GenerateDddApiCommand extends Command
     }
 
     /**
+     *
+     * Main function, execute the generator
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        $projectDir = $input->getArgument('context-name');
+        $destinationPath = $input->getArgument('destination-path');
+
+        $applicationGenerator = new Application($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $domainGenerator = new Domain($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $presentationGenerator = new Presentation($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $presentationBundleGenerator = new PresentationBundle($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $infrastructureGenerator = new Infrastructure($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+        $infrastructureBundleGenerator = new InfrastructureBundle($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
+
+        $applicationGenerator->generate();
+        $domainGenerator->generate();
+        $presentationGenerator->generate();
+        $presentationBundleGenerator->generate();
+        $infrastructureGenerator->generate();
+        $infrastructureBundleGenerator->generate();
+    }
+
+    /**
      * Parse the swaggerFile
      * read entity, route and actions
      *
@@ -186,10 +213,9 @@ class GenerateDddApiCommand extends Command
      *
      * Create a route with needed informations
      */
-    public function parseRoutes()
+    protected function parseRoutes()
     {
         $results = [];
-
         foreach ($this->config["paths"] as $path => $data) {
             foreach ($data as $verb => $verbData) {
                 $result = [];
@@ -201,13 +227,14 @@ class GenerateDddApiCommand extends Command
                 $results[$path][$verb] = $result;
             }
         }
+
         return $results;
     }
 
     /**
      * Parse Value object from a swagger file
      */
-    public function parseValueObjects()
+    protected function parseValueObjects()
     {
         $results = [];
         if (isset($this->config['x-valueObjects'])) {
@@ -229,10 +256,9 @@ class GenerateDddApiCommand extends Command
     /**
      * Parse entities from a swagger file
      */
-    public function parseEntities()
+    protected function parseEntities()
     {
         $results = [];
-
         if (isset($this->config['x-entities'])) {
             foreach ($this->config['x-entities'] as $name => $data) {
                 foreach ($data['x-fields'] as $field) {
@@ -242,32 +268,5 @@ class GenerateDddApiCommand extends Command
         }
 
         return $results;
-    }
-
-    /**
-     *
-     * Main function, execute the generator
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
-    {
-        $projectDir = $input->getArgument('context-name');
-        $destinationPath = $input->getArgument('destination-path');
-
-        $applicationGenerator = new Application($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
-        $domainGenerator = new Domain($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
-        $presentationGenerator = new Presentation($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
-        $presentationBundleGenerator = new PresentationBundle($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
-        $infrastructureGenerator = new Infrastructure($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
-        $infrastructureBundleGenerator = new InfrastructureBundle($this->generator, $this->entities, $this->entitiesToCreate, $this->valueObjects, $this->valueObjectsToCreate, $this->paths, $this->pathsToCreate, $this->rootDir, $projectDir, $destinationPath, $output);
-
-        $applicationGenerator->generate();
-        $domainGenerator->generate();
-        $presentationGenerator->generate();
-        $presentationBundleGenerator->generate();
-        $infrastructureGenerator->generate();
-        $infrastructureBundleGenerator->generate();
     }
 }
