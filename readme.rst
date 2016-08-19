@@ -48,7 +48,7 @@ Replacer your composer.json
             "doctrine/couchdb": "@dev",
             "doctrine/couchdb-odm": "@dev",
             "stof/doctrine-extensions-bundle":"@dev",
-            "sfynx-project/tool-generator-bundle": "dev2.8-dev",
+            "sfynx-project/tool-generator-bundle": "dev-2.8-dev",
             "stof/doctrine-extensions-bundle":"@dev"
         },
         "require-dev": {
