@@ -6,6 +6,7 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use Symfony\Component\Validator\Constraints as Assert;
+use Sfynx\DddBundle\Layer\Domain\Generalisation\Traits\TraitTenant;
 use Sfynx\DddBundle\Layer\Domain\Generalisation\Traits\TraitDatetime;
 use Sfynx\DddBundle\Layer\Domain\Generalisation\Traits\TraitSimple;
 use Sfynx\DddBundle\Layer\Domain\Generalisation\Traits\TraitEnabled;
@@ -28,6 +29,8 @@ use {{ vo.type|trim("\\") }};
  */
 //class {{ entityName }} implements TraitDatetimeInterface, TraitSimpleInterface, TraitEnabledInterface {
 class {{ entityName }} {
+
+    use TraitTenant;
 
     //use TraitDatetime;
     //use TraitSimple;
@@ -100,21 +103,22 @@ class {{ entityName }} {
 
 {% endfor %}
 
-     public static function makeInstance({{ constructorArgs }})
+     public static function makeInstance($tenantId, {{ constructorArgs }})
      {
          return new self({% for field in  fields %}${{ field.name }}{% if loop.index < fields|length %},{% endif %}{% endfor %});
      }
 
-     protected function __construct({{ constructorArgs }})
+     protected function __construct($tenantId, {{ constructorArgs }})
      {
 
 
 {% for field in  fields %}
     {% if field.type == "id" %}
-    {%  if field.voName is defined%}
+        {% if field.voName is defined%}
         $this->{{ field.type }} = new {{ field.voName }}(${{ field.name }});
-{% endif %}
-{% endif %}
+        {% endif %}
+    {% endif %}
+    $this->setTenantId($tenantId);
     {% if field.type != "id" %}
         $this->set{{ field.name|ucfirst }}(${{ field.name }});
     {% endif %}

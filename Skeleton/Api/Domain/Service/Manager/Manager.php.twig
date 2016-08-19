@@ -42,7 +42,7 @@ class {{ entityName }}Manager extends AbstractManager implements ProcessorInterf
 
     public function create({{ constructorArgs }}) {
         //hydrate with VO
-        $entity = {{ entityName }}::makeInstance({{ managerArgs }});
+        $entity = {{ entityName }}::makeInstance($_SERVER['HTTP_X_TENANT_ID'], {{ managerArgs }});
 
         //execute prepersist processor
         $this->executeProcess('prepersist_create', $entity);
