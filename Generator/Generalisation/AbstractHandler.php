@@ -5,7 +5,6 @@ namespace Sfynx\DddGeneratorBundle\Generator\Generalisation;
 use Sfynx\DddGeneratorBundle\Twig\DDDExtension;
 use Twig_SimpleFilter;
 
-
 abstract class AbstractHandler
 {
     protected $rootSkeletonDir;

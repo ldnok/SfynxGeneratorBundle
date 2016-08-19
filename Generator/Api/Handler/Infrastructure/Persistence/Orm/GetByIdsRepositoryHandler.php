@@ -13,7 +13,7 @@ class GetByIdsRepositoryHandler extends AbstractHandler implements HandlerInterf
     const SKELETON_DIR = 'Api/Infrastructure/Persistence/Orm';
     const SKELETON_TPL = 'GetByIdsRepository.php.twig';
 
-    protected $targetPattern = '%s/%s/infrastructure/Persistence/Repository/%s/Orm/GetByIdsRepository.php';
+    protected $targetPattern = '%s/%s/Infrastructure/Persistence/Repository/%s/Orm/GetByIdsRepository.php';
     protected $target;
 
     protected function setTarget()

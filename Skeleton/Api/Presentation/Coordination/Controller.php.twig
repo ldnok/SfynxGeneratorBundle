@@ -40,8 +40,6 @@ use Sfynx\DddBundle\Layer\Presentation\Response\Generalisation\ResponseHandlerIn
  */
 class Controller
 {
-
-
     {% if group == "Command" %}
     /** @var  \{{ projectName }}\Application\{{ entityName }}\Command\Handler\DeleteCommandHandler */
     protected $deleteCommandHandler;
@@ -126,6 +124,9 @@ class Controller
         $this->getByIdsQueryHandler = $getByIdsQueryHandler;
         $this->searchByQueryHandler = $searchByQueryHandler;
     }
+
+    {% include("actions/getSwaggerFile.php.twig") %}
+
     {% endif %}
 
 

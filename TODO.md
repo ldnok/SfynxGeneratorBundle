@@ -5,3 +5,4 @@
 * rename some "bundle" into "structure"
 * move the handlers 
 * ajouter le getSwaggerFile dans le Query controller comme dans le corps
+* faire la génération du fichier config/swagger.yml (déjà commencé)

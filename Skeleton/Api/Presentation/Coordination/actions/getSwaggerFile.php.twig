@@ -1,0 +1,7 @@
+    /**
+    * @return Response
+    */
+    public function getSwaggerFile($_format)
+    {
+        return new Response(file_get_contents(__DIR__."../../../../../Config/swagger/swagger.$_format"));
+    }
