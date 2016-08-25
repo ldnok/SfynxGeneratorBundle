@@ -17,7 +17,6 @@ class ResettingListenersPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        //$definition = $container->findDefinition('event_dispatcher');
         $definition = $container->findDefinition('event_dispatcher');
         $tags = $container->findTaggedServiceIds('project.event_subscriber');
 

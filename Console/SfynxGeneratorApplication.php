@@ -34,20 +34,20 @@ class SfynxGeneratorApplication extends Application
         return $arg;
     }
 
-//    /**
-//     * Gets the default commands that should always be available.
-//     *
-//     * @return Command[] An array of default Command instances
-//     */
-//    protected function getDefaultCommands()
-//    {
-//        // Keep the core default commands to have the HelpCommand
-//        // which is used when using the --help option
-//        $defaultCommands = parent::getDefaultCommands();
-//
-//        $defaultCommands[] = new GenerateDddApiCommand();
-//        $defaultCommands[] = new GenerateDddStructureCommand();
-//
-//        return $defaultCommands;
-//    }
+    /**
+     * Gets the default commands that should always be available.
+     *
+     * @return Command[] An array of default Command instances
+     */
+    protected function getDefaultCommands()
+    {
+        // Keep the core default commands to have the HelpCommand
+        // which is used when using the --help option
+        $defaultCommands = parent::getDefaultCommands();
+
+        $defaultCommands[] = new GenerateDddApiCommand();
+        $defaultCommands[] = new GenerateDddStructureCommand();
+
+        return $defaultCommands;
+    }
 }
