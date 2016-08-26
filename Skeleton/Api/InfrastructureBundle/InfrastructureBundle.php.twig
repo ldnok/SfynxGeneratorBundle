@@ -4,6 +4,7 @@ namespace {{ projectName }}\InfrastructureBundle;
 
 use {{ projectName }}\InfrastructureBundle\DependencyInjection\{{ projectName }}InfrastructureBundleExtension;
 use {{ projectName }}\InfrastructureBundle\DependencyInjection\Compiler\CreateRepositoryFactoryPass;
+use DemoApiContext\InfrastructureBundle\DependencyInjection\Compiler\CreateDynamicConnectionPass;
 use Sfynx\DddBundle\Layer\Infrastructure\Persistence\Generalisation\MultipleDatabase;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -43,6 +44,7 @@ class {{ projectName }}InfrastructureBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new CreateRepositoryFactoryPass());
+        $container->addCompilerPass(new CreateDynamicConnectionPass());
     }
 
 
