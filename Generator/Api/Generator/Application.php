@@ -53,7 +53,8 @@ class Application extends LayerAbstract
         $this->output->writeln('### QUERIES GENERATION ###');
         $this->generateQueries();
         $this->output->writeln('### TESTS GENERATION ###');
-        $this->generateTests();
+        //TODO: work on the generation of the tests.
+        //$this->generateTests();
     }
 
     /**

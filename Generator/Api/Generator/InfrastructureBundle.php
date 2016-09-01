@@ -1,65 +1,56 @@
 <?php
+declare(strict_types=1);
 
 namespace Sfynx\DddGeneratorBundle\Generator\Api\Generator;
 
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\InfrastructureBundle\DependencyInjection\Compiler\CreateRepositoryFactoryPassHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\InfrastructureBundle\DependencyInjection\ConfigurationHandler;
-use Sfynx\DddGeneratorBundle\Generator\Api\Handler\InfrastructureBundle\DependencyInjection\InfrastructureBundleExtensionHandler;
+//Bundle part
 use Sfynx\DddGeneratorBundle\Generator\Api\Handler\InfrastructureBundle\InfrastructureBundleHandler;
+use Sfynx\DddGeneratorBundle\Generator\Api\Handler\InfrastructureBundle\DependencyInjection\{
+    Compiler\CreateRepositoryFactoryPassHandler,
+    ConfigurationHandler,
+    InfrastructureBundleExtensionHandler
+};
 
-class InfrastructureBundle
+/**
+ * Class InfrastructureBundle
+ *
+ * @category Generator
+ * @package Api
+ * @subpackage Generator
+ */
+class InfrastructureBundle extends LayerAbstract
 {
-    protected $generator;
-    protected $entities = [];
-    protected $entitiesToCreate = [];
-    protected $valueObjects = [];
-    protected $valueObjectsToCreate = [];
-    protected $paths = [];
-    protected $pathsToCreate = [];
-    protected $projectDir;
-    protected $destinationPath;
-
-    public function __construct($generator, $entities, $entitiesToCreate, $valueObjects, $valueObjectsToCreate, $paths, $pathsToCreate, $rootDir, $projectDir, $destinationPath, $output)
-    {
-        $this->output = $output;
-        $this->destinationPath = $destinationPath;
-        $this->entities = $entities;
-        $this->entitiesToCreate = $entitiesToCreate;
-        $this->valueObjects = $valueObjects;
-        $this->valueObjectsToCreate = $valueObjectsToCreate;
-        $this->paths = $paths;
-        $this->pathsToCreate = $pathsToCreate;
-        $this->projectDir = $projectDir;
-        $this->rootDir = $rootDir;
-        $this->generator = $generator;
-    }
-
+    /**
+     * Entry point of the generation of the "InfrastructureBundle" layer in DDD.
+     * Call the generation of :
+     * - Bundle ;
+     * - Tests of the whole "InfrastructureBundle" layer.
+     */
     public function generate()
     {
-        $this->output->writeln("#############################################");
-        $this->output->writeln("# GENERATE INFRASTRUCTURE BUNDLE STRUCTURE  #");
-        $this->output->writeln("#############################################");
+        $this->output->writeln('');
+        $this->output->writeln('#############################################');
+        $this->output->writeln('# GENERATE INFRASTRUCTURE BUNDLE STRUCTURE  #');
+        $this->output->writeln('#############################################');
+        $this->output->writeln('');
 
+        $this->output->writeln('### BUNDLE GENERATION ###');
         $this->generateBundle();
+        $this->output->writeln('### TEST GENERATION ###');
+        //TODO: work on the generation of the tests.
+        //$this->generateTests();
     }
 
+    /**
+     * Generate the Bundle part in the "InfrastructureBundle" layer.
+     */
     public function generateBundle()
     {
-        $parameters = [
-            'rootDir' => $this->rootDir . "/src",
-            'projectDir' => $this->projectDir,
-            'projectName' => str_replace('src/', '', $this->projectDir),
-            'entities' => $this->entities,
-            'valueObjects' => $this->valueObjects,
-            'destinationPath' => $this->destinationPath,
-        ];
+        $this->generator->addHandler(new CreateRepositoryFactoryPassHandler($this->parameters));
+        $this->generator->addHandler(new ConfigurationHandler($this->parameters));
+        $this->generator->addHandler(new InfrastructureBundleExtensionHandler($this->parameters));
+        $this->generator->addHandler(new InfrastructureBundleHandler($this->parameters));
 
-        $this->generator->addHandler(new CreateRepositoryFactoryPassHandler($parameters));
-        $this->generator->addHandler(new ConfigurationHandler($parameters));
-        $this->generator->addHandler(new InfrastructureBundleExtensionHandler($parameters));
-        $this->generator->addHandler(new InfrastructureBundleHandler($parameters));
-
-        $this->generator->execute();
-        $this->generator->clear();
+        $this->generator->execute()->clear();
     }
 }

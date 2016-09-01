@@ -230,7 +230,7 @@ class Presentation extends LayerAbstract
             $this->parameters['controllerData'][] = $entityCommandData;
         }
 
-        //Add the Handler, then execute it for generate the file, and finally, clear the handlers generator's stack.
+        //Add the Handlers to the generator's stack.
         $this->generator->addHandler(new ControllerHandler($this->parameters), true);
 
         return $this;

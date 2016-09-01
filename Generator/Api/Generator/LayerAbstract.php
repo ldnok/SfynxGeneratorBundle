@@ -100,6 +100,10 @@ abstract class LayerAbstract
         ];
     }
 
+    /**
+     * Entry point of the generation of the current concrete layer in DDD.
+     * Must be declared in the concrete class to call all generation methods.
+     */
     abstract public function generate();
 
     /**

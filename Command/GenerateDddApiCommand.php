@@ -1,7 +1,11 @@
 <?php
-//todo à revoir
+declare(strict_types=1);
+
 namespace Sfynx\DddGeneratorBundle\Command;
 
+use InvalidArgumentException;
+
+use Sfynx\DddGeneratorBundle\Generator\Api\DddApiGenerator;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Application;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Domain;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Infrastructure;
@@ -9,22 +13,36 @@ use Sfynx\DddGeneratorBundle\Generator\Api\Generator\InfrastructureBundle;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\Presentation;
 use Sfynx\DddGeneratorBundle\Generator\Api\Generator\PresentationBundle;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException as SFConsoleInvalidArgumentException;
+use Symfony\Component\Console\Exception\LogicException as SFConsoleLogicException;
+use Symfony\Component\Console\Exception\RuntimeException as SFConsoleRuntimeException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Yaml\Exception\ParseException as SFYMLParseException;
 use Symfony\Component\Yaml\Parser;
 
+/**
+ * Class GenerateDddApiCommand.
+ *
+ * @category Command
+ */
 class GenerateDddApiCommand extends Command
 {
+    /** @var DddApiGenerator */
     protected $generator;
+    /** @var array */
+    protected $config;
+
     protected $actionsToCreate;
     protected $rootDir;
     protected $destinationPath;
     protected $contextName;
 
-    protected $config;
+
     protected $entities = [];
     protected $entitiesToCreate = [];
     protected $valueObjects = [];
@@ -32,120 +50,89 @@ class GenerateDddApiCommand extends Command
     protected $paths = [];
     protected $pathsToCreate = [];
 
-    public function setGenerator($generator)
+    /**
+     * Set the generator to use.
+     *
+     * @param DddApiGenerator $generator
+     * @return GenerateDddApiCommand
+     */
+    public function setGenerator(DddApiGenerator $generator): self
     {
         $this->generator = $generator;
-    }
-
-    public function setConfig($config)
-    {
-        $this->config = $config;
-    }
-
-    public function setRootDir($rootDir)
-    {
-        if (0 === stripos(PHP_OS, 'WIN')) {
-            $rootDir = str_replace("\\app", "", $rootDir);
-        } else {
-            $rootDir = str_replace("/app", "", $rootDir);
-        }
-
-        $this->rootDir = $rootDir;
+        return $this;
     }
 
     /**
-     * @see Command
-     * @throws \InvalidArgumentException When the name is invalid
+     * Set the configuration file to use for the generator. This file must be a YML file, containing a Swagger compliant
+     * snippet that can define a valid PHP array.
+     *
+     * @param array $config
+     * @return GenerateDddApiCommand
+     */
+    public function setConfig(array $config): self
+    {
+        $this->config = $config;
+        return $this;
+    }
+
+    /**
+     * Set the root dir based upon the argument sent.
+     *
+     * @param string $rootDir
+     * @return GenerateDddApiCommand
+     */
+    public function setRootDir(string $rootDir): self
+    {
+        $this->rootDir = str_replace(DIRECTORY_SEPARATOR . 'app', '', $rootDir);
+        return $this;
+    }
+
+    /**
+     * Configure the current command.
+     *
+     * @see Command::configure()
+     * @throws InvalidArgumentException When the name is invalid
      */
     public function configure()
     {
-        $this
-            ->setName('sfynx:api')
-            ->setDescription('Generates a ddd api')
-            ->addArgument('context-name', InputArgument::REQUIRED, 'Context name')
+        $this->setName('sfynx:api')
+            ->setDescription('Generate a DDD Rest API.')
+            ->addArgument('context-name', InputArgument::REQUIRED, 'Context name.')
             ->addArgument('path-to-swagger-file', InputArgument::OPTIONAL, 'Path to swagger yml file.')
-            ->addArgument('destination-path', InputArgument::OPTIONAL, 'Destination path', '/tmp')
+            ->addArgument('destination-path', InputArgument::OPTIONAL, 'Destination path.', '/tmp')
             ->addOption('create-all', null, InputOption::VALUE_NONE, 'Generate all items.')
-            ->setHelp("Generate a ddd rest API for an entity");
-    }
-
-    public function interact(InputInterface $input, OutputInterface $output)
-    {
-        $dialog = $this->getHelper('question');
-
-        //set argument : path_to_swagger_file
-        if (isset($_SERVER['SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE'])) {
-            $pathToSwaggerEntityFile = $_SERVER['SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE'];
-        } else {
-            $pathToSwaggerEntityFile = $dialog->ask(
-                $input,
-                $output,
-                new Question('Path to swagger yml file: ')
-            );
-
-            while (!is_file($pathToSwaggerEntityFile)) {
-                //Set the entity name
-                $output->writeln("This file doesn't exist");
-                //Todo: check the existence of the entity-name
-                $dialog = $this->getHelper('question');
-                $pathToSwaggerEntityFile = $dialog->ask(
-                    $input,
-                    $output,
-                    new Question('Path to swagger yml file: ')
-                );
-            }
-        }
-        $input->setArgument('path-to-swagger-file', $pathToSwaggerEntityFile);
-
-        //set argument : destination_path
-        if (isset($_SERVER['SYMFONY_SFYNX_PATH_TO_DEST_FILES'])) {
-            $destPath = $_SERVER['SYMFONY_SFYNX_PATH_TO_DEST_FILES'];
-        } else {
-            $destPath = $dialog->ask(
-                $input,
-                $output,
-                new Question('destination path: ')
-            );
-
-            while (!is_dir($destPath) || !is_writable($destPath)) {
-                //Set the entity name
-                $output->writeln("This directory doesn't exist or is not writable");
-                $dialog = $this->getHelper('question');
-                $destPath = $dialog->ask(
-                    $input,
-                    $output,
-                    new Question('Path to swagger yml file: ')
-                );
-            }
-        }
-        $input->setArgument('destination-path', $destPath);
-
-
-        //set argument : context-name
-        if (isset($_SERVER['SYMFONY_SFYNX_CONTEXT_NAME'])) {
-            $contextName = $_SERVER['SYMFONY_SFYNX_CONTEXT_NAME'];
-        } else {
-            $contextName = $dialog->ask(
-                $input,
-                $output,
-                new Question('context name: ')
-            );
-        }
-        $input->setArgument('context-name', $contextName);
-        // Parse swagger File
-        $this->parseSwaggerFile($input, $output);
+            ->setHelp('Generate a DDD Rest API for an entity or a list of entities.');
     }
 
     /**
+     * Interacts with the user.
      *
-     * Main function, execute the generator
+     * @see Command::interact()
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @throws SFConsoleInvalidArgumentException
+     * @throws SFConsoleLogicException
+     * @throws SFConsoleRuntimeException
+     */
+    public function interact(InputInterface $input, OutputInterface $output)
+    {
+        $this->setArgumentPathToSwaggerFile($input, $output)
+            ->setArgumentDestinationPath($input, $output)
+            ->setArgumentContextName($input, $output)
+            ->parseSwaggerFile($input, $output);
+    }
+
+    /**
+     * Main function, execute the generator.
      *
+     * @see Command::execute()
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return int|null|void
+     * @return int The error code of the execution. 0 if no error.
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
+        //TODO refactor.
         $projectDir = $input->getArgument('context-name');
         $destinationPath = $input->getArgument('destination-path');
 
@@ -168,72 +155,27 @@ class GenerateDddApiCommand extends Command
         $infrastructureGenerator->generate();
         exit;
         $infrastructureBundleGenerator->generate();
+
+        return 0;
     }
 
     /**
-     * Parse the swaggerFile
-     * read entity, route and actions
+     * Parse the swaggerFile read entity, route and actions.
      *
-     * @param $input
-     * @param $output
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @throws SFConsoleRuntimeException
+     * @throws SFConsoleLogicException
+     * @throws SFConsoleInvalidArgumentException
+     * @throws SFYMLParseException
      */
-    public function parseSwaggerFile(InputInterface $input, OutputInterface $output)
+    protected function parseSwaggerFile(InputInterface $input, OutputInterface $output)
     {
-        $dialog = $this->getHelper('question');
-        $ymlParser = new Parser();
-        $this->config = $ymlParser->parse(file_get_contents($input->getArgument('path-to-swagger-file')));
-        $this->valueObjects = $this->parseValueObjects();
-        $this->entities = $this->parseEntities();
-        $this->paths = $this->parseRoutes();
+        $this->config = (new Parser())->parse(file_get_contents($input->getArgument('path-to-swagger-file')));
 
-        foreach ($this->valueObjects as $voName => $fields) {
-            if (
-                $input->getOption("create-all") ||
-                $dialog->ask(
-                    $input,
-                    $output,
-                    new Question(sprintf('Do you want to create the valueObject "%s" ? [Y/n]' . PHP_EOL, $voName))
-                )
-            ) {
-                $this->valueObjectsToCreate[] = $voName;
-            }
-        }
-
-        foreach ($this->entities as $entityName => $fields) {
-            if (
-                $input->getOption("create-all") ||
-                $dialog->ask(
-                    $input,
-                    $output,
-                    new Question(sprintf('Do you want to create the entity "%s" ? [Y/n]' . PHP_EOL, $entityName))
-                )
-            ) {
-                //Removed new dimensional array
-                $this->entitiesToCreate[$entityName] = $fields;
-            }
-        }
-
-        foreach ($this->paths as $path => $verbData) {
-            foreach ($verbData as $verb => $data) {
-                if (
-                    $input->getOption("create-all") ||
-                    $dialog->ask(
-                        $input,
-                        $output,
-                        new Question(
-                            sprintf(
-                                'Do you want create the %s action for route  %s  and verb %s? [Y/n]',
-                                $data['action'],
-                                $path,
-                                $data['verb']
-                            )
-                        )
-                    )
-                ) {
-                    $this->pathsToCreate[$path][$data["verb"]] = $data;
-                }
-            }
-        }
+        $this->buildAllValueObjects($input, $output)
+            ->buildAllEntities($input, $output)
+            ->buildAllRoutes($input, $output);
     }
 
     /**
@@ -296,5 +238,207 @@ class GenerateDddApiCommand extends Command
         }
 
         return $results;
+    }
+
+    /**
+     * Set the argument 'path-to-swagger-file'. Use environment variable to set it, or ask to end user if the
+     * environment variable is not set.
+     * Name of the environment variable to use is "SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE"
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return GenerateDddApiCommand
+     * @throws SFConsoleRuntimeException
+     * @throws SFConsoleLogicException
+     * @throws SFConsoleInvalidArgumentException
+     */
+    protected function setArgumentPathToSwaggerFile(InputInterface $input, OutputInterface $output): self
+    {
+        if (isset($_SERVER['SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE'])) {
+            $input->setArgument('path-to-swagger-file', $_SERVER['SYMFONY_SFYNX_PATH_TO_SWAGGER_FILE']);
+            return $this;
+        }
+
+        $question = new Question('Path to swagger yml file: ');
+        $pathToSwaggerEntityFile = $this->getQuestionHelper()->ask($input, $output, $question);
+
+        while (!is_file($pathToSwaggerEntityFile)) {
+            $output->writeln('This file does not exist.');
+
+            //Todo: check the existence of the entity-name
+
+            $pathToSwaggerEntityFile = $this->getQuestionHelper()->ask($input, $output, $question);
+        }
+
+        $input->setArgument('path-to-swagger-file', $pathToSwaggerEntityFile);
+        return $this;
+    }
+
+    /**
+     * Set the argument 'destination-path'. Use environment variable to set it, or ask to end user if the
+     * environment variable is not set.
+     * Name of the environment variable to use is "SYMFONY_SFYNX_PATH_TO_DEST_FILES"
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return GenerateDddApiCommand
+     * @throws SFConsoleRuntimeException
+     * @throws SFConsoleLogicException
+     * @throws SFConsoleInvalidArgumentException
+     */
+    protected function setArgumentDestinationPath(InputInterface $input, OutputInterface $output): self
+    {
+        if (isset($_SERVER['SYMFONY_SFYNX_PATH_TO_DEST_FILES'])) {
+            $input->setArgument('destination-path', $_SERVER['SYMFONY_SFYNX_PATH_TO_DEST_FILES']);
+            return $this;
+        }
+
+        $question = new Question('Destination path: ');
+        $destinationPath = $this->getQuestionHelper()->ask($input, $output, $question);
+
+        while (!is_dir($destinationPath) || !is_writable($destinationPath)) {
+            $output->writeln('This directory does not exist or is not writable.');
+            $destinationPath = $this->getQuestionHelper()->ask($input, $output, $question);
+        }
+
+        $input->setArgument('destination-path', $destinationPath);
+        return $this;
+    }
+
+    /**
+     * Set the argument 'context-name'. Use environment variable to set it, or ask to end user if the
+     * environment variable is not set.
+     * Name of the environment variable to use is "SYMFONY_SFYNX_CONTEXT_NAME"
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return GenerateDddApiCommand
+     * @throws SFConsoleRuntimeException
+     * @throws SFConsoleLogicException
+     * @throws SFConsoleInvalidArgumentException
+     */
+    protected function setArgumentContextName(InputInterface $input, OutputInterface $output): self
+    {
+        if (isset($_SERVER['SYMFONY_SFYNX_CONTEXT_NAME'])) {
+            $input->setArgument('context-name', $_SERVER['SYMFONY_SFYNX_CONTEXT_NAME']);
+            return $this;
+        }
+        $contextName = $this->getQuestionHelper()->ask($input, $output, new Question('Context name: '));
+        $input->setArgument('context-name', $contextName);
+
+        return $this;
+    }
+
+    /**
+     * Set properties "valueObjects" and "valueObjectsToCreate" after parsing the value objects defined in the YML file.
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return GenerateDddApiCommand
+     * @throws SFConsoleRuntimeException
+     * @throws SFConsoleLogicException
+     * @throws SFConsoleInvalidArgumentException
+     */
+    protected function buildAllValueObjects(InputInterface $input, OutputInterface $output): self
+    {
+        $this->valueObjects = $this->parseValueObjects();
+
+        $valueObjectNames = array_keys($this->valueObjects);
+
+        //If option "create-all" is set, we take all value objects.
+        if ($input->getOption('create-all')) {
+            $this->valueObjectsToCreate = $valueObjectNames;
+            return $this;
+        }
+
+        //Otherwise, loop for each value object and ask to end user.
+        $dialog = $this->getQuestionHelper();
+        $questionSentence = 'Do you want to create the valueObject "%s" ? [Y/n]' . PHP_EOL;
+        foreach ($valueObjectNames as $voName) {
+            if ($dialog->ask($input, $output, new Question(sprintf($questionSentence, $voName)))) {
+                $this->valueObjectsToCreate[] = $voName;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set properties "entities" and "entitiesToCreate" after parsing the entities defined in the YML file.
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return GenerateDddApiCommand
+     * @throws SFConsoleRuntimeException
+     * @throws SFConsoleLogicException
+     * @throws SFConsoleInvalidArgumentException
+     */
+    protected function buildAllEntities(InputInterface $input, OutputInterface $output): self
+    {
+        $this->entities = $this->parseEntities();
+
+        //If option "create-all" is set, we take all entities.
+        if ($input->getOption('create-all')) {
+            $this->entitiesToCreate = $this->entities;
+            return $this;
+        }
+
+        //Otherwise, loop for each entity and ask to end user.
+        $dialog = $this->getQuestionHelper();
+        $questionSentence = 'Do you want to create the entity "%s" ? [Y/n]' . PHP_EOL;
+        foreach ($this->entities as $entityName => $fields) {
+            if ($dialog->ask($input, $output, new Question(sprintf($questionSentence, $entityName)))) {
+                $this->entitiesToCreate[$entityName] = $fields;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set properties "paths" and "pathsToCreate" after parsing the routes defined in the YML file.
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     * @return GenerateDddApiCommand
+     * @throws SFConsoleRuntimeException
+     * @throws SFConsoleLogicException
+     * @throws SFConsoleInvalidArgumentException
+     */
+    protected function buildAllRoutes(InputInterface $input, OutputInterface $output): self
+    {
+        $this->paths = $this->parseRoutes();
+
+        //If option "create-all" is set, we take all routes.
+        if ($input->getOption('create-all')) {
+            $this->pathsToCreate = $this->paths;
+            return $this;
+        }
+
+        //Otherwise, loop for each route and ask to end user.
+        $dialog = $this->getQuestionHelper();
+        $questionSentence = 'Do you want create the %s action for route %s and verb %s? [Y/n]' . PHP_EOL;
+        foreach ($this->paths as $path => $verbData) {
+            foreach ($verbData as $verb => $data) {
+                $question = new Question(sprintf($questionSentence, $data['action'], $path, $verb));
+                if ($dialog->ask($input, $output, $question)) {
+                    $this->pathsToCreate[$path][$verb] = $data;
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieve the Symfony QuestionHelper object.
+     *
+     * @return QuestionHelper
+     * @throws SFConsoleInvalidArgumentException
+     * @throws SFConsoleLogicException
+     */
+    private function getQuestionHelper(): QuestionHelper
+    {
+        return $this->getHelper('question');
     }
 }
