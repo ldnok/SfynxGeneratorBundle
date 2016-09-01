@@ -46,7 +46,6 @@ class SfynxGeneratorApplication extends Application
         $defaultCommands = parent::getDefaultCommands();
 
         $defaultCommands[] = new GenerateDddApiCommand();
-        $defaultCommands[] = new GenerateDddStructureCommand();
 
         return $defaultCommands;
     }
