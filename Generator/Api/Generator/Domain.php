@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Sfynx\DddGeneratorBundle\Generator\Api\Generator;
 
@@ -126,7 +126,7 @@ class Domain extends LayerAbstract
     {
         foreach (array_keys($this->entitiesToCreate) as $entityName) {
             $this->parameters['entityName'] = $entityName;
-            $this->parameters['entityFields'] = $this->entities[$entityName];
+            $this->parameters['entityFields'] = $this->entitiesToCreate[$entityName];
 
             $this->generator->addHandler(new NewWFHandlerHandler($this->parameters), true);
             $this->generator->addHandler(new UpdateWFHandlerHandler($this->parameters), true);

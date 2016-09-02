@@ -17,6 +17,8 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
+        const TYPE_DBMS = ['orm', 'odm', 'couchdb'];
+
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('{{ projectName|lower }}_infrastructure');
 
@@ -25,7 +27,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('database_type')
                     ->isRequired()
                      ->validate()
-                     ->ifNotInArray(array('orm', 'odm', 'couchdb'))
+                     ->ifNotInArray(self::TYPE_DBMS)
                         ->thenInvalid('Invalid database_type "%s"')
                      ->end()
                      ->cannotBeEmpty()

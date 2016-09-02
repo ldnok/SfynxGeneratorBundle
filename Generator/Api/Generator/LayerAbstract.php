@@ -1,9 +1,10 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Sfynx\DddGeneratorBundle\Generator\Api\Generator;
 
 use Sfynx\DddGeneratorBundle\Generator\Api\DddApiGenerator;
+use Sfynx\DddGeneratorBundle\Generator\Api\ValueObjects\GeneratorVO;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -24,15 +25,9 @@ abstract class LayerAbstract
     /** @var DddApiGenerator */
     protected $generator;
     /** @var array[] */
-    protected $entities = [];
-    /** @var array[] */
     protected $entitiesToCreate = [];
     /** @var array[] */
-    protected $valueObjects = [];
-    /** @var array[] */
     protected $valueObjectsToCreate = [];
-    /** @var array[] */
-    protected $paths = [];
     /** @var array[] */
     protected $pathsToCreate = [];
     /** @var string */
@@ -51,55 +46,38 @@ abstract class LayerAbstract
     protected $entitiesGroups;
 
     /**
-     * Domain constructor.
+     * Abstract constructor, used by all layers.
      *
-     * @param DddApiGenerator $generator
-     * @param array[] $entities
-     * @param array[] $entitiesToCreate
-     * @param array[] $valueObjects
-     * @param array[] $valueObjectsToCreate
-     * @param array[] $paths
-     * @param array[] $pathsToCreate
-     * @param string $rootDir
-     * @param string $projectDir
-     * @param string $destinationPath
+     * @param GeneratorVO     $voGenerator
      * @param OutputInterface $output
      */
-    public function __construct(
-        DddApiGenerator $generator,
-        array $entities,
-        array $entitiesToCreate,
-        array $valueObjects,
-        array $valueObjectsToCreate,
-        array $paths,
-        array $pathsToCreate,
-        string $rootDir,
-        string $projectDir,
-        string $destinationPath,
-        OutputInterface $output
-    ) {
-        $this->generator = $generator;
-        $this->destinationPath = $destinationPath;
-        $this->output = $output;
-        $this->entities = $entities;
-        $this->entitiesToCreate = $entitiesToCreate;
-        $this->valueObjects = $valueObjects;
-        $this->valueObjectsToCreate = $valueObjectsToCreate;
-        $this->paths = $paths;
-        $this->pathsToCreate = $pathsToCreate;
-        $this->commandsQueriesList = $this->parseRoutes();
-        $this->projectDir = $projectDir;
-        $this->rootDir = $rootDir;
+    public function __construct(GeneratorVO $voGenerator, OutputInterface $output)
+    {
+        $this->generator = $voGenerator->getGenerator();
+        $this->entitiesToCreate = $voGenerator->getEntitiesToCreate();
+        $this->valueObjectsToCreate = $voGenerator->getValueObjectsToCreate();
+        $this->pathsToCreate = $voGenerator->getPathsToCreate();
 
+        $this->rootDir = $voGenerator->getRootDir();
+        $this->projectDir = $voGenerator->getProjectDir();
+        $this->destinationPath = $voGenerator->getDestinationPath();
+
+        $this->output = $output;
+
+        $this->commandsQueriesList = $this->parseRoutes();
         $this->parameters = [
             'rootDir' => $this->rootDir . '/src',
             'projectDir' => $this->projectDir,
             'projectName' => str_replace('src/', '', $this->projectDir),
-            'valueObjects' => $this->valueObjects,
+            'valueObjects' => $this->valueObjectsToCreate,
             'destinationPath' => $this->destinationPath,
         ];
     }
 
+    /**
+     * Entry point of the generation of the current concrete layer in DDD.
+     * Must be declared in the concrete class to call all generation methods.
+     */
     abstract public function generate();
 
     /**
@@ -146,7 +124,7 @@ abstract class LayerAbstract
     protected function buildConstructorParamsString(string $entityName): string
     {
         $constructorParamsString = '';
-        foreach ($this->entities[$entityName] as $field) {
+        foreach ($this->entitiesToCreate[$entityName] as $field) {
             $constructorParamsString .= '$' . $field['name'] . ', ';
         }
 
@@ -165,7 +143,7 @@ abstract class LayerAbstract
     protected function buildManagerParamsString(string $entityName, string $action): string
     {
         $managerParamsString = '';
-        foreach ($this->entities[$entityName] as $field) {
+        foreach ($this->entitiesToCreate[$entityName] as $field) {
             if (('new' === $action && 'id' !== $field['type']) || ('new' !== $action)) {
                 $managerParamsString .= '$' . $field['name'] . ', ';
             }

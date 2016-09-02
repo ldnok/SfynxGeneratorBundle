@@ -2,17 +2,20 @@
 
 namespace {{projectName}}\InfrastructureBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader;
+
+use Symfony\Component\DependencyInjection{
+    ContainerBuilder,
+    Loader
+};
 
 /**
  * This is the class that loads and manages your bundle configuration
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class {{projectName}}InfrastructureBundleExtension extends Extension
+class {{ projectName }}InfrastructureBundleExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -41,7 +44,7 @@ class {{projectName}}InfrastructureBundleExtension extends Extension
     */
     public function getAlias()
     {
-        return '{{projectName}}_infrastructure';
+        return '{{ projectName|lower }}_infrastructure';
     }
 
     /**
@@ -49,6 +52,6 @@ class {{projectName}}InfrastructureBundleExtension extends Extension
     */
     public function getName()
     {
-        return '{{projectName}}_infrastructure';
+        return '{{ projectName|lower }}_infrastructure';
     }
 }

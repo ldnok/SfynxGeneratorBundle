@@ -8,8 +8,9 @@
         "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]
     },
     "require": {
-        "php": ">=5.3.9",
+        "php": ">=7.0",
         "symfony/symfony": "2.8.*",
+        "symfony/yaml": "3.1.*",
         "doctrine/orm":"dev-master",
         "doctrine/doctrine-bundle": "~1.4",
         "symfony/swiftmailer-bundle": "~2.3",
@@ -22,7 +23,7 @@
         "doctrine/couchdb": "@dev",
         "doctrine/couchdb-odm": "@dev",
         "stof/doctrine-extensions-bundle":"@dev",
-        "sfynx-project/tool-generator-bundle": "dev-last-version-independant-installer"
+        "sfynx-project/tool-generator-bundle": "dev-2.8-dev"
     },
     "require-dev": {
         "sensio/generator-bundle": "~3.0",
@@ -47,10 +48,7 @@
         ]
     },
     "config": {
-        "bin-dir": "bin",
-        "platform": {
-            "php": "5.3.9"
-        }
+        "bin-dir": "bin"
     },
     "extra": {
         "symfony-app-dir": "app",

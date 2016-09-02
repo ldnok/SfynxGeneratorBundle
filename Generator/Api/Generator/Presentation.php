@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Sfynx\DddGeneratorBundle\Generator\Api\Generator;
 
@@ -60,7 +60,7 @@ class Presentation extends LayerAbstract
         foreach ($this->commandsQueriesList[self::COMMAND] as $data) {
             $this->parameters['actionName'] = ucfirst($data['action']);
             $this->parameters['entityName'] = ucfirst($data['entity']);
-            $this->parameters['entityFields'] = $this->entities[$data['entity']];
+            $this->parameters['entityFields'] = $this->entitiesToCreate[$data['entity']];
 
             $this->generator->addHandler(new AdapterCommandHandler($this->parameters), true);
         }
@@ -76,7 +76,7 @@ class Presentation extends LayerAbstract
         foreach ($this->commandsQueriesList[self::QUERY] as $data) {
             $this->parameters['actionName'] = ucfirst($data['action']);
             $this->parameters['entityName'] = ucfirst($data['entity']);
-            $this->parameters['entityFields'] = $this->entities[$data['entity']];
+            $this->parameters['entityFields'] = $this->entitiesToCreate[$data['entity']];
 
             $this->generator->addHandler(new AdapterQueryHandler($this->parameters), true);
         }
@@ -105,7 +105,7 @@ class Presentation extends LayerAbstract
     {
         foreach ($this->entitiesGroups as $entityName => $entityGroups) {
             $this->parameters['entityName'] = $entityName;
-            $this->parameters['entityFields'] = $this->entities[$entityName];
+            $this->parameters['entityFields'] = $this->entitiesToCreate[$entityName];
 
             $this->addCQRSRequestToGenerator($entityGroups, self::COMMAND)
                 ->addCQRSRequestToGenerator($entityGroups, self::QUERY);
@@ -230,7 +230,7 @@ class Presentation extends LayerAbstract
             $this->parameters['controllerData'][] = $entityCommandData;
         }
 
-        //Add the Handler, then execute it for generate the file, and finally, clear the handlers generator's stack.
+        //Add the Handlers to the generator's stack.
         $this->generator->addHandler(new ControllerHandler($this->parameters), true);
 
         return $this;

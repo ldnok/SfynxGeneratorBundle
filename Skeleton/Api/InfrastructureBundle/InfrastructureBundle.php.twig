@@ -3,15 +3,18 @@
 namespace {{ projectName }}\InfrastructureBundle;
 
 use {{ projectName }}\InfrastructureBundle\DependencyInjection\{{ projectName }}InfrastructureBundleExtension;
-use {{ projectName }}\InfrastructureBundle\DependencyInjection\Compiler\CreateRepositoryFactoryPass;
-use DemoApiContext\InfrastructureBundle\DependencyInjection\Compiler\CreateDynamicConnectionPass;
-use Sfynx\DddBundle\Layer\Infrastructure\Persistence\Generalisation\MultipleDatabase;
 
+use {{ projectName }}\InfrastructureBundle\DependencyInjection\Compiler {
+    CreateRepositoryFactoryPass,
+    CreateDynamicConnectionPass
+};
+
+use Sfynx\DddBundle\Layer\Infrastructure\Persistence\Generalisation\MultipleDatabase;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
-use Doctrine\DBAL\Types as ORM;
-use Doctrine\ODM\MongoDB\Types as ODM;
+use Doctrine\DBAL\Types as Orm;
+use Doctrine\ODM\MongoDB\Types as Odm;
 use Doctrine\ODM\CouchDB\Types as CouchDB;
 
 class {{ projectName }}InfrastructureBundle extends Bundle
@@ -21,21 +24,19 @@ class {{ projectName }}InfrastructureBundle extends Bundle
         return new {{ projectName }}InfrastructureBundleExtension();
     }
 
-
     public function boot()
     {
-        $dbDriver = $this->container->getParameter('database.driver');
-
-        if (MultipleDatabase::ORM_DATABASE_TYPE === $dbDriver) {
-            $this->loadOrmTypes();
-        }
-
-        if (MultipleDatabase::ODM_DATABASE_TYPE === $dbDriver) {
-            $this->loadOdmTypes();
-        }
-
-        if (MultipleDatabase::COUCHDB_DATABASE_TYPE === $dbDriver) {
-            $this->loadCouchDBTypes();
+        switch ($this->container->getParameter('database.driver')) {
+            default:
+            case MultipleDatabase::ORM_DATABASE_TYPE:
+                $this->loadOrmTypes();
+                break;
+            case MultipleDatabase::ODM_DATABASE_TYPE:
+                $this->loadOdmTypes();
+                break;
+            case MultipleDatabase::COUCHDB_DATABASE_TYPE:
+                $this->loadCouchDBTypes();
+                break;
         }
     }
 
@@ -46,7 +47,6 @@ class {{ projectName }}InfrastructureBundle extends Bundle
         $container->addCompilerPass(new CreateRepositoryFactoryPass());
         $container->addCompilerPass(new CreateDynamicConnectionPass());
     }
-
 
     protected function loadOrmTypes()
     {
@@ -67,26 +67,34 @@ class {{ projectName }}InfrastructureBundle extends Bundle
 
     protected function loadOdmTypes()
     {
+        $em = $this->container->get('doctrine_mongodb.odm.default_document_manager');
+
         if (!ODM\Type::hasType("IdVO")) {
-            ODM\Type::addType('IdVO', 'Sfynx\DddBundle\Layer\Infrastructure\EntityType\Orm\IdType');
+            ODM\Type::addType('IdVO', 'Sfynx\DddBundle\Layer\Infrastructure\EntityType\Odm\IdType');
+            $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('IdVO', 'IdVO');
         }
 
 {% for name,data in valueObjects %}
         if (!ODM\Type::hasType("{{ name }}")) {
-            ODM\Type::addType('{{ name }}', '{{ projectName }}\Infrastructure\EntityType\Orm\{{ name }}Type');
+            ODM\Type::addType('{{ name }}', '{{ projectName }}\Infrastructure\EntityType\Odm\{{ name }}Type');
+            $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('{{ name }}', '{{ name }}');
         }
 {% endfor %}
     }
 
     protected function loadCouchDBTypes()
     {
+        $em = $this->container->get('doctrine_couchdb.odm.default_document_manager');
+
         if (!CouchDB\Type::hasType("IdVO")) {
-            CouchDB\Type::addType('IdVO', 'Sfynx\DddBundle\Layer\Infrastructure\EntityType\Orm\IdType');
+            CouchDB\Type::addType('IdVO', 'Sfynx\DddBundle\Layer\Infrastructure\EntityType\CouchDB\IdType');
+            $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('IdVO', 'IdVO');
         }
 
 {% for name,data in valueObjects %}
         if (!CouchDB\Type::hasType("{{ name }}")) {
-            CouchDB\Type::addType('{{ name }}', '{{ projectName }}\Infrastructure\EntityType\Orm\{{ name }}Type');
+            CouchDB\Type::addType('{{ name }}', '{{ projectName }}\Infrastructure\EntityType\CouchDB\{{ name }}Type');
+            $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('{{ name }}', '{{ name }}');
         }
 {% endfor %}
     }
