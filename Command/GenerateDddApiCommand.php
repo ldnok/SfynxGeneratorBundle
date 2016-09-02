@@ -165,14 +165,28 @@ class GenerateDddApiCommand extends Command
         $voPaths = new PathsVO($this->rootDir, $projectDir, $destinationPath);
         $voGenerator = new GeneratorVO($this->generator, $voElementsToCreate, $voPaths);
 
-        (new Application($voGenerator, $output))->generate();
-        (new Domain($voGenerator, $output))->generate();
-        (new Presentation($voGenerator, $output))->generate();
-        (new PresentationBundle($voGenerator, $output))->generate();
+        /**
+         * Generate Layers based on the inverse importance of the Layer
+         * Infrastructure : no dependency
+         * Domain has a dependency to Infrastructure
+         * Application has dependency to Domain
+         * Presentation has dependency to Application
+         */
         (new Infrastructure($voGenerator, $output))->generate();
-        exit;
+
+        (new Domain($voGenerator, $output))->generate();
+
+        (new Application($voGenerator, $output))->generate();
+
+        (new Presentation($voGenerator, $output))->generate();
+
+        /**
+         * Generate Layers linked to Symfony with the same pattern of generation upside
+         */
         //Todo: WIP InfrastructureBundle
-        (new InfrastructureBundle($voGenerator, $output))->generate();
+//        (new InfrastructureBundle($voGenerator, $output))->generate();
+
+        (new PresentationBundle($voGenerator, $output))->generate();
 
         return 0;
     }
@@ -368,20 +382,20 @@ class GenerateDddApiCommand extends Command
      */
     protected function buildAllValueObjects(InputInterface $input, OutputInterface $output): self
     {
-        $valueObjectNames = array_keys($this->parseValueObjects());
+        $valueObjects = $this->parseValueObjects();
 
         //If option "create-all" is set, we take all value objects.
         if ($input->getOption(self::ARG_CREATE_ALL)) {
-            $this->valueObjects = $valueObjectNames;
+            $this->valueObjects = $valueObjects;
             return $this;
         }
 
         //Otherwise, loop for each value object and ask to end user.
         $dialog = $this->getQuestionHelper();
         $questionSentence = 'Do you want to create the valueObject "%s" ? [Y/n]' . PHP_EOL;
-        foreach ($valueObjectNames as $voName) {
+        foreach ($valueObjects as $voName => $vo) {
             if ($dialog->ask($input, $output, new Question(sprintf($questionSentence, $voName)))) {
-                $this->valueObjects[] = $voName;
+                $this->valueObjects[$voName] = $vo;
             }
         }
 
