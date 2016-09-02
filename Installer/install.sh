@@ -32,7 +32,7 @@ composer create-project symfony/framework-standard-edition "$projectName" "$vers
 cd "$projectName"
 
 echo '# Replace the composer.json content.'
-cat ../generator/Installer/templates/composer.json.tpl > composer.json
+cat ../${0%/install.sh}/templates/composer.json.tpl > composer.json
 
 echo '# Removing the composer.lock and re-install the new one.'
 rm composer.lock
@@ -40,7 +40,7 @@ composer install --ignore-platform-reqs
 sleep 8
 
 echo '# Activate bundles into the Kernel.'
-cat ../generator/Installer/templates/appKernel.php.tpl > app/AppKernel.php
+cat ../${0%/install.sh}/templates/appKernel.php.tpl > app/AppKernel.php
 
 echo '### SUCCESS ### Your project is generated.'
 exit 0
