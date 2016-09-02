@@ -60,17 +60,7 @@ class Infrastructure extends LayerAbstract
             $this->generator->addHandler(new TraitEntityNameHandler($this->parameters), true);
         }
 
-        do {
-            try {
-                $this->generator->execute()->clear();
-            } catch (Exception $e) {
-                fwrite(STDERR, 'Exception occurs: ' . $e->getMessage() . '.');
-                $this->generator->shiftHandler();
-            } catch (Error $e) {
-                fwrite(STDERR, 'Error occurs: ' . $e->getMessage() . '.');
-                $this->generator->shiftHandler();
-            }
-        } while (!$this->generator->isCleared());
+        $this->generator->execute()->clear();
     }
 
     /**
