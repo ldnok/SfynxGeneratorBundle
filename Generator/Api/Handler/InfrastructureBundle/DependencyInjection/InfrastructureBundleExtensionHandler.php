@@ -16,6 +16,11 @@ class InfrastructureBundleExtensionHandler extends AbstractHandler implements Ha
     protected $targetPattern = '%s/%s/InfrastructureBundle/DependencyInjection/%sInfrastructureBundleExtension.php';
     protected $target;
 
+    protected function setTemplateName()
+    {
+        $this->templateName = self::SKELETON_TPL;
+    }
+
     protected function setTarget()
     {
         $this->target = sprintf(

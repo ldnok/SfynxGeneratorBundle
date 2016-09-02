@@ -2,8 +2,8 @@
 
 namespace {{ projectName }}\Domain\Entity;
 
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as Odm;
+use Doctrine\ORM\Mapping as Orm;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use Symfony\Component\Validator\Constraints as Assert;
 use Sfynx\DddBundle\Layer\Domain\Generalisation\Traits\TraitTenant;
@@ -17,11 +17,11 @@ use Sfynx\DddBundle\Layer\Domain\Generalisation\Traits\TraitTenant;
  * @package Domain
  * @subpackage Entity
  *
- * @ORM\Entity
- * @Orm\Table(name="{{ entityName }}")
- * @ORM\HasLifecycleCallbacks
- * @ODM\Document(collection="{{ entityName }}")
- * @ODM\HasLifecycleCallbacks
+ * @Orm\Entity
+ * @Orm\Table(name="{{ entityName|lower }}")
+ * @Orm\HasLifecycleCallbacks
+ * @Odm\Document(collection="{{ entityName }}")
+ * @Odm\HasLifecycleCallbacks
  */
 class {{ entityName }}
 {
@@ -33,10 +33,10 @@ class {{ entityName }}
 
     /**
      * @Since("1")
-     * @ORM\Column(type="IdVO")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="NONE")
-     * @ODM\Id(strategy="NONE", type="IdVO")
+     * @Orm\Column(type="IdVO")
+     * @Orm\Id
+     * @Orm\GeneratedValue(strategy="NONE")
+     * @Odm\Id(strategy="NONE", type="IdVO")
      *
      * @CouchDB\Id(strategy="ASSIGNED", type="IdVO")
      */
@@ -44,10 +44,10 @@ class {{ entityName }}
 
     /**
      * @Since("1")
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     * @ODM\Id(strategy="AUTO", type="integer")
+     * @Orm\Column(type="integer")
+     * @Orm\Id
+     * @Orm\GeneratedValue(strategy="AUTO")
+     * @Odm\Id(strategy="AUTO", type="integer")
      *
      * @CouchDB\Id(strategy="ASSIGNED", type="integer")
      */
@@ -57,8 +57,8 @@ class {{ entityName }}
 
     /**
      * @Since("1")
-     * @ORM\Embedded(class="{{ valueObjects[field.voName].type|trim("\\") }}", columnPrefix="{{ field.name|lower }}_")
-     * @ODM\EmbedOne(targetDocument="{{ valueObjects[field.voName].type|trim("\\") }}")
+     * @Orm\Embedded(class="{{ valueObjects[field.voName].type|trim("\\") }}", columnPrefix="{{ field.name|lower }}_")
+     * @Odm\EmbedOne(targetDocument="{{ valueObjects[field.voName].type|trim("\\") }}")
      * @CouchDB\EmbedOne(targetDocument="{{ valueObjects[field.voName].type|trim("\\") }}")
      */
     protected ${{ field.name }};
@@ -66,24 +66,24 @@ class {{ entityName }}
 
     /**
      * @Since("1")
-     * @ORM\Column(type="string")
-     * @ODM\Field(type="string")
+     * @Orm\Column(type="string")
+     * @Odm\Field(type="string")
      */
     protected ${{ field.name }};
 {% elseif field.type == "number" %}
 
     /**
      * @Since("1")
-     * @ORM\Column(type="integer")
-     * @ODM\Field(type="integer")
+     * @Orm\Column(type="integer")
+     * @Odm\Field(type="integer")
      */
     protected ${{ field.name }};
 {% elseif field.type == "boolean" %}
 
     /**
      * @Since("1")
-     * @ORM\Column(type="boolean")
-     * @ODM\Field(type="boolean")
+     * @Orm\Column(type="boolean")
+     * @Odm\Field(type="boolean")
      */
     protected ${{ field.name }};
 {% endif %}

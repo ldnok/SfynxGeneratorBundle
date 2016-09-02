@@ -183,8 +183,7 @@ class GenerateDddApiCommand extends Command
         /**
          * Generate Layers linked to Symfony with the same pattern of generation upside
          */
-        //Todo: WIP InfrastructureBundle
-        //(new InfrastructureBundle($voGenerator, $output))->generate();
+        (new InfrastructureBundle($voGenerator, $output))->generate();
 
         (new PresentationBundle($voGenerator, $output))->generate();
 

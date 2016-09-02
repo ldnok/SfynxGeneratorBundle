@@ -46,6 +46,8 @@ class InfrastructureBundle extends LayerAbstract
      */
     public function generateBundle()
     {
+        $this->parameters['entities'] = $this->entitiesToCreate;
+
         $this->generator->addHandler(new CreateRepositoryFactoryPassHandler($this->parameters));
         $this->generator->addHandler(new ConfigurationHandler($this->parameters));
         $this->generator->addHandler(new InfrastructureBundleExtensionHandler($this->parameters));

@@ -16,6 +16,11 @@ class InfrastructureBundleHandler extends AbstractHandler implements HandlerInte
     protected $targetPattern = '%s/%s/InfrastructureBundle/%sInfrastructureBundle.php';
     protected $target;
 
+    protected function setTemplateName()
+    {
+        $this->templateName = self::SKELETON_TPL;
+    }
+
     protected function setTarget()
     {
         $this->target = sprintf(

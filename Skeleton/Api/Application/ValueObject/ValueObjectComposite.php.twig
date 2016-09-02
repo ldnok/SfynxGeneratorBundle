@@ -4,14 +4,14 @@ namespace {{ projectName }}\Domain\ValueObject;
 
 use Sfynx\DddBundle\Layer\Domain\ValueObject\Generalisation\ValueObjectInterface;
 use Sfynx\DddBundle\Layer\Domain\ValueObject\Generalisation\TraitValueObjectEquals;
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
+use Doctrine\ORM\Mapping as Orm;
+use Doctrine\ODM\MongoDB\Mapping\Annotations as Odm;
 use Doctrine\ODM\CouchDB\Mapping\Annotations as CouchDB;
 use JMS\Serializer\Annotation\Since;
 
 /**
- * @ORM\Embeddable
- * @ODM\EmbeddedDocument
+ * @Orm\Embeddable
+ * @Odm\EmbeddedDocument
  *
  * @CouchDB\EmbeddedDocument
  */
@@ -30,8 +30,8 @@ class {{ voName }} implements ValueObjectInterface
         {% endif %}
     /**
      * @Since("1")
-     * @ORM\Column(type="{{ type }}")
-     * @ODM\Field(type="{{ type }}")
+     * @Orm\Column(type="{{ type }}")
+     * @Odm\Field(type="{{ type }}")
      */
     protected ${{ field.name }};
     {% endfor %}

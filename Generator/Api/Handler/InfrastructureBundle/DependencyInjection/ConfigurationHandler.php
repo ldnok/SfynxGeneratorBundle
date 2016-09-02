@@ -16,13 +16,17 @@ class ConfigurationHandler extends AbstractHandler implements HandlerInterface
     protected $targetPattern = '%s/%s/InfrastructureBundle/DependencyInjection/Configuration.php';
     protected $target;
 
+    protected function setTemplateName()
+    {
+        $this->templateName = self::SKELETON_TPL;
+    }
+
     protected function setTarget()
     {
         $this->target = sprintf(
             $this->targetPattern,
             $this->parameters['destinationPath'],
-            $this->parameters['projectDir'],
-            ucfirst($this->parameters['projectName'])
+            $this->parameters['projectDir']
         );
     }
 }
