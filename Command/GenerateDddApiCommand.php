@@ -165,26 +165,18 @@ class GenerateDddApiCommand extends Command
         $voPaths = new PathsVO($this->rootDir, $projectDir, $destinationPath);
         $voGenerator = new GeneratorVO($this->generator, $voElementsToCreate, $voPaths);
 
-        /**
-         * Generate Layers based on the inverse importance of the Layer
-         * Infrastructure : no dependency
-         * Domain has a dependency to Infrastructure
-         * Application has dependency to Domain
-         * Presentation has dependency to Application
-         */
+        //Generate Layers based on the inverse importance of the Layer.
+        //Infrastructure : no dependency.
+        //Domain has a dependency to Infrastructure.
+        //Application has dependency to Domain.
+        //Presentation has dependency to Application.
         (new Infrastructure($voGenerator, $output))->generate();
-
         (new Domain($voGenerator, $output))->generate();
-
         (new Application($voGenerator, $output))->generate();
-
         (new Presentation($voGenerator, $output))->generate();
 
-        /**
-         * Generate Layers linked to Symfony with the same pattern of generation upside
-         */
+        //Generate Layers linked to Symfony with the same pattern of generation upside.
         (new InfrastructureBundle($voGenerator, $output))->generate();
-
         (new PresentationBundle($voGenerator, $output))->generate();
 
         return 0;
