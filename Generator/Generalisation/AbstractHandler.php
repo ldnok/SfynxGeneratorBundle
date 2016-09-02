@@ -82,10 +82,10 @@ abstract class AbstractHandler
      * Set an array of directories to look for templates.
      * The directories must be sorted from the most specific to the most generic directory.
      *
-     * @param array $skeletonDirs An array of skeleton dirs
+     * @param array|string $skeletonDirs An array of skeleton dirs
      * @return AbstractHandler
      */
-    public function setSkeletonDirs(array $skeletonDirs): self
+    public function setSkeletonDirs($skeletonDirs): self
     {
         $this->skeletonDirs = is_array($skeletonDirs) ? $skeletonDirs : [$skeletonDirs];
         return $this;
