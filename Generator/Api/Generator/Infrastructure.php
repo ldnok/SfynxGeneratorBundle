@@ -52,7 +52,7 @@ class Infrastructure extends LayerAbstract
         foreach ($this->entitiesGroups as $entityName => $entityGroups) {
             $this->parameters['entityName'] = $entityName;
             $this->parameters['constructorArgs'] = $this->buildConstructorParamsString($entityName);
-            $this->parameters['entityFields'] = $this->entities[$entityName];
+            $this->parameters['entityFields'] = $this->entitiesToCreate[$entityName];
 
             $this->addCQRSRepositoriesToGenerator($entityGroups, self::COMMAND)
                 ->addCQRSRepositoriesToGenerator($entityGroups, self::QUERY);
@@ -80,7 +80,7 @@ class Infrastructure extends LayerAbstract
      * @param string $group
      * @return self
      */
-    private function addCQRSRepositoriesToGenerator($entityGroups, $group): self
+    private function addCQRSRepositoriesToGenerator(array $entityGroups, string $group): self
     {
         //Set the parameter $group to its good value (might be a reset)
         $this->parameters['group'] = $group;

@@ -59,7 +59,7 @@ class PresentationBundle extends LayerAbstract
     public function generateBundle()
     {
         $this->parameters['projectName'] = str_replace('src/', '', $this->projectDir);
-        $this->parameters['entities'] = $this->entities;
+        $this->parameters['entities'] = $this->entitiesToCreate;
 
         $this->generator->addHandler(new PresentationBundleHandler($this->parameters));
         $this->generator->addHandler(new PresentationBundleExtensionHandler($this->parameters));

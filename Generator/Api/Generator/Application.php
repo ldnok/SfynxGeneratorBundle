@@ -65,7 +65,7 @@ class Application extends LayerAbstract
         foreach ($this->commandsQueriesList[self::COMMAND] as $data) {
             $this->parameters['actionName'] = ucfirst($data['action']);
             $this->parameters['entityName'] = ucfirst(strtolower($data['entity']));
-            $this->parameters['entityFields'] = $this->entities[$data['entity']];
+            $this->parameters['entityFields'] = $this->entitiesToCreate[$data['entity']];
             $this->parameters['constructorArgs'] = $this->buildConstructorParamsString($data['entity']);
 
             // Command
@@ -91,7 +91,7 @@ class Application extends LayerAbstract
         foreach ($this->commandsQueriesList[self::QUERY] as $data) {
             $this->parameters['actionName'] = ucfirst($data['action']);
             $this->parameters['entityName'] = ucfirst(strtolower($data['entity']));
-            $this->parameters['entityFields'] = $this->entities[$data['entity']];
+            $this->parameters['entityFields'] = $this->entitiesToCreate[$data['entity']];
 
             $this->generator->addHandler(new QueryHandler($this->parameters), true);
             $this->generator->addHandler(new QueryHandlerHandler($this->parameters), true);
@@ -111,12 +111,11 @@ class Application extends LayerAbstract
 
             $this->parameters['actionName'] = ucfirst($data['action']);
             $this->parameters['entityName'] = ucfirst(strtolower($data['entity']));
-            $this->parameters['entityFields'] = $this->entities[$data['entity']];
-            $this->parameters['fields'] = $this->entities[$data['entity']]; //todo: unify these entityFields and fields
+            $this->parameters['entityFields'] = $this->entitiesToCreate[$data['entity']];
 
             $this->output->writeln(' - ' . $this->parameters['actionName'] . ' - ');
 
-            foreach ($this->entities[$data['entity']] as $field) {
+            foreach ($this->entitiesToCreate[$data['entity']] as $field) {
                 $constructorParams .= '$' . $field['name'] . ', ';
 
                 if (('new' === $data['action'] && 'id' !== $field['type']) || ('new' !== $data['action'])) {
